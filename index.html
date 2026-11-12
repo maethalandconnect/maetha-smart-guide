@@ -1,0 +1,2835 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบผู้ช่วยนำทางอัจฉริยะ : Mae Tha Land Smart Guide</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Sarabun & Prompt for high legibility Thai text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Sarabun', 'Prompt', 'sans-serif'],
+                        heading: ['Prompt', 'Sarabun', 'sans-serif'],
+                    },
+                    colors: {
+                        gov: {
+                            navy: '#0B2239',
+                            navyLight: '#163A5F',
+                            blue: '#1E40AF',
+                            gold: '#C59B27',
+                            goldBright: '#F59E0B',
+                            emerald: '#059669'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --font-scale: 1;
+        }
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #F1F5F9;
+            color: #0F172A;
+            transition: background-color 0.25s ease, color 0.25s ease;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Prompt', sans-serif;
+        }
+
+        /* High Contrast Mode for Visually Impaired Elderly */
+        body.high-contrast {
+            background-color: #000000 !important;
+            color: #FFFFFF !important;
+        }
+        body.high-contrast .hc-card {
+            background-color: #111827 !important;
+            border-color: #FBBF24 !important;
+            border-width: 2px !important;
+            color: #FFFFFF !important;
+        }
+        body.high-contrast .hc-text {
+            color: #FEF08A !important;
+        }
+
+        /* Dynamic Font Scaling for Elderly Users */
+        .elderly-scale-sm { font-size: calc(1.0rem * var(--font-scale)); line-height: 1.5; }
+        .elderly-scale-base { font-size: calc(1.18rem * var(--font-scale)); line-height: 1.6; }
+        .elderly-scale-lg { font-size: calc(1.38rem * var(--font-scale)); line-height: 1.5; }
+        .elderly-scale-xl { font-size: calc(1.65rem * var(--font-scale)); line-height: 1.38; }
+        .elderly-scale-2xl { font-size: calc(1.95rem * var(--font-scale)); line-height: 1.3; }
+
+        /* Smart Header Scroll Transition (GPU-Accelerated & Zero Layout Shift) */
+        #smartHeaderWrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 40;
+            transform: translate3d(0, 0, 0);
+            will-change: transform;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.32s ease;
+        }
+        #smartHeaderWrapper.header-hidden {
+            transform: translate3d(0, -102%, 0);
+            box-shadow: none !important;
+            pointer-events: none;
+        }
+
+        /* Sound Wave Animation */
+        @keyframes soundWave {
+            0%, 100% { height: 8px; }
+            50% { height: 28px; }
+        }
+        .wave-bar {
+            width: 5px;
+            background-color: currentColor;
+            border-radius: 9999px;
+            display: inline-block;
+            margin: 0 2px;
+            animation: soundWave 0.75s ease-in-out infinite;
+        }
+        .wave-bar:nth-child(2) { animation-delay: 0.15s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.45s; }
+
+        /* Subtle Pulse for Audio CTA */
+        @keyframes softPulse {
+            0%, 100% { box-shadow: 0 10px 25px -5px rgba(217, 119, 6, 0.4), 0 0 0 0 rgba(245, 158, 11, 0.45); }
+            50% { box-shadow: 0 15px 30px -5px rgba(217, 119, 6, 0.55), 0 0 0 10px rgba(245, 158, 11, 0); }
+        }
+        .audio-cta-btn {
+            animation: softPulse 2.5s infinite;
+        }
+
+        /* Service Card Hover & Active Animations */
+        .service-card-item {
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .service-card-item:hover {
+            transform: translateY(-3px);
+        }
+        .service-card-item:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-amber-200 selection:text-slate-900 pb-24 md:pb-8">
+
+    <!-- ================= TOP OFFICIAL GOVERNMENT HEADER (SMART HIDE ON SCROLL) ================= -->
+    <div id="smartHeaderWrapper">
+        <header class="bg-gradient-to-r from-gov-navy via-gov-navyLight to-gov-navy text-white shadow-xl border-b-4 border-amber-400">
+            <div class="max-w-6xl mx-auto px-3.5 sm:px-6 py-3 sm:py-3.5">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2.5 sm:gap-3">
+                    
+                    <!-- Official Google Drive Logo & System Name -->
+                    <div class="flex items-center gap-3 sm:gap-4">
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white flex items-center justify-center shadow-lg border-2 border-amber-400 shrink-0 overflow-hidden p-1">
+                            <img id="headerLogoImg"
+                                 src="https://drive.google.com/thumbnail?id=100u882HByJhQSS5kI6TbUcXcMOJAMt74&sz=w400"
+                                 alt="ตราสัญลักษณ์หน่วยงาน"
+                                 class="w-full h-full object-contain"
+                                 onerror="handleLogoFallback(this)">
+                        </div>
+                        <div class="min-w-0">
+                            <div id="headerAgencyBadge" class="text-amber-300 text-xs sm:text-sm font-heading font-semibold tracking-wide truncate">
+                                สำนักงานที่ดินจังหวัดลำปาง สาขาแม่ทะ (บริการประชาชนและผู้สูงอายุ)
+                            </div>
+                            <h1 id="headerAppTitle" class="text-base sm:text-xl md:text-2xl font-extrabold font-heading tracking-tight text-white leading-snug">
+                                ระบบผู้ช่วยนำทางอัจฉริยะ : Mae Tha Land Smart Guide
+                            </h1>
+                        </div>
+                    </div>
+
+                    <!-- Right Controls: Font Size + High Contrast + Admin Mode Button -->
+                    <div class="flex flex-wrap items-center justify-between md:justify-end gap-2">
+                        
+                        <!-- Elderly Font Size & Contrast Switcher -->
+                        <div class="flex items-center gap-1 bg-slate-900/75 p-1 rounded-xl border border-slate-600/80">
+                            <button onclick="setFontScale(1.0)" id="fontBtn-1" class="px-2.5 py-1 rounded-lg text-xs sm:text-sm font-heading font-bold bg-amber-400 text-slate-950 transition">
+                                ก ปกติ
+                            </button>
+                            <button onclick="setFontScale(1.16)" id="fontBtn-2" class="px-2.5 py-1 rounded-lg text-xs sm:text-sm font-heading font-bold text-white hover:bg-slate-700 transition">
+                                ก+ ใหญ่
+                            </button>
+                            <button onclick="setFontScale(1.30)" id="fontBtn-3" class="px-2.5 py-1 rounded-lg text-xs sm:text-sm font-heading font-bold text-white hover:bg-slate-700 transition">
+                                ก++ ใหญ่พิเศษ
+                            </button>
+                            <button onclick="toggleHighContrast()" id="contrastToggleBtn" class="px-2.5 py-1 rounded-lg text-xs sm:text-sm font-heading font-bold text-amber-300 hover:bg-slate-700 transition flex items-center gap-1 border-l border-slate-600 pl-2">
+                                <i class="fa-solid fa-circle-half-stroke"></i>
+                                <span class="hidden sm:inline">สีคมชัด</span>
+                            </button>
+                        </div>
+
+                        <!-- Mode Switcher Button (Protected by Password for Admin) -->
+                        <button onclick="handleAdminAccessClick()" id="headerModeSwitchBtn" class="px-3.5 py-1.5 sm:py-2 rounded-xl font-heading font-semibold text-xs sm:text-sm bg-white/10 hover:bg-white/20 text-white border border-white/25 transition flex items-center gap-1.5 shrink-0">
+                            <i class="fa-solid fa-lock text-amber-400" id="headerModeBtnIcon"></i>
+                            <span id="headerModeBtnText">เจ้าหน้าที่</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <!-- Dedicated Spacer to keep document scrollHeight 100% constant and prevent scroll jitter -->
+    <div id="headerSpacer" class="w-full shrink-0" style="height: 88px;"></div>
+
+    <!-- ================= MAIN CONTENT CONTAINER ================= -->
+    <main class="flex-grow max-w-5xl w-full mx-auto px-3.5 sm:px-6 py-4 sm:py-7">
+
+        <!-- =================================================================== -->
+        <!-- MODE 1: STREAMLINED CITIZEN / ELDERLY NAVIGATION VIEW               -->
+        <!-- =================================================================== -->
+        <section id="citizenModeSection" class="space-y-5 sm:space-y-6">
+
+            <!-- 1.0 Compact Voice Control Bar (Auto-Voice Toggle & Elderly Speed) -->
+            <div class="hc-card bg-white rounded-2xl shadow-sm border border-slate-200/90 px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5">
+                    <button onclick="toggleAutoPlayVoice()" id="autoVoiceToggleBtn" class="px-3.5 py-2 rounded-xl font-heading font-bold text-xs sm:text-sm bg-emerald-600 text-white shadow-sm flex items-center gap-2 transition">
+                        <i id="autoVoiceIcon" class="fa-solid fa-volume-high"></i>
+                        <span id="autoVoiceText">อ่านเสียงอัตโนมัติ: เปิด</span>
+                    </button>
+                    <span class="text-xs text-slate-500 hidden md:inline">
+                        เมื่อแตะเลือกงานบริการหรือเปลี่ยนขั้นตอน ระบบจะอ่านออกเสียงให้ทันที
+                    </span>
+                </div>
+
+                <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                    <span class="text-xs font-heading font-semibold text-slate-600 px-2">ความเร็วเสียง:</span>
+                    <button onclick="setSpeechSpeed(0.82)" id="speedSlowBtn" class="px-2.5 py-1 rounded-lg text-xs font-heading font-bold bg-gov-navy text-amber-300 shadow-sm transition">
+                        ช้าชัด (ผู้สูงอายุ)
+                    </button>
+                    <button onclick="setSpeechSpeed(1.0)" id="speedNormalBtn" class="px-2.5 py-1 rounded-lg text-xs font-heading font-bold text-slate-600 hover:bg-white transition">
+                        ปกติ
+                    </button>
+                </div>
+            </div>
+
+            <!-- 1.1 Vibrant Realistic Service Category Selector -->
+            <div class="hc-card bg-white rounded-3xl shadow-md border border-slate-200/90 p-4 sm:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-2.5 h-8 rounded-full bg-gradient-to-b from-amber-400 to-orange-600"></span>
+                        <h2 id="citizenSelectorHeading" class="hc-text font-heading font-extrabold text-gov-navy elderly-scale-lg">
+                            เลือกงานบริการที่ท่านต้องการติดต่อ:
+                        </h2>
+                    </div>
+                    <span class="text-xs sm:text-sm font-heading font-semibold text-slate-500 flex items-center gap-1.5">
+                        <i class="fa-solid fa-hand-pointer text-amber-500"></i>
+                        <span>แตะที่ปุ่มสีตามเรื่องที่ท่านมาติดต่อ</span>
+                    </span>
+                </div>
+
+                <!-- Service Category Cards Grid (2 cols on mobile, 4 on desktop with realistic large icons & distinct colors) -->
+                <div id="serviceCardsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+                    <!-- Populated dynamically by JS -->
+                </div>
+            </div>
+
+            <!-- 1.2 Simplified Stepper Bar (กดเลือกขั้นตอนได้ทันที ไม่ซับซ้อน) -->
+            <div id="stepNavigationAnchor" class="hc-card bg-white rounded-3xl shadow-sm border border-slate-200/90 p-4 sm:p-6 scroll-mt-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3.5">
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <span class="bg-gov-navy text-amber-300 font-heading font-bold text-xs sm:text-sm px-3.5 py-1 rounded-full shadow-sm" id="stepCounterBadge">
+                            ขั้นตอนที่ 1 / 4
+                        </span>
+                        <h3 id="currentServiceTitleDisplay" class="hc-text font-heading font-extrabold text-slate-800 elderly-scale-base">
+                            ชื่อกระบวนงานบริการ
+                        </h3>
+                    </div>
+                    <span class="text-slate-500 text-xs sm:text-sm font-medium">
+                        <i class="fa-solid fa-hand-pointer text-amber-500 mr-1"></i>แตะหมายเลขเพื่อดูแต่ละจุดบริการ
+                    </span>
+                </div>
+
+                <!-- Large Easy-to-Tap Stepper Buttons -->
+                <div id="stepperButtonsContainer" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- 1.3 Single Focused Step Card (แสดงเฉพาะข้อมูลที่จำเป็น อ่านง่าย ไม่ตาลาย) -->
+            <div class="hc-card bg-white rounded-3xl shadow-xl border-2 border-gov-navy/15 overflow-hidden">
+                
+                <!-- Clean Step Header Banner -->
+                <div class="bg-gradient-to-r from-gov-navy via-gov-navyLight to-gov-navy text-white px-5 py-4 sm:px-8 sm:py-6 border-b-4 border-amber-400">
+                    <div class="flex items-center gap-3.5 sm:gap-5">
+                        <!-- Step Number Badge -->
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 text-gov-navy flex flex-col items-center justify-center shrink-0 shadow-lg border-2 border-white">
+                            <span class="text-[10px] sm:text-[11px] font-heading font-extrabold uppercase tracking-wider">ขั้นตอนที่</span>
+                            <span id="activeStepNumBig" class="text-3xl sm:text-4xl font-extrabold font-heading leading-none">1</span>
+                        </div>
+
+                        <div class="space-y-1 min-w-0 flex-1">
+                            <!-- Point of Service Pill -->
+                            <div class="inline-flex items-center gap-2 bg-white/15 text-amber-300 font-heading font-semibold px-3 py-1 rounded-full elderly-scale-sm">
+                                <i class="fa-solid fa-location-dot text-amber-400"></i>
+                                <span id="activeStepLocation" class="truncate">จุดบริการที่ 1</span>
+                            </div>
+                            <!-- Step Title -->
+                            <h3 id="activeStepTitle" class="font-heading font-extrabold text-white elderly-scale-xl sm:elderly-scale-2xl leading-snug">
+                                ชื่อขั้นตอนการให้บริการ
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step Content Body: Clean, Focused, High Readability -->
+                <div class="p-4 sm:p-8 space-y-6">
+
+                    <!-- Prominent Audio Guide Button (กดฟังเสียงได้ทันที) -->
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                        <button onclick="playCurrentStepAudio()" id="mainPlayAudioBtn" class="audio-cta-btn flex-1 py-4 sm:py-5 px-5 sm:px-6 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-heading font-extrabold elderly-scale-lg flex items-center justify-center gap-3.5 transition active:scale-[0.99]">
+                            <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white text-orange-600 flex items-center justify-center shrink-0 shadow-md">
+                                <i id="mainPlayAudioIcon" class="fa-solid fa-volume-high text-xl sm:text-2xl"></i>
+                            </div>
+                            <span id="mainPlayAudioText">กดฟังเสียงอธิบายขั้นตอนนี้</span>
+                        </button>
+
+                        <button onclick="stopAllAudio()" id="stopAudioBtn" class="hidden py-4 sm:py-5 px-6 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-heading font-bold elderly-scale-base flex items-center justify-center gap-2 shadow transition">
+                            <i class="fa-solid fa-stop"></i>
+                            <span>หยุดเสียง</span>
+                        </button>
+                    </div>
+
+                    <!-- Sound Playing Status Bar (Appears only while audio is playing) -->
+                    <div id="audioPlayingIndicator" class="hidden bg-amber-50 border-2 border-amber-300 rounded-2xl px-4 py-3 flex items-center justify-center gap-3 text-amber-950 font-heading font-bold elderly-scale-sm">
+                        <div class="flex items-center h-7 text-amber-600 shrink-0">
+                            <span class="wave-bar"></span>
+                            <span class="wave-bar"></span>
+                            <span class="wave-bar"></span>
+                            <span class="wave-bar"></span>
+                        </div>
+                        <span id="audioPlayingStatusText" class="truncate">กำลังบรรยายเสียงขั้นตอนการรับบริการ...</span>
+                    </div>
+
+                    <!-- Essential Description & Image in Clean Balanced Layout -->
+                    <div class="hc-card grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-center bg-slate-50/90 rounded-3xl p-4 sm:p-7 border border-slate-200/90">
+                        
+                        <!-- Text Explanation (7 Cols) -->
+                        <div class="lg:col-span-7 space-y-4 sm:space-y-5">
+                            <div>
+                                <div class="text-xs sm:text-sm font-heading font-bold text-gov-blue uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                    <span>สิ่งที่ท่านต้องทำในขั้นตอนนี้</span>
+                                </div>
+                                <p id="activeStepDescription" class="hc-text text-slate-900 elderly-scale-lg font-semibold leading-relaxed whitespace-pre-line">
+                                    คำอธิบายขั้นตอน
+                                </p>
+                            </div>
+
+                            <!-- Simple 1-Line Result / Status Pill -->
+                            <div class="pt-4 border-t border-slate-200/80 flex items-center gap-3 text-emerald-800">
+                                <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 text-xl shadow-sm">
+                                    <i class="fa-solid fa-file-circle-check"></i>
+                                </div>
+                                <div>
+                                    <span class="text-xs font-heading font-bold text-slate-500 block">สิ่งที่ได้รับ / สถานะของขั้นตอนนี้:</span>
+                                    <span id="activeStepResultDoc" class="hc-text font-heading font-extrabold elderly-scale-base text-emerald-900">
+                                        บัตรคิวและเอกสารที่ตรวจสอบแล้ว
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Single Clean Visual Image Frame (5 Cols) -->
+                        <div class="lg:col-span-5">
+                            <div onclick="openImageZoomModal()" class="group cursor-pointer rounded-2xl overflow-hidden bg-white border-2 border-slate-200 shadow-sm relative aspect-[4/3] flex items-center justify-center">
+                                <img id="activeStepImage" src="" alt="ภาพประกอบขั้นตอน" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" onerror="handleImageFallback(this)">
+                                <div class="absolute bottom-2.5 right-2.5 bg-slate-900/80 text-white text-xs font-heading px-3 py-1.5 rounded-lg backdrop-blur-sm flex items-center gap-1.5">
+                                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                                    <span>แตะเพื่อขยายภาพ</span>
+                                </div>
+                            </div>
+                            <p id="activeStepImageCaption" class="text-center text-slate-500 text-xs sm:text-sm mt-2 font-medium">
+                                ภาพประกอบขั้นตอนการให้บริการ
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Simplified Desktop/Tablet Bottom Navigation Bar -->
+                <div class="bg-slate-100/90 px-5 py-4 sm:px-8 sm:py-5 border-t border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3.5">
+                    <button onclick="prevStep()" id="prevStepBtn" class="sm:w-5/12 py-3.5 sm:py-4 px-5 rounded-2xl bg-white hover:bg-slate-200 text-slate-800 border-2 border-slate-300 font-heading font-bold elderly-scale-base flex items-center justify-center gap-3 shadow-sm transition disabled:opacity-35 disabled:pointer-events-none">
+                        <i class="fa-solid fa-arrow-left text-xl"></i>
+                        <span>ย้อนกลับ</span>
+                    </button>
+
+                    <button onclick="nextStep()" id="nextStepBtn" class="sm:w-7/12 py-3.5 sm:py-4 px-5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-heading font-extrabold elderly-scale-lg flex items-center justify-center gap-3 shadow-md transition active:scale-[0.99]">
+                        <span id="nextStepBtnText">ขั้นตอนถัดไป</span>
+                        <i id="nextStepBtnIcon" class="fa-solid fa-arrow-right text-xl"></i>
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================================== -->
+        <!-- MODE 2: PASSWORD-PROTECTED ADMIN MANAGEMENT VIEW (สำหรับเจ้าหน้าที่)   -->
+        <!-- =================================================================== -->
+        <section id="adminModeSection" class="hidden space-y-8">
+
+            <!-- Admin Top Bar -->
+            <div class="bg-gov-navy text-white rounded-3xl shadow-lg p-6 border-b-4 border-amber-400 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-400 text-gov-navy flex items-center justify-center text-xl font-bold shrink-0">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-heading font-semibold px-2.5 py-0.5 rounded-full">
+                                ยืนยันรหัสผ่านเจ้าหน้าที่แล้ว (Dol1234)
+                            </span>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl font-bold font-heading mt-0.5">
+                            ระบบจัดการข้อมูลงานบริการและขั้นตอน (สำหรับเจ้าหน้าที่)
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <button onclick="exportReadyToDeployHTML()" class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-heading font-bold text-sm flex items-center gap-2 shadow transition" title="ดาวน์โหลดไฟล์ index.html ที่บันทึกข้อมูลล่าสุดฝังในไฟล์ พร้อมนำไปอัปโหลดขึ้นเว็บออนไลน์ทันที">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span>ดาวน์โหลดไฟล์เว็บพร้อมอัปโหลดออนไลน์ (index.html)</span>
+                    </button>
+                    <button onclick="exportDataJSON()" class="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-heading font-medium text-sm flex items-center gap-2 border border-white/15 transition">
+                        <i class="fa-solid fa-download text-amber-400"></i>
+                        <span>สำรอง JSON</span>
+                    </button>
+                    <label class="cursor-pointer px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-heading font-medium text-sm flex items-center gap-2 border border-white/15 transition">
+                        <i class="fa-solid fa-file-import text-sky-300"></i>
+                        <span>นำเข้า JSON</span>
+                        <input type="file" accept=".json,application/json" class="hidden" onchange="importDataJSON(event)">
+                    </label>
+                    <button onclick="resetToDefaultData()" class="px-3.5 py-2.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 font-heading font-medium text-sm flex items-center gap-2 border border-rose-400/30 transition">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        <span>คืนค่าเริ่มต้น</span>
+                    </button>
+                    <button onclick="lockAdminAndExit()" class="px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-heading font-bold text-sm flex items-center gap-2 shadow transition">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>ล็อกระบบ / กลับหน้าประชาชน</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PART 1: MANAGE SERVICE CATEGORIES, LOGO & HEADING ("เลือกงานบริการที่ท่านต้องการติดต่อ:") -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 bg-slate-800 text-white flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5">
+                        <i class="fa-solid fa-layer-group text-amber-400 text-lg"></i>
+                        <h3 class="font-heading font-bold text-lg">
+                            ส่วนที่ 1 : ตั้งค่าโลโก้ ชื่อระบบ และหมวดหมู่ "เลือกงานบริการที่ท่านต้องการติดต่อ"
+                        </h3>
+                    </div>
+                    <button onclick="openServiceCategoryModal(-1)" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-heading font-bold text-sm flex items-center gap-2 shadow transition">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>เพิ่มหัวข้องานบริการใหม่</span>
+                    </button>
+                </div>
+
+                <div class="p-6 space-y-6">
+                    <!-- Editable System Title, Agency Subtitle, Logo URL & Selector Heading -->
+                    <div class="bg-slate-50 rounded-2xl p-4 sm:p-5 border border-slate-200 grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                        <div class="md:col-span-6">
+                            <label class="block font-heading font-bold text-slate-700 text-xs mb-1">
+                                ชื่อระบบหลัก (แสดงบนส่วนหัว):
+                            </label>
+                            <input type="text" id="adminAppTitleInput" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 font-medium text-sm focus:border-gov-blue focus:outline-none">
+                        </div>
+                        <div class="md:col-span-6">
+                            <label class="block font-heading font-bold text-slate-700 text-xs mb-1">
+                                ชื่อหน่วยงาน / สาขา (แถบย่อยด้านบน):
+                            </label>
+                            <input type="text" id="adminAgencyNameInput" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 font-medium text-sm focus:border-gov-blue focus:outline-none">
+                        </div>
+                        <div class="md:col-span-5">
+                            <label class="block font-heading font-bold text-slate-700 text-xs mb-1">
+                                ลิงก์รูปโลโก้หน่วยงาน (รองรับลิงก์ Google Drive):
+                            </label>
+                            <input type="text" id="adminLogoUrlInput" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 font-medium text-sm focus:border-gov-blue focus:outline-none" placeholder="วางลิงก์รูปภาพ หรือลิงก์ Google Drive">
+                        </div>
+                        <div class="md:col-span-5">
+                            <label class="block font-heading font-bold text-slate-700 text-xs mb-1">
+                                ข้อความหัวข้อเลือกงานบริการ (แสดงหน้าแรก):
+                            </label>
+                            <input type="text" id="adminSelectorHeadingInput" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 font-medium text-sm focus:border-gov-blue focus:outline-none">
+                        </div>
+                        <div class="md:col-span-2">
+                            <button onclick="saveGlobalHeadings()" class="w-full py-2.5 px-4 rounded-xl bg-gov-navy hover:bg-gov-navyLight text-white font-heading font-bold text-sm transition flex items-center justify-center gap-1.5 shadow">
+                                <i class="fa-solid fa-check text-amber-400"></i>
+                                <span>บันทึกตั้งค่า</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Service Categories Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 border-b border-slate-300 text-slate-700 font-heading text-xs uppercase">
+                                    <th class="py-3 px-4 w-20 text-center">ลำดับ</th>
+                                    <th class="py-3 px-4 w-24 text-center">ไอคอนสมจริง</th>
+                                    <th class="py-3 px-4">หัวข้องานบริการที่ติดต่อ</th>
+                                    <th class="py-3 px-4">รายละเอียดสั้นๆ & โทนสีปุ่ม</th>
+                                    <th class="py-3 px-4 w-28 text-center">จำนวนขั้นตอน</th>
+                                    <th class="py-3 px-4 w-48 text-center">การจัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminCategoriesTableBody" class="divide-y divide-slate-200 text-sm">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PART 2: MANAGE STEPS DATA TABLE FOR EACH SERVICE -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 bg-slate-800 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5">
+                        <i class="fa-solid fa-table-list text-amber-400 text-lg"></i>
+                        <h3 class="font-heading font-bold text-lg" id="adminTableTitle">
+                            ส่วนที่ 2 : ตารางข้อมูลขั้นตอนการให้บริการ
+                        </h3>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-3">
+                        <select id="adminServiceSelect" onchange="changeServiceWorkflow(this.value)" class="px-3.5 py-2 rounded-xl bg-slate-900 text-amber-300 border border-slate-600 font-heading font-semibold text-sm focus:outline-none">
+                            <!-- Populated by JS -->
+                        </select>
+                        <button onclick="openStepEditorModal(-1)" class="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-heading font-bold text-sm flex items-center gap-2 shadow transition">
+                            <i class="fa-solid fa-plus-circle"></i>
+                            <span>เพิ่มขั้นตอนในงานนี้</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 border-b border-slate-300 text-slate-700 font-heading text-xs uppercase">
+                                <th class="py-3.5 px-4 text-center w-24">ขั้นตอนที่</th>
+                                <th class="py-3.5 px-4 min-w-[200px]">ชื่อขั้นตอน & จุดบริการ</th>
+                                <th class="py-3.5 px-4 min-w-[260px]">คำอธิบาย & สิ่งที่ได้รับ</th>
+                                <th class="py-3.5 px-4 w-40 text-center">รูปภาพประกอบ</th>
+                                <th class="py-3.5 px-4 w-52 text-center">เสียงอธิบาย</th>
+                                <th class="py-3.5 px-4 w-36 text-center">จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminStepsTableBody" class="divide-y divide-slate-200 text-sm">
+                            <!-- Populated dynamically by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ================= STICKY MOBILE BOTTOM NAVIGATION BAR (เฉพาะหน้าจอมือถือโหมดประชาชน) ================= -->
+    <div id="mobileStickyBar" class="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t-2 border-slate-200 px-3 py-2.5 shadow-2xl">
+        <div class="grid grid-cols-12 gap-2 max-w-lg mx-auto items-center">
+            <button onclick="prevStep()" id="mobilePrevBtn" class="col-span-3 py-3 rounded-xl bg-slate-100 text-slate-800 border border-slate-300 font-heading font-bold text-xs flex flex-col items-center justify-center gap-0.5 disabled:opacity-35">
+                <i class="fa-solid fa-arrow-left text-base"></i>
+                <span>ย้อนกลับ</span>
+            </button>
+            <button onclick="playCurrentStepAudio()" class="col-span-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-heading font-bold text-xs flex flex-col items-center justify-center gap-0.5 shadow-md">
+                <i class="fa-solid fa-volume-high text-base"></i>
+                <span>ฟังเสียงขั้นตอนนี้</span>
+            </button>
+            <button onclick="nextStep()" id="mobileNextBtn" class="col-span-4 py-3 rounded-xl bg-emerald-600 text-white font-heading font-bold text-xs flex flex-col items-center justify-center gap-0.5 shadow-md">
+                <i class="fa-solid fa-arrow-right text-base" id="mobileNextIcon"></i>
+                <span id="mobileNextText">ขั้นตอนถัดไป</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-gov-navy text-slate-300 border-t-4 border-amber-500 mt-10 py-5">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm">
+            <div class="flex items-center gap-2.5">
+                <i class="fa-solid fa-landmark text-amber-400"></i>
+                <span id="footerSystemTitle" class="font-heading font-semibold text-white">ระบบผู้ช่วยนำทางอัจฉริยะ : Mae Tha Land Smart Guide</span>
+            </div>
+            <div class="text-slate-400 text-center sm:text-right">
+                ออกแบบสำหรับผู้สูงอายุและประชาชนทั่วไป • ใช้งานง่าย ชัดเจน พร้อมเสียงภาษาไทยอัตโนมัติ
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- =================================================================== -->
+    <!-- MODAL 0: ADMIN PASSWORD PROTECTION MODAL (รหัสผ่าน: Dol1234)         -->
+    <!-- =================================================================== -->
+    <div id="adminPasswordModal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl border-2 border-slate-200 max-w-md w-full overflow-hidden">
+            <div class="bg-gov-navy text-white px-6 py-5 flex items-center justify-between border-b-4 border-amber-400">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl bg-white p-1 flex items-center justify-center overflow-hidden shrink-0">
+                        <img id="passwordModalLogoImg"
+                             src="https://drive.google.com/thumbnail?id=100u882HByJhQSS5kI6TbUcXcMOJAMt74&sz=w400"
+                             alt="Logo"
+                             class="w-full h-full object-contain"
+                             onerror="handleLogoFallback(this)">
+                    </div>
+                    <div>
+                        <h3 class="font-heading font-bold text-lg">ยืนยันสิทธิ์เจ้าหน้าที่</h3>
+                        <p class="text-xs text-amber-200">เฉพาะเจ้าหน้าที่ผู้ดูแลระบบเท่านั้น</p>
+                    </div>
+                </div>
+                <button onclick="closePasswordModal()" class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form onsubmit="verifyAdminPassword(event)" class="p-6 space-y-4">
+                <div>
+                    <label for="adminPasswordInput" class="block font-heading font-bold text-slate-800 text-sm mb-2">
+                        กรุณากรอกรหัสผ่านเจ้าหน้าที่เพื่อเข้าสู่โหมดจัดการข้อมูล:
+                    </label>
+                    <div class="relative">
+                        <input type="password" id="adminPasswordInput" required placeholder="กรอกรหัสผ่าน..." class="w-full pl-4 pr-12 py-3 rounded-xl border-2 border-slate-300 focus:border-gov-navy focus:outline-none font-heading text-lg tracking-wider">
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1">
+                            <i id="passwordEyeIcon" class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                    <p id="passwordErrorText" class="hidden text-rose-600 text-xs font-heading font-bold mt-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span>รหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง</span>
+                    </p>
+                </div>
+
+                <div class="flex items-center justify-end gap-2.5 pt-2">
+                    <button type="button" onclick="closePasswordModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-heading font-bold text-sm">
+                        ยกเลิก
+                    </button>
+                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-gov-navy hover:bg-gov-navyLight text-white font-heading font-bold text-sm flex items-center gap-2 shadow-md">
+                        <i class="fa-solid fa-unlock-keyhole text-amber-400"></i>
+                        <span>เข้าสู่ระบบจัดการ</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- =================================================================== -->
+    <!-- MODAL 1: ADD / EDIT SERVICE CATEGORY MODAL (แก้ไขหัวข้องานบริการ)    -->
+    <!-- =================================================================== -->
+    <div id="serviceCategoryModal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-200 my-8">
+            <div class="bg-gov-navy text-white px-6 py-4 flex items-center justify-between border-b-4 border-amber-400">
+                <h3 id="serviceCategoryModalTitle" class="font-heading font-bold text-lg">แก้ไขหัวข้องานบริการที่ติดต่อ</h3>
+                <button onclick="closeServiceCategoryModal()" class="text-slate-300 hover:text-white">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <form onsubmit="saveServiceCategoryFromModal(event)" class="p-6 space-y-4">
+                <input type="hidden" id="editCategoryIndex" value="-1">
+                <div>
+                    <label class="block font-heading font-bold text-slate-800 text-sm mb-1">
+                        ชื่อหัวข้องานบริการ <span class="text-rose-600">*</span>
+                    </label>
+                    <input type="text" id="categoryNameInput" required placeholder="เช่น ซื้อขาย / โอน / ให้ที่ดิน" class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 focus:border-gov-blue focus:outline-none font-medium">
+                </div>
+                <div>
+                    <label class="block font-heading font-bold text-slate-800 text-sm mb-1">
+                        รายละเอียดสั้นๆ (แสดงใต้หัวข้อเพื่อความเข้าใจง่าย) <span class="text-rose-600">*</span>
+                    </label>
+                    <input type="text" id="categoryDescInput" required placeholder="เช่น โอนกรรมสิทธิ์ที่ดิน ซื้อขาย หรือให้โดยเสน่หา" class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 focus:border-gov-blue focus:outline-none font-medium">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                        <label class="block font-heading font-bold text-slate-800 text-sm mb-1">
+                            ภาพไอคอนสมจริงขนาดใหญ่
+                        </label>
+                        <select id="categoryIconInput" class="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white font-heading font-medium text-sm">
+                            <option value="transfer">โฉนดที่ดิน & บ้าน (ซื้อขาย/โอน/ให้)</option>
+                            <option value="inheritance">มรดกตกทอด & ครอบครัว (รับมรดก)</option>
+                            <option value="mortgage">ธนาคาร & สัญญาหลักประกัน (จำนอง/ไถ่ถอน)</option>
+                            <option value="survey">กล้องสำรวจรังวัด & แปลงที่ดิน (รังวัด)</option>
+                            <option value="search">แว่นขยาย & แผนที่โฉนด (ตรวจสอบ/คัดสำเนา)</option>
+                            <option value="valuation">ตราประทับ & ราคาประเมิน (หนังสือรับรอง)</option>
+                            <option value="lostdeed">ออกใบแทนโฉนดชำรุด/สูญหาย</option>
+                            <option value="consult">ผู้สูงอายุ & ให้คำปรึกษาช่องทางด่วน</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-heading font-bold text-slate-800 text-sm mb-1">
+                            โทนสีพื้นหลังปุ่ม (แยกสีชัดเจน)
+                        </label>
+                        <select id="categoryThemeInput" class="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white font-heading font-medium text-sm">
+                            <option value="emerald">สีเขียวหยก (Emerald - สดใสสบายตา)</option>
+                            <option value="indigo">สีม่วงคราม (Royal Indigo - ทันสมัย)</option>
+                            <option value="amber">สีส้มทอง (Warm Amber - เด่นชัด)</option>
+                            <option value="sky">สีฟ้ามหาสมุทร (Ocean Sky - สะอาดตา)</option>
+                            <option value="rose">สีชมพูโรส (Modern Rose - อบอุ่น)</option>
+                            <option value="teal">สีเขียวมิ้นต์ (Teal Cyan - ชัดเจน)</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-heading font-bold text-slate-800 text-xs mb-1">
+                        ลิงก์รูปไอคอนกำหนดเอง (เว้นว่างไว้เพื่อใช้ไอคอนสมจริงของระบบ / รองรับลิงก์ Google Drive):
+                    </label>
+                    <input type="text" id="categoryCustomIconUrlInput" placeholder="https://... (ถ้ามี)" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm">
+                </div>
+                <div class="flex justify-end gap-2.5 pt-3 border-t border-slate-200">
+                    <button type="button" onclick="closeServiceCategoryModal()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-heading font-bold text-sm">ยกเลิก</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-heading font-bold text-sm shadow">บันทึกหัวข้อบริการ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- =================================================================== -->
+    <!-- MODAL 2: ADD / EDIT STEP MODAL (จัดการขั้นตอน อัปโหลดเสียง แนบรูปภาพ)   -->
+    <!-- =================================================================== -->
+    <div id="stepEditorModal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-300 max-w-3xl w-full overflow-hidden my-8">
+            
+            <div class="bg-gov-navy text-white px-6 py-4 flex items-center justify-between border-b-4 border-amber-400">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-pen-to-square text-amber-400 text-xl"></i>
+                    <h3 id="modalEditorTitle" class="font-heading font-bold text-lg sm:text-xl">
+                        แก้ไขข้อมูลขั้นตอนการให้บริการ
+                    </h3>
+                </div>
+                <button onclick="closeStepEditorModal()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-rose-600 text-white flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="stepEditorForm" onsubmit="saveStepFromModal(event)" class="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
+                <input type="hidden" id="editStepIndex" value="-1">
+
+                <!-- Row 1: Step Name & Service Point -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-heading font-bold text-slate-800 text-sm mb-1">
+                            1. ชื่อขั้นตอนการให้บริการ <span class="text-rose-600">*</span>
+                        </label>
+                        <input type="text" id="formStepTitle" required placeholder="เช่น ตรวจเอกสารและรับบัตรคิว" class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 focus:border-gov-blue focus:outline-none font-medium">
+                    </div>
+                    <div>
+                        <label class="block font-heading font-bold text-slate-800 text-sm mb-1">
+                            2. จุดให้บริการ / ช่องบริการ <span class="text-rose-600">*</span>
+                        </label>
+                        <input type="text" id="formStepLocation" required placeholder="เช่น จุดบริการที่ 1 : โต๊ะคัดกรองด้านหน้า" class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 focus:border-gov-blue focus:outline-none font-medium">
+                    </div>
+                </div>
+
+                <!-- Row 2: Expected Document/Output & Hidden Status -->
+                <div>
+                    <label class="block font-heading font-bold text-slate-800 text-sm mb-1">
+                        3. สิ่งที่ได้รับในขั้นตอนนี้ / สถานะที่จะได้รับ <span class="text-rose-600">*</span>
+                    </label>
+                    <input type="text" id="formStepResultDoc" required placeholder="เช่น ได้รับบัตรคิว และชุดคำขอที่ตรวจสอบแล้ว" class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 focus:border-gov-blue focus:outline-none font-medium">
+                    <input type="hidden" id="formStepStatus" value="ดำเนินการตามขั้นตอน">
+                </div>
+
+                <!-- Row 3: Step Description -->
+                <div>
+                    <label class="block font-heading font-bold text-slate-800 text-sm mb-1">
+                        4. คำอธิบายสั้นๆ เข้าใจง่าย (ใช้แสดงบนหน้าจอและใช้อ่านออกเสียงอัตโนมัติ) <span class="text-rose-600">*</span>
+                    </label>
+                    <textarea id="formStepDescription" rows="3" required placeholder="เขียนคำอธิบายกระชับ ชัดเจน สำหรับผู้สูงอายุ..." class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 focus:border-gov-blue focus:outline-none font-medium"></textarea>
+                </div>
+
+                <!-- Row 4: Image Link & Image Upload -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                    <label class="font-heading font-bold text-gov-navy text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-image text-gov-blue"></i>
+                        <span>5. แนบลิงก์รูปภาพของกระบวนงาน หรือ ภาพสถานะที่ได้ (รองรับลิงก์ Google Drive)</span>
+                    </label>
+
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                        <div class="md:col-span-8 space-y-2.5">
+                            <input type="text" id="formStepImageUrl" oninput="updateModalImagePreview(this.value)" placeholder="วางลิงก์รูปภาพ (https://... หรือลิงก์ Google Drive)" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:border-gov-blue focus:outline-none">
+
+                            <div class="flex flex-wrap items-center gap-2">
+                                <label class="cursor-pointer px-3.5 py-2 rounded-xl bg-gov-blue hover:bg-blue-800 text-white font-heading font-bold text-xs flex items-center gap-1.5 shadow-sm transition">
+                                    <i class="fa-solid fa-upload"></i>
+                                    <span>อัปโหลดรูปภาพจากเครื่อง</span>
+                                    <input type="file" accept="image/*" class="hidden" onchange="handleStepImageFileUpload(event)">
+                                </label>
+                                <button type="button" onclick="selectPresetIllustration('queue')" class="px-2.5 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-semibold">ภาพรับบัตรคิว</button>
+                                <button type="button" onclick="selectPresetIllustration('document')" class="px-2.5 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-semibold">ภาพตรวจเอกสาร</button>
+                                <button type="button" onclick="selectPresetIllustration('counter')" class="px-2.5 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-semibold">ภาพช่องบริการ</button>
+                                <button type="button" onclick="selectPresetIllustration('complete')" class="px-2.5 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-semibold">ภาพเสร็จสิ้น</button>
+                            </div>
+
+                            <input type="text" id="formStepImageCaption" placeholder="คำบรรยายใต้ภาพ เช่น จุดคัดกรองและรับบัตรคิว" class="w-full px-3.5 py-1.5 rounded-xl border border-slate-300 text-sm">
+                        </div>
+
+                        <div class="md:col-span-4 flex flex-col items-center">
+                            <div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-white border border-slate-300 flex items-center justify-center">
+                                <img id="modalImagePreview" src="" alt="Preview" class="w-full h-full object-cover" onerror="handleImageFallback(this)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 5: Audio Upload & Voice Recorder -->
+                <div class="bg-amber-50/90 p-4 rounded-2xl border border-amber-300 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <label class="font-heading font-bold text-amber-950 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-microphone-lines text-amber-600"></i>
+                            <span>6. เสียงอธิบายขั้นตอน (อัปโหลดไฟล์เสียง / อัดเสียง / เสียงอัตโนมัติ)</span>
+                        </label>
+                        <span id="modalAudioStatusBadge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-200 text-amber-900">
+                            ใช้เสียงพูดภาษาไทยอัตโนมัติ (TTS)
+                        </span>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <label class="cursor-pointer px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-heading font-bold text-xs flex items-center gap-1.5 shadow-sm transition">
+                            <i class="fa-solid fa-file-audio"></i>
+                            <span>อัปโหลดไฟล์เสียง (.mp3, .wav)</span>
+                            <input type="file" id="formAudioFileInput" accept="audio/*" class="hidden" onchange="handleAudioFileUpload(event)">
+                        </label>
+
+                        <button type="button" id="recordVoiceBtn" onclick="toggleVoiceRecording()" class="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-heading font-bold text-xs flex items-center gap-1.5 shadow-sm transition">
+                            <i class="fa-solid fa-microphone"></i>
+                            <span id="recordVoiceBtnText">อัดเสียงผ่านไมค์</span>
+                        </button>
+
+                        <button type="button" onclick="testModalAudio()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-heading font-bold text-xs flex items-center gap-1.5 shadow-sm transition">
+                            <i class="fa-solid fa-play"></i>
+                            <span>ทดลองฟังเสียง</span>
+                        </button>
+
+                        <button type="button" id="clearCustomAudioBtn" onclick="clearModalCustomAudio()" class="hidden px-3 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-heading font-bold text-xs flex items-center gap-1 transition">
+                            <i class="fa-solid fa-trash-can"></i>
+                            <span>ลบไฟล์เสียง</span>
+                        </button>
+                    </div>
+
+                    <div id="modalAudioPlayerContainer" class="hidden pt-1">
+                        <audio id="modalAudioPreviewPlayer" controls class="w-full h-9"></audio>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
+                    <button type="button" onclick="closeStepEditorModal()" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-heading font-bold text-sm">
+                        ยกเลิก
+                    </button>
+                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-gov-navy hover:bg-gov-navyLight text-white font-heading font-bold text-sm flex items-center gap-2 shadow-md">
+                        <i class="fa-solid fa-floppy-disk text-amber-400"></i>
+                        <span>บันทึกขั้นตอน</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- =================================================================== -->
+    <!-- MODAL 3: IMAGE ZOOM MODAL FOR ELDERLY                               -->
+    <!-- =================================================================== -->
+    <div id="imageZoomModal" onclick="closeImageZoomModal()" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div onclick="event.stopPropagation()" class="bg-white rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl border-2 border-amber-400">
+            <div class="bg-gov-navy text-white px-6 py-4 flex items-center justify-between">
+                <h3 id="zoomModalTitle" class="font-heading font-bold elderly-scale-base">ภาพประกอบขั้นตอน</h3>
+                <button onclick="closeImageZoomModal()" class="px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-heading font-bold text-sm flex items-center gap-1.5">
+                    <i class="fa-solid fa-xmark"></i>
+                    <span>ปิดภาพ</span>
+                </button>
+            </div>
+            <div class="p-4 bg-slate-900 flex items-center justify-center max-h-[70vh] overflow-hidden">
+                <img id="zoomModalImg" src="" alt="ภาพขยาย" class="max-h-[65vh] w-auto object-contain rounded-xl">
+            </div>
+            <div class="p-4 bg-amber-50 text-center font-heading font-bold text-slate-900 elderly-scale-sm" id="zoomModalCaption"></div>
+        </div>
+    </div>
+
+
+    <!-- =================================================================== -->
+    <!-- MODAL 4: COMPLETION SUMMARY MODAL                                   -->
+    <!-- =================================================================== -->
+    <div id="overviewModal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border-2 border-emerald-500 text-center p-6 sm:p-8 space-y-5">
+            <div class="w-20 h-20 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-4xl mx-auto shadow-inner">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="space-y-2">
+                <h3 id="overviewModalTitle" class="font-heading font-bold text-2xl text-gov-navy">
+                    ครบทุกขั้นตอนการรับบริการแล้ว
+                </h3>
+                <p class="text-slate-600 elderly-scale-sm">
+                    ท่านสามารถกดเริ่มดูตั้งแต่ขั้นตอนที่ 1 ใหม่ หรือเลือกงานบริการอื่นได้ตามต้องการ
+                </p>
+            </div>
+            <div id="overviewModalList" class="hidden"></div>
+            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                <button onclick="restartServiceFromStep1()" class="flex-1 py-3.5 px-5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-heading font-bold flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>กลับไปขั้นตอนที่ 1</span>
+                </button>
+                <button onclick="closeOverviewModal()" class="flex-1 py-3.5 px-5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-heading font-bold shadow-md">
+                    ตกลง / เข้าใจแล้ว
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= TOAST NOTIFICATION ================= -->
+    <div id="toastNotification" class="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-50 hidden transform transition-all duration-300">
+        <div class="bg-gov-navy text-white px-5 py-3.5 rounded-2xl shadow-2xl border-2 border-amber-400 flex items-center gap-3">
+            <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-xl"></i>
+            <span id="toastMessage" class="font-heading font-semibold text-sm sm:text-base">บันทึกข้อมูลเรียบร้อยแล้ว</span>
+        </div>
+    </div>
+
+
+    <!-- =================================================================== -->
+    <!-- JAVASCRIPT LOGIC                                                    -->
+    <!-- =================================================================== -->
+    <script>
+        // --- 0. GOOGLE DRIVE LINK CONVERTER & OFFICIAL LOGO FALLBACK ---
+        const DEFAULT_DRIVE_LOGO_LINK = 'https://drive.google.com/file/d/100u882HByJhQSS5kI6TbUcXcMOJAMt74/view?usp=drive_link';
+        const DEFAULT_DRIVE_FILE_ID = '100u882HByJhQSS5kI6TbUcXcMOJAMt74';
+
+        function extractGoogleDriveFileId(url) {
+            if (!url || typeof url !== 'string') return null;
+            const match1 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+            if (match1 && match1[1]) return match1[1];
+            const match2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+            if (match2 && match2[1]) return match2[1];
+            const match3 = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+            if (match3 && match3[1] && url.includes(' google')) return match3[1];
+            return null;
+        }
+
+        function resolveDirectImageUrl(url) {
+            if (!url || typeof url !== 'string') return '';
+            const trimmed = url.trim();
+            const driveId = extractGoogleDriveFileId(trimmed);
+            if (driveId) {
+                return `https://drive.google.com/thumbnail?id=${driveId}&sz=w600`;
+            }
+            return trimmed;
+        }
+
+        function getOfficialFallbackLogoSVG() {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+                <defs>
+                    <linearGradient id="goldG" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#FDE047"/>
+                        <stop offset="50%" stop-color="#F59E0B"/>
+                        <stop offset="100%" stop-color="#B45309"/>
+                    </linearGradient>
+                </defs>
+                <circle cx="60" cy="60" r="56" fill="#0B2239" stroke="url(#goldG)" stroke-width="5"/>
+                <circle cx="60" cy="60" r="46" fill="none" stroke="#FDE68A" stroke-width="1.5" stroke-dasharray="4 3"/>
+                <path d="M60 22 L88 42 L82 42 L82 82 L38 82 L38 42 L32 42 Z" fill="url(#goldG)"/>
+                <rect x="46" y="52" width="10" height="30" rx="2" fill="#0B2239"/>
+                <rect x="64" y="52" width="10" height="30" rx="2" fill="#0B2239"/>
+                <rect x="30" y="84" width="60" height="8" rx="4" fill="#FDE047"/>
+            </svg>`;
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        }
+
+        function handleLogoFallback(imgEl) {
+            const currentSrc = imgEl.src || '';
+            const driveId = extractGoogleDriveFileId(logoRawUrl) || DEFAULT_DRIVE_FILE_ID;
+            if (!imgEl.dataset.triedLh3) {
+                imgEl.dataset.triedLh3 = '1';
+                imgEl.src = `https://lh3.googleusercontent.com/d/${driveId}`;
+            } else {
+                imgEl.onerror = null;
+                imgEl.src = getOfficialFallbackLogoSVG();
+            }
+        }
+
+        // --- 1. REALISTIC LARGE 3D-STYLE MULTI-COLOR SVG ILLUSTRATIONS FOR SERVICE CARDS ---
+        function getRealisticServiceCardIllustration(iconKey, customUrl) {
+            if (customUrl && customUrl.trim() !== '') {
+                const resolved = resolveDirectImageUrl(customUrl);
+                return `<img src="${resolved}" alt="ไอคอนบริการ" class="w-16 h-16 sm:w-20 sm:h-20 object-contain drop-shadow-md" onerror="this.style.display='none'">`;
+            }
+
+            const illustrations = {
+                // 1. ซื้อขาย / โอน / ให้ที่ดิน (โฉนดที่ดินครุฑแดง + บ้านทองคำ + มือส่งมอบ)
+                transfer: `<svg viewBox="0 0 96 96" class="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="14" y="8" width="52" height="68" rx="8" fill="#FFFFFF" stroke="#047857" stroke-width="3"/>
+                    <rect x="20" y="14" width="40" height="56" rx="4" fill="#ECFDF5"/>
+                    <circle cx="40" cy="25" r="7" fill="#DC2626"/>
+                    <path d="M35 25 L40 19 L45 25 L42 29 L38 29 Z" fill="#FCA5A5"/>
+                    <rect x="26" y="36" width="28" height="4" rx="2" fill="#059669"/>
+                    <rect x="26" y="44" width="22" height="3.5" rx="1.75" fill="#34D399"/>
+                    <rect x="26" y="51" width="26" height="3.5" rx="1.75" fill="#34D399"/>
+                    <!-- 3D House Badge -->
+                    <circle cx="66" cy="64" r="22" fill="#FEF3C7" stroke="#F59E0B" stroke-width="3"/>
+                    <path d="M51 64 L66 50 L81 64" stroke="#B45309" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M55 62 V76 H77 V62" fill="#FBBF24" stroke="#B45309" stroke-width="2.5"/>
+                    <rect x="63" y="67" width="6" height="9" rx="1" fill="#78350F"/>
+                    <circle cx="24" cy="64" r="7" fill="#10B981"/>
+                    <path d="M21 64 L23.5 66.5 L28 61.5" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>`,
+
+                // 2. รับมรดกที่ดิน (ครอบครัว + โฉนดมรดก + บ้าน)
+                inheritance: `<svg viewBox="0 0 96 96" class="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="12" y="14" width="54" height="66" rx="8" fill="#FFFFFF" stroke="#4338CA" stroke-width="3"/>
+                    <rect x="18" y="20" width="42" height="54" rx="5" fill="#EEF2FF"/>
+                    <!-- Family Tree / Generations -->
+                    <circle cx="39" cy="31" r="7" fill="#F59E0B" stroke="#B45309" stroke-width="2"/>
+                    <path d="M39 38 V45 M27 45 H51 M27 45 V50 M51 45 V50" stroke="#4F46E5" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="27" cy="55" r="5.5" fill="#6366F1"/>
+                    <circle cx="51" cy="55" r="5.5" fill="#8B5CF6"/>
+                    <!-- Golden Seal & Heart Badge -->
+                    <circle cx="68" cy="64" r="20" fill="#F5F3FF" stroke="#7C3AED" stroke-width="3"/>
+                    <path d="M68 74 C68 74 56 66 56 59 C56 54.5 60 52 63.5 54 C65.8 55.2 68 57.5 68 57.5 C68 57.5 70.2 55.2 72.5 54 C76 52 80 54.5 80 59 C80 66 68 74 68 74 Z" fill="#EC4899" stroke="#BE185D" stroke-width="2"/>
+                    <circle cx="39" cy="67" r="4" fill="#10B981"/>
+                </svg>`,
+
+                // 3. จำนอง / ไถ่ถอนจำนอง (อาคารธนาคาร 3 มิติ + เหรียญทอง + โล่สัญญา)
+                mortgage: `<svg viewBox="0 0 96 96" class="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Bank Building -->
+                    <path d="M14 36 L44 16 L74 36 Z" fill="#F59E0B" stroke="#B45309" stroke-width="3" stroke-linejoin="round"/>
+                    <rect x="18" y="36" width="52" height="7" rx="2" fill="#FDE68A" stroke="#B45309" stroke-width="2.5"/>
+                    <rect x="23" y="43" width="8" height="26" rx="2" fill="#FFFFFF" stroke="#D97706" stroke-width="2.5"/>
+                    <rect x="40" y="43" width="8" height="26" rx="2" fill="#FFFFFF" stroke="#D97706" stroke-width="2.5"/>
+                    <rect x="57" y="43" width="8" height="26" rx="2" fill="#FFFFFF" stroke="#D97706" stroke-width="2.5"/>
+                    <rect x="14" y="69" width="60" height="9" rx="3" fill="#B45309"/>
+                    <!-- Shield & Coin Badge -->
+                    <path d="M68 46 L86 52 V65 C86 75 77 82 68 85 C59 82 50 75 50 65 V52 L68 46 Z" fill="#10B981" stroke="#065F46" stroke-width="3"/>
+                    <circle cx="68" cy="65" r="9" fill="#FBBF24" stroke="#FFFFFF" stroke-width="2"/>
+                    <path d="M64 65 L67 68 L73 62" stroke="#065F46" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>`,
+
+                // 4. รังวัดสอบเขต / แบ่งแยก (กล้องสำรวจรังวัด Theodolite บนขาตั้ง + แปลงที่ดิน + หมุดแดง)
+                survey: `<svg viewBox="0 0 96 96" class="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Land Plot Grid Background -->
+                    <rect x="12" y="48" width="72" height="34" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="2.5"/>
+                    <path d="M36 48 L28 82 M60 48 L68 82 M14 64 H82" stroke="#38BDF8" stroke-width="2" stroke-dasharray="4 3"/>
+                    <!-- Survey Tripod & Theodolite Camera -->
+                    <path d="M46 42 L26 84 M46 42 L66 84 M46 42 V84" stroke="#B45309" stroke-width="4" stroke-linecap="round"/>
+                    <rect x="33" y="20" width="26" height="22" rx="5" fill="#F59E0B" stroke="#78350F" stroke-width="3"/>
+                    <circle cx="46" cy="31" r="6" fill="#0284C7" stroke="#FFFFFF" stroke-width="2.5"/>
+                    <!-- Red Location Pin Marker -->
+                    <path d="M74 16 C67.5 16 62 21.2 62 27.8 C62 36.5 74 48 74 48 C74 48 86 36.5 86 27.8 C86 21.2 80.5 16 74 16 Z" fill="#EF4444" stroke="#991B1B" stroke-width="2.5"/>
+                    <circle cx="74" cy="27" r="4.5" fill="#FFFFFF"/>
+                </svg>`,
+
+                // 5. ค้นหารูปแปลงที่ดิน / ตรวจหลักทรัพย์ / คัดสำเนา
+                search: `<svg viewBox="0 0 96 96" class="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="16" y="12" width="50" height="64" rx="8" fill="#FFFFFF" stroke="#0D9488" stroke-width="3"/>
+                    <rect x="24" y="22" width="34" height="22" rx="4" fill="#CCFBF1" stroke="#14B8A6" stroke-width="2"/>
+                    <rect x="24" y="52" width="26" height="4" rx="2" fill="#0F766E"/>
+                    <rect x="24" y="60" width="20" height="4" rx="2" fill="#5EEAD4"/>
+                    <circle cx="62" cy="58" r="16" fill="#FEF08A" fill-opacity="0.85" stroke="#0F172A" stroke-width="3.5"/>
+                    <path d="M74 70 L84 80" stroke="#0F172A" stroke-width="6" stroke-linecap="round"/>
+                </svg>`,
+
+                // 6. ขอหนังสือรับรองราคาประเมิน
+                valuation: `<svg viewBox="0 0 96 96" class="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="16" y="10" width="52" height="68" rx="8" fill="#FFFFFF" stroke="#E11D48" stroke-width="3"/>
+                    <rect x="24" y="22" width="36" height="6" rx="3" fill="#FDA4AF"/>
+                    <rect x="24" y="34" width="28" height="5" rx="2.5" fill="#FECDD3"/>
+                    <circle cx="64" cy="60" r="18" fill="#FBBF24" stroke="#B45309" stroke-width="3"/>
+                    <path d="M58 76 L54 88 L64 83 L74 88 L70 76" fill="#E11D48"/>
+                    <path d="M57 60 L62 65 L72 55" stroke="#78350F" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>`,
+
+                // 7. แจ้งเอกสารสิทธิ์สูญหาย / ขอใบแทนโฉนด
+                lostdeed: `<svg viewBox="0 0 96 96" class="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="14" y="14" width="46" height="60" rx="7" fill="#F1F5F9" stroke="#64748B" stroke-width="2.5" stroke-dasharray="5 3"/>
+                    <rect x="32" y="22" width="48" height="62" rx="8" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+                    <circle cx="56" cy="45" r="11" fill="#DBEAFE"/>
+                    <path d="M51 45 L55 49 L62 41" stroke="#1D4ED8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <rect x="42" y="64" width="28" height="5" rx="2.5" fill="#3B82F6"/>
+                </svg>`,
+
+                // 8. บริการผู้สูงอายุ / ปรึกษากฎหมายที่ดิน
+                consult: `<svg viewBox="0 0 96 96" class="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="48" cy="48" r="36" fill="#FEF3C7" stroke="#F59E0B" stroke-width="3"/>
+                    <circle cx="48" cy="36" r="11" fill="#D97706"/>
+                    <path d="M28 68 C28 56 37 50 48 50 C59 50 68 56 68 68" fill="#059669"/>
+                    <circle cx="72" cy="28" r="12" fill="#10B981" stroke="#FFFFFF" stroke-width="2.5"/>
+                    <path d="M67 28 H77 M72 23 V33" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+                </svg>`
+            };
+
+            return illustrations[iconKey] || illustrations.transfer;
+        }
+
+        // Color Theme Palettes for Service Cards (Distinct Background, Border, Icon Box, and Active Ring)
+        function getServiceCardThemeClasses(themeKey, isSelected) {
+            const palettes = {
+                emerald: {
+                    unselectedCard: 'bg-gradient-to-br from-emerald-50 via-teal-50/90 to-emerald-100/80 border-2 border-emerald-300 hover:border-emerald-500 text-emerald-950 shadow-sm',
+                    selectedCard: 'bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 border-4 border-amber-400 text-white shadow-xl ring-4 ring-emerald-500/30',
+                    iconWrapUnselected: 'bg-white border-2 border-emerald-200 shadow-inner',
+                    iconWrapSelected: 'bg-white border-2 border-amber-300 shadow-lg',
+                    badgeUnselected: 'bg-emerald-200/80 text-emerald-900',
+                    badgeSelected: 'bg-amber-400 text-slate-950',
+                    descUnselected: 'text-emerald-800',
+                    descSelected: 'text-emerald-100',
+                    label: 'สีเขียวหยก (Emerald)'
+                },
+                indigo: {
+                    unselectedCard: 'bg-gradient-to-br from-indigo-50 via-violet-50/90 to-purple-100/80 border-2 border-indigo-300 hover:border-indigo-500 text-indigo-950 shadow-sm',
+                    selectedCard: 'bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 border-4 border-amber-400 text-white shadow-xl ring-4 ring-indigo-500/30',
+                    iconWrapUnselected: 'bg-white border-2 border-indigo-200 shadow-inner',
+                    iconWrapSelected: 'bg-white border-2 border-amber-300 shadow-lg',
+                    badgeUnselected: 'bg-indigo-200/80 text-indigo-900',
+                    badgeSelected: 'bg-amber-400 text-slate-950',
+                    descUnselected: 'text-indigo-800',
+                    descSelected: 'text-indigo-100',
+                    label: 'สีม่วงคราม (Indigo)'
+                },
+                amber: {
+                    unselectedCard: 'bg-gradient-to-br from-amber-50 via-orange-50/90 to-yellow-100/80 border-2 border-amber-300 hover:border-amber-500 text-amber-950 shadow-sm',
+                    selectedCard: 'bg-gradient-to-br from-amber-600 via-orange-600 to-red-700 border-4 border-yellow-300 text-white shadow-xl ring-4 ring-amber-500/30',
+                    iconWrapUnselected: 'bg-white border-2 border-amber-200 shadow-inner',
+                    iconWrapSelected: 'bg-white border-2 border-yellow-300 shadow-lg',
+                    badgeUnselected: 'bg-amber-200/80 text-amber-950',
+                    badgeSelected: 'bg-yellow-300 text-slate-950',
+                    descUnselected: 'text-amber-900',
+                    descSelected: 'text-amber-100',
+                    label: 'สีส้มทอง (Amber)'
+                },
+                sky: {
+                    unselectedCard: 'bg-gradient-to-br from-sky-50 via-cyan-50/90 to-blue-100/80 border-2 border-sky-300 hover:border-sky-500 text-sky-950 shadow-sm',
+                    selectedCard: 'bg-gradient-to-br from-sky-600 via-blue-700 to-indigo-800 border-4 border-amber-400 text-white shadow-xl ring-4 ring-sky-500/30',
+                    iconWrapUnselected: 'bg-white border-2 border-sky-200 shadow-inner',
+                    iconWrapSelected: 'bg-white border-2 border-amber-300 shadow-lg',
+                    badgeUnselected: 'bg-sky-200/80 text-sky-900',
+                    badgeSelected: 'bg-amber-400 text-slate-950',
+                    descUnselected: 'text-sky-800',
+                    descSelected: 'text-sky-100',
+                    label: 'สีฟ้ามหาสมุทร (Sky)'
+                },
+                rose: {
+                    unselectedCard: 'bg-gradient-to-br from-rose-50 via-pink-50/90 to-rose-100/80 border-2 border-rose-300 hover:border-rose-500 text-rose-950 shadow-sm',
+                    selectedCard: 'bg-gradient-to-br from-rose-600 via-pink-700 to-rose-800 border-4 border-amber-400 text-white shadow-xl ring-4 ring-rose-500/30',
+                    iconWrapUnselected: 'bg-white border-2 border-rose-200 shadow-inner',
+                    iconWrapSelected: 'bg-white border-2 border-amber-300 shadow-lg',
+                    badgeUnselected: 'bg-rose-200/80 text-rose-900',
+                    badgeSelected: 'bg-amber-400 text-slate-950',
+                    descUnselected: 'text-rose-800',
+                    descSelected: 'text-rose-100',
+                    label: 'สีชมพูโรส (Rose)'
+                },
+                teal: {
+                    unselectedCard: 'bg-gradient-to-br from-teal-50 via-cyan-50/90 to-teal-100/80 border-2 border-teal-300 hover:border-teal-500 text-teal-950 shadow-sm',
+                    selectedCard: 'bg-gradient-to-br from-teal-600 via-teal-700 to-slate-800 border-4 border-amber-400 text-white shadow-xl ring-4 ring-teal-500/30',
+                    iconWrapUnselected: 'bg-white border-2 border-teal-200 shadow-inner',
+                    iconWrapSelected: 'bg-white border-2 border-amber-300 shadow-lg',
+                    badgeUnselected: 'bg-teal-200/80 text-teal-900',
+                    badgeSelected: 'bg-amber-400 text-slate-950',
+                    descUnselected: 'text-teal-800',
+                    descSelected: 'text-teal-100',
+                    label: 'สีเขียวมิ้นต์ (Teal)'
+                }
+            };
+
+            return palettes[themeKey] || palettes.emerald;
+        }
+
+        // --- 2. BUILT-IN CLEAR SVG ILLUSTRATIONS FOR GOVERNMENT SERVICE STEPS ---
+        function generateStepSVGDataURI(type, stepNo, title, badgeText) {
+            const palettes = {
+                queue: { bg1: '#F8FAFC', bg2: '#EFF6FF', primary: '#0B2239', accent: '#D97706', icon: 'รับบัตรคิวบริการ' },
+                document: { bg1: '#FFFBEB', bg2: '#FEF3C7', primary: '#1E3A8A', accent: '#059669', icon: 'ตรวจสอบเอกสารครบถ้วน' },
+                counter: { bg1: '#F0FDF4', bg2: '#DCFCE7', primary: '#065F46', accent: '#1E40AF', icon: 'ช่องบริการประชาชน' },
+                complete: { bg1: '#ECFDF5', bg2: '#D1FAE5', primary: '#047857', accent: '#D97706', icon: 'ดำเนินการเสร็จสมบูรณ์' }
+            };
+            const p = palettes[type] || palettes.queue;
+            const safeTitle = (title || 'ขั้นตอนการรับบริการ').substring(0, 28);
+            const safeBadge = (badgeText || p.icon).substring(0, 32);
+
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" width="640" height="480">
+                <rect width="640" height="480" rx="24" fill="${p.bg2}"/>
+                <rect x="20" y="20" width="600" height="440" rx="20" fill="#FFFFFF" stroke="${p.primary}" stroke-width="3"/>
+                <rect x="20" y="20" width="600" height="84" rx="18" fill="${p.primary}"/>
+                <circle cx="72" cy="62" r="26" fill="#FBBF24"/>
+                <text x="72" y="71" font-family="Prompt, Sarabun, sans-serif" font-size="26" font-weight="800" fill="#0F172A" text-anchor="middle">${stepNo}</text>
+                <text x="116" y="56" font-family="Prompt, Sarabun, sans-serif" font-size="18" font-weight="600" fill="#FDE68A">ภาพประกอบขั้นตอนที่ ${stepNo}</text>
+                <text x="116" y="84" font-family="Prompt, Sarabun, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">${safeTitle}</text>
+
+                <rect x="60" y="135" width="520" height="215" rx="20" fill="${p.bg1}" stroke="#CBD5E1" stroke-width="2"/>
+                <circle cx="195" cy="242" r="58" fill="#FFFFFF" stroke="${p.accent}" stroke-width="4"/>
+                <text x="195" y="232" font-family="Prompt, Sarabun, sans-serif" font-size="18" font-weight="700" fill="#475569" text-anchor="middle">จุดบริการ</text>
+                <text x="195" y="264" font-family="Prompt, Sarabun, sans-serif" font-size="26" font-weight="800" fill="${p.primary}" text-anchor="middle">จุดที่ ${stepNo}</text>
+
+                <path d="M275 242 L330 242 M315 227 L333 242 L315 257" stroke="${p.primary}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+                <rect x="355" y="175" width="190" height="135" rx="16" fill="#FFFFFF" stroke="#059669" stroke-width="3"/>
+                <circle cx="450" cy="215" r="20" fill="#D1FAE5"/>
+                <path d="M441 215 L448 222 L461 208" stroke="#059669" stroke-width="4" stroke-linecap="round" fill="none"/>
+                <text x="450" y="260" font-family="Prompt, Sarabun, sans-serif" font-size="17" font-weight="700" fill="#065F46" text-anchor="middle">สถานะที่จะได้รับ</text>
+                <text x="450" y="286" font-family="Prompt, Sarabun, sans-serif" font-size="15" font-weight="600" fill="#047857" text-anchor="middle">ถูกต้องครบถ้วน</text>
+
+                <rect x="60" y="376" width="520" height="52" rx="26" fill="${p.accent}"/>
+                <text x="320" y="409" font-family="Prompt, Sarabun, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">${safeBadge}</text>
+            </svg>`;
+
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        }
+
+        // --- 3. DEFAULT OFFICIAL DATA FOR MAE THA LAND SMART GUIDE ---
+        /*__BAKED_DEFAULT_CONFIG_START__*/
+        function getDefaultAppConfig() {
+            return {
+                appTitle: 'ระบบผู้ช่วยนำทางอัจฉริยะ : Mae Tha Land Smart Guide',
+                agencyName: 'สำนักงานที่ดินจังหวัดลำปาง สาขาแม่ทะ (บริการประชาชนและผู้สูงอายุ)',
+                logoRawUrl: DEFAULT_DRIVE_LOGO_LINK,
+                selectorHeading: 'เลือกงานบริการที่ท่านต้องการติดต่อ:',
+                services: [
+                    {
+                        id: 'land-transfer',
+                        name: 'ซื้อขาย / โอน / ให้ที่ดิน',
+                        icon: 'transfer',
+                        theme: 'emerald',
+                        customIconUrl: '',
+                        shortDesc: 'โอนกรรมสิทธิ์ที่ดิน ซื้อขาย หรือยกให้บุตรหลาน',
+                        steps: [
+                            {
+                                title: 'ตรวจสอบเอกสารและรับบัตรคิว',
+                                location: 'จุดที่ 1 : โต๊ะประชาสัมพันธ์และคัดกรองด้านหน้า',
+                                status: 'จุดเริ่มต้น',
+                                resultDoc: 'ได้รับบัตรคิวบริการ และตรวจสอบเอกสารครบถ้วน',
+                                description: 'ยื่นโฉนดที่ดินตัวจริง บัตรประชาชน และทะเบียนบ้าน ให้เจ้าหน้าที่ช่วยตรวจสอบความครบถ้วน และรับบัตรคิวสำหรับผู้สูงอายุค่ะ',
+                                imageUrl: generateStepSVGDataURI('queue', 1, 'ตรวจเอกสารและรับบัตรคิว', 'ได้รับบัตรคิวและตรวจเอกสาร'),
+                                imageCaption: 'จุดที่ 1 โต๊ะตรวจเอกสารและรับบัตรคิวด้านหน้า',
+                                audioDataUrl: null,
+                                audioType: 'tts'
+                            },
+                            {
+                                title: 'สอบสวนสิทธิและจัดทำคำขอจดทะเบียน',
+                                location: 'จุดที่ 2 : ช่องบริการเจ้าหน้าที่ชำนาญการ',
+                                status: 'กำลังดำเนินการ',
+                                resultDoc: 'เอกสารคำขอจดทะเบียนและใบประเมินค่าธรรมเนียม',
+                                description: 'เมื่อถึงคิวของท่าน เชิญที่ช่องบริการ เจ้าหน้าที่จะจัดพิมพ์เอกสารสัญญาให้ ท่านเพียงตรวจสอบความถูกต้องและลงลายมือชื่อค่ะ',
+                                imageUrl: generateStepSVGDataURI('document', 2, 'จัดทำคำขอและลงลายมือชื่อ', 'เจ้าหน้าที่พิมพ์สัญญาและใบประเมิน'),
+                                imageCaption: 'จุดที่ 2 เจ้าหน้าที่จัดทำคำขอและอำนวยความสะดวกให้ผู้สูงอายุ',
+                                audioDataUrl: null,
+                                audioType: 'tts'
+                            },
+                            {
+                                title: 'ชำระค่าธรรมเนียมและรับใบเสร็จราชการ',
+                                location: 'จุดที่ 3 : ช่องชำระเงิน (ฝ่ายการเงิน)',
+                                status: 'กำลังดำเนินการ',
+                                resultDoc: 'ใบเสร็จรับเงินของทางราชการฉบับจริง',
+                                description: 'นำใบสั่งชำระเงินไปที่ช่องการเงิน ชำระได้ทั้งเงินสดหรือสแกนคิวอาร์โค้ด พร้อมรับใบเสร็จรับเงินฉบับจริงค่ะ',
+                                imageUrl: generateStepSVGDataURI('counter', 3, 'ชำระค่าธรรมเนียมที่ช่องการเงิน', 'ได้รับใบเสร็จรับเงินฉบับจริง'),
+                                imageCaption: 'จุดที่ 3 ชำระค่าธรรมเนียมและรับใบเสร็จรับเงิน',
+                                audioDataUrl: null,
+                                audioType: 'tts'
+                            },
+                            {
+                                title: 'รับโฉนดที่ดินและเอกสารสำคัญคืน',
+                                location: 'จุดที่ 4 : ช่องส่งมอบโฉนดที่ดิน (เสร็จสิ้น)',
+                                status: 'เสร็จสิ้นกระบวนงาน',
+                                resultDoc: 'ได้รับโฉนดที่ดินฉบับจริงและสัญญาที่จดทะเบียนเสร็จแล้ว',
+                                description: 'ขั้นตอนสุดท้าย รอเรียกชื่อเพื่อรับโฉนดที่ดินฉบับจริงและสัญญาคืน ตรวจสอบชื่อของท่านหลังโฉนด เป็นอันเสร็จเรียบร้อยค่ะ',
+                                imageUrl: generateStepSVGDataURI('complete', 4, 'รับโฉนดที่ดินและเอกสารคืน', 'เสร็จสิ้นขั้นตอนการรับบริการ'),
+                                imageCaption: 'จุดที่ 4 รับโฉนดที่ดินฉบับจริงคืน เสร็จสิ้นขั้นตอน',
+                                audioDataUrl: null,
+                                audioType: 'tts'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'land-inheritance',
+                        name: 'รับมรดกที่ดิน',
+                        icon: 'inheritance',
+                        theme: 'indigo',
+                        customIconUrl: '',
+                        shortDesc: 'ยื่นคำขอรับโอนมรดกที่ดินตามพินัยกรรมหรือทายาทโดยธรรม',
+                        steps: [
+                            {
+                                title: 'ตรวจเอกสารมรดกและรับบัตรคิว',
+                                location: 'จุดที่ 1 : โต๊ะคัดกรองงานทะเบียนมรดก',
+                                status: 'จุดเริ่มต้น',
+                                resultDoc: 'บัตรคิวและชุดเอกสารตรวจสอบทายาท',
+                                description: 'นำโฉนดที่ดิน ใบมรณบัตรเจ้ามรดก บัตรประชาชน และทะเบียนบ้านของทายาท ให้เจ้าหน้าที่ตรวจสอบและรับบัตรคิวค่ะ',
+                                imageUrl: generateStepSVGDataURI('queue', 1, 'ตรวจเอกสารมรดกและรับคิว', 'ได้รับบัตรคิวงานมรดก'),
+                                imageCaption: 'จุดที่ 1 ตรวจเอกสารมรดกและรับบัตรคิว',
+                                audioDataUrl: null,
+                                audioType: 'tts'
+                            },
+                            {
+                                title: 'สอบสวนทายาทและจัดทำประกาศมรดก 30 วัน',
+                                location: 'จุดที่ 2 : ช่องบริการจดทะเบียนสิทธิและนิติกรรม',
+                                status: 'กำลังดำเนินการ',
+                                resultDoc: 'ใบรับคำขอและหนังสือประกาศการขอรับมรดก',
+                                description: 'เจ้าหน้าที่สอบสวนสิทธิทายาท จัดทำคำขอและหนังสือประกาศการขอรับมรดกมีกำหนด 30 วัน ตามระเบียบราชการค่ะ',
+                                imageUrl: generateStepSVGDataURI('document', 2, 'จัดทำคำขอและประกาศมรดก', 'ได้รับใบรับคำขอและใบนัด'),
+                                imageCaption: 'จุดที่ 2 เจ้าหน้าที่จัดทำคำขอรับมรดก',
+                                audioDataUrl: null,
+                                audioType: 'tts'
+                            },
+                            {
+                                title: 'ชำระค่าคำขอและรับโฉนดมรดก (เมื่อครบกำหนด)',
+                                location: 'จุดที่ 3 : ช่องการเงินและส่งมอบโฉนด',
+                                status: 'เสร็จสิ้นกระบวนงาน',
+                                resultDoc: 'ใบเสร็จรับเงินและโฉนดที่ดินที่จดทะเบียนมรดกแล้ว',
+                                description: 'ชำระค่าธรรมเนียมที่ช่องการเงิน และเมื่อครบกำหนดประกาศไม่มีผู้คัดค้าน รับโฉนดที่ดินที่เปลี่ยนชื่อเป็นของทายาทเรียบร้อยค่ะ',
+                                imageUrl: generateStepSVGDataURI('complete', 3, 'ชำระค่าธรรมเนียมและรับโฉนด', 'จดทะเบียนโอนมรดกเสร็จสมบูรณ์'),
+                                imageCaption: 'จุดที่ 3 รับโฉนดที่ดินฉบับจริงคืน',
+                                audioDataUrl: null,
+                                audioType: 'tts'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'land-mortgage',
+                        name: 'จำนอง / ไถ่ถอนจำนอง',
+                        icon: 'mortgage',
+                        theme: 'amber',
+                        customIconUrl: '',
+                        shortDesc: 'จดทะเบียนจำนองเป็นประกัน หรือไถ่ถอนจำนองจากธนาคาร',
+                        steps: [
+                            {
+                                title: 'ตรวจเอกสารสัญญาจำนองหรือใบไถ่ถอน',
+                                location: 'จุดที่ 1 : โต๊ะประชาสัมพันธ์ด้านหน้า',
+                                status: 'จุดเริ่มต้น',
+                                resultDoc: 'ได้รับบัตรคิวด่วนและตรวจสอบหนังสือมอบอำนาจธนาคาร',
+                                description: 'ยื่นโฉนดที่ดินฉบับจริง บัตรประชาชน และเอกสารจากธนาคารหรือสถาบันการเงิน เพื่อรับบัตรคิวค่ะ',
+                                imageUrl: generateStepSVGDataURI('queue', 1, 'รับบัตรคิวจำนอง/ไถ่ถอน', 'ตรวจเอกสารธนาคารครบถ้วน'),
+                                imageCaption: 'จุดที่ 1 ตรวจเอกสารและรับบัตรคิว',
+                                audioDataUrl: null,
+                                audioType: 'tts'
+                            },
+                            {
+                                title: 'ลงลายมือชื่อในสัญญาจำนอง / บันทึกไถ่ถอน',
+                                location: 'จุดที่ 2 : ช่องบริการจดทะเบียนนิติกรรม',
+                                status: 'กำลังดำเนินการ',
+                                resultDoc: 'สัญญาจำนองหรือบันทึกไถ่ถอนจำนองหลังโฉนด',
+                                description: 'เจ้าหน้าที่จัดทำบันทึกสัญญา ท่านตรวจสอบยอดวงเงินหรือข้อความไถ่ถอนจำนอง แล้วลงลายมือชื่อต่อหน้าเจ้าหน้าที่ค่ะ',
+                                imageUrl: generateStepSVGDataURI('document', 2, 'ลงนามสัญญาต่อหน้าเจ้าหน้าที่', 'จัดทำสัญญาถูกต้องครบถ้วน'),
+                                imageCaption: 'จุดที่ 2 ลงลายมือชื่อในสัญญา',
+                                audioDataUrl: null,
+                                audioType: 'tts'
+                            },
+                            {
+                                title: 'ชำระค่าธรรมเนียมและรับโฉนดที่ดินคืน',
+                                location: 'จุดที่ 3 : ช่องการเงินและรับมอบโฉนด',
+                                status: 'เสร็จสิ้นกระบวนงาน',
+                                resultDoc: 'ได้รับโฉนดที่ดินฉบับจริงพร้อมใบเสร็จราชการ',
+                                description: 'ชำระค่าธรรมเนียมจำนองหรือไถ่ถอนจำนองที่ช่องการเงิน แล้วรอเรียกชื่อรับโฉนดที่ดินฉบับจริงคืนได้ทันทีค่ะ',
+                                imageUrl: generateStepSVGDataURI('complete', 3, 'รับโฉนดที่ดินและใบเสร็จ', 'ดำเนินการเสร็จเรียบร้อย'),
+                                imageCaption: 'จุดที่ 3 รับโฉนดที่ดินคืนเรียบร้อย',
+                                audioDataUrl: null,
+                                audioType: 'tts'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'land-survey',
+                        name: 'รังวัดสอบเขต / แบ่งแยก',
+                        icon: 'survey',
+                        theme: 'sky',
+                        customIconUrl: '',
+                        shortDesc: 'ยื่นคำขอรังวัดสอบเขต แบ่งแยก หรือรวมโฉนดที่ดิน',
+                        steps: [
+                            {
+                                title: 'ตรวจโฉนดที่ดินและรับคิวงานรังวัด',
+                                location: 'จุดที่ 1 : เคาน์เตอร์คัดกรองงานรังวัด',
+                                status: 'จุดเริ่มต้น',
+                                resultDoc: 'บัตรคิวงานรังวัดและตรวจสอบหลักฐานที่ดิน',
+                                description: 'นำโฉนดที่ดินตัวจริงและบัตรประชาชนมายื่นที่จุดคัดกรอง เพื่อรับบัตรคิวเข้ายื่นคำขอรังวัดที่ดินค่ะ',
+                                imageUrl: generateStepSVGDataURI('queue', 1, 'รับบัตรคิวงานรังวัดที่ดิน', 'ได้รับบัตรคิวฝ่ายรังวัด'),
+                                imageCaption: 'จุดที่ 1 รับบัตรคิวและตรวจเอกสารโฉนดที่ดิน',
+                                audioDataUrl: null,
+                                audioType: 'tts'
+                            },
+                            {
+                                title: 'ยื่นคำขอรังวัดและนัดหมายวันลงพื้นที่',
+                                location: 'จุดที่ 2 : ช่องบริการฝ่ายรังวัด',
+                                status: 'กำลังดำเนินการ',
+                                resultDoc: 'ใบนัดหมายวันเวลาที่ช่างรังวัดจะลงพื้นที่',
+                                description: 'แจ้งความประสงค์กับเจ้าหน้าที่ว่าจะสอบเขตหรือแบ่งแยกที่ดิน พร้อมกำหนดวันนัดหมายให้ช่างรังวัดลงพื้นที่จริงค่ะ',
+                                imageUrl: generateStepSVGDataURI('counter', 2, 'นัดหมายวันรังวัดที่ดิน', 'ได้รับใบนัดหมายช่างรังวัด'),
+                                imageCaption: 'จุดที่ 2 นัดหมายวันทำการรังวัดกับเจ้าหน้าที่',
+                                audioDataUrl: null,
+                                audioType: 'tts'
+                            },
+                            {
+                                title: 'วางเงินมัดจำค่ารังวัดและรับใบนัด',
+                                location: 'จุดที่ 3 : ช่องการเงินและรับใบนัด',
+                                status: 'เสร็จสิ้นกระบวนงาน',
+                                resultDoc: 'ใบเสร็จรับเงินมัดจำ และใบนัดหมายวันรังวัดที่ดิน',
+                                description: 'ชำระเงินมัดจำค่ารังวัดที่ช่องการเงิน รับใบเสร็จและใบนัดหมายเก็บไว้ เป็นอันเสร็จขั้นตอนในวันนี้ค่ะ',
+                                imageUrl: generateStepSVGDataURI('complete', 3, 'รับใบเสร็จและใบนัดรังวัด', 'เสร็จสิ้นการยื่นคำขอรังวัด'),
+                                imageCaption: 'จุดที่ 3 รับใบเสร็จและใบนัดหมายวันรังวัด',
+                                audioDataUrl: null,
+                                audioType: 'tts'
+                            }
+                        ]
+                    }
+                ]
+            };
+        }
+        /*__BAKED_DEFAULT_CONFIG_END__*/
+
+        // --- 4. APPLICATION STATE VARIABLES ---
+        const STORAGE_KEY = 'mae_tha_land_smart_guide_v3';
+        const ADMIN_PASSWORD_REQUIRED = 'Dol1234';
+
+        let appTitle = 'ระบบผู้ช่วยนำทางอัจฉริยะ : Mae Tha Land Smart Guide';
+        let agencyName = 'สำนักงานที่ดินจังหวัดลำปาง สาขาแม่ทะ (บริการประชาชนและผู้สูงอายุ)';
+        let logoRawUrl = DEFAULT_DRIVE_LOGO_LINK;
+        let selectorHeading = 'เลือกงานบริการที่ท่านต้องการติดต่อ:';
+        let servicesData = [];
+        let currentServiceId = '';
+        let currentStepIndex = 0;
+        let currentMode = 'citizen';
+        let isAdminAuthenticated = false;
+
+        // Auto-Voice & TTS State
+        let autoPlayVoice = true;
+        let speechRate = 0.82; // Slow & clear for elderly by default
+        window._activeUtteranceList = [];
+        let ttsKeepAliveTimer = null;
+
+        // Audio Playback & Recording State
+        let activeHTMLAudio = null;
+        let isSpeakingTTS = false;
+        let modalTempAudioDataUrl = null;
+        let modalTempAudioType = 'tts';
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let isRecordingVoice = false;
+
+        // --- 5. INITIALIZATION & SMART HEADER SCROLL LOGIC ---
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStateFromStorage();
+            applyGlobalHeadingsToDOM();
+            renderServiceSelectorCards();
+            renderAdminCategoriesTable();
+            renderAdminServiceSelect();
+            renderCitizenStepView(false);
+            renderAdminTable();
+            initSmartScrollHeader();
+
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.getVoices();
+                window.speechSynthesis.onvoiceschanged = () => {
+                    window.speechSynthesis.getVoices();
+                };
+            }
+        });
+
+        // Sync fixed header spacer height so document scrollHeight never shifts during scroll
+        function syncHeaderSpacerHeight() {
+            const headerWrapper = document.getElementById('smartHeaderWrapper');
+            const spacer = document.getElementById('headerSpacer');
+            if (!headerWrapper || !spacer) return;
+            const measuredHeight = headerWrapper.offsetHeight;
+            if (measuredHeight > 0) {
+                spacer.style.height = measuredHeight + 'px';
+            }
+        }
+
+        // Requirement 4 (Fixed Zero-Jitter Version):
+        // ซ่อนส่วนหัวขึ้นด้านบนอย่างนุ่มนวลเมื่อเลื่อนหน้าจอลงไปดูเนื้อหา และแสดงกลับมาเมื่อเลื่อนกลับถึงด้านบนสุดของหน้าจอ
+        // โดยใช้ Fixed GPU Transform + Hysteresis จึงไม่เปลี่ยนความสูงหน้าเว็บและไม่เกิดอาการกระพริบหรือกระตุก 100%
+        function initSmartScrollHeader() {
+            const headerWrapper = document.getElementById('smartHeaderWrapper');
+            if (!headerWrapper) return;
+
+            syncHeaderSpacerHeight();
+            window.addEventListener('resize', syncHeaderSpacerHeight, { passive: true });
+
+            if ('ResizeObserver' in window) {
+                const ro = new ResizeObserver(() => {
+                    syncHeaderSpacerHeight();
+                });
+                ro.observe(headerWrapper);
+            }
+
+            let lastScrollY = Math.max(0, window.scrollY || window.pageYOffset || 0);
+            let isHeaderHidden = false;
+            let ticking = false;
+
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        const currentScrollY = Math.max(0, window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0);
+                        const delta = currentScrollY - lastScrollY;
+
+                        // 1. เมื่อเลื่อนหน้าจอลงจนสุด (กลับถึงด้านบนสุดของหน้า <= 12px) ให้แสดงส่วนหัวเสมอ
+                        if (currentScrollY <= 12) {
+                            if (isHeaderHidden) {
+                                headerWrapper.classList.remove('header-hidden');
+                                isHeaderHidden = false;
+                            }
+                            lastScrollY = currentScrollY;
+                            ticking = false;
+                            return;
+                        }
+
+                        // 2. ข้ามการขยับเล็กน้อย (< 5px) เพื่อป้องกันอาการสั่นบนมือถือ (Touch Elastic Bounce)
+                        if (Math.abs(delta) < 5) {
+                            ticking = false;
+                            return;
+                        }
+
+                        // 3. เมื่อเลื่อนขึ้นเพื่อดูเนื้อหาด้านล่าง (scrollY > 75 และเลื่อนลงมากกว่า 6px) ให้ซ่อนส่วนหัวขึ้นด้านบน
+                        if (currentScrollY > 75 && delta > 6 && !isHeaderHidden) {
+                            headerWrapper.classList.add('header-hidden');
+                            isHeaderHidden = true;
+                        }
+
+                        lastScrollY = currentScrollY;
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }, { passive: true });
+        }
+
+        function loadStateFromStorage() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && Array.isArray(parsed.services) && parsed.services.length > 0) {
+                        appTitle = parsed.appTitle || 'ระบบผู้ช่วยนำทางอัจฉริยะ : Mae Tha Land Smart Guide';
+                        agencyName = parsed.agencyName || 'สำนักงานที่ดินจังหวัดลำปาง สาขาแม่ทะ (บริการประชาชนและผู้สูงอายุ)';
+                        logoRawUrl = parsed.logoRawUrl || DEFAULT_DRIVE_LOGO_LINK;
+                        selectorHeading = parsed.selectorHeading || 'เลือกงานบริการที่ท่านต้องการติดต่อ:';
+                        servicesData = parsed.services;
+                        currentServiceId = servicesData[0].id;
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.warn('Fallback to default config:', err);
+            }
+            const defaults = getDefaultAppConfig();
+            appTitle = defaults.appTitle;
+            agencyName = defaults.agencyName;
+            logoRawUrl = defaults.logoRawUrl;
+            selectorHeading = defaults.selectorHeading;
+            servicesData = defaults.services;
+            currentServiceId = servicesData[0].id;
+            saveStateToStorage();
+        }
+
+        function saveStateToStorage() {
+            try {
+                const payload = {
+                    appTitle,
+                    agencyName,
+                    logoRawUrl,
+                    selectorHeading,
+                    services: servicesData
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+            } catch (err) {
+                showToast('พื้นที่จัดเก็บเต็ม กรุณาใช้ไฟล์ขนาดเล็กลง', 'warning');
+            }
+        }
+
+        function applyGlobalHeadingsToDOM() {
+            document.title = appTitle;
+            document.getElementById('headerAppTitle').textContent = appTitle;
+            document.getElementById('footerSystemTitle').textContent = appTitle;
+            document.getElementById('headerAgencyBadge').textContent = agencyName;
+            document.getElementById('citizenSelectorHeading').textContent = selectorHeading;
+
+            const directLogo = resolveDirectImageUrl(logoRawUrl || DEFAULT_DRIVE_LOGO_LINK);
+            const headerLogo = document.getElementById('headerLogoImg');
+            const modalLogo = document.getElementById('passwordModalLogoImg');
+            if (headerLogo) {
+                delete headerLogo.dataset.triedLh3;
+                headerLogo.src = directLogo;
+            }
+            if (modalLogo) {
+                delete modalLogo.dataset.triedLh3;
+                modalLogo.src = directLogo;
+            }
+
+            const titleInput = document.getElementById('adminAppTitleInput');
+            const agencyInput = document.getElementById('adminAgencyNameInput');
+            const logoInput = document.getElementById('adminLogoUrlInput');
+            const headingInput = document.getElementById('adminSelectorHeadingInput');
+
+            if (titleInput) titleInput.value = appTitle;
+            if (agencyInput) agencyInput.value = agencyName;
+            if (logoInput) logoInput.value = logoRawUrl;
+            if (headingInput) headingInput.value = selectorHeading;
+        }
+
+        function saveGlobalHeadings() {
+            const newTitle = document.getElementById('adminAppTitleInput').value.trim();
+            const newAgency = document.getElementById('adminAgencyNameInput').value.trim();
+            const newLogo = document.getElementById('adminLogoUrlInput').value.trim();
+            const newHeading = document.getElementById('adminSelectorHeadingInput').value.trim();
+
+            if (newTitle) appTitle = newTitle;
+            if (newAgency) agencyName = newAgency;
+            logoRawUrl = newLogo || DEFAULT_DRIVE_LOGO_LINK;
+            if (newHeading) selectorHeading = newHeading;
+
+            saveStateToStorage();
+            applyGlobalHeadingsToDOM();
+            showToast('บันทึกโลโก้ ชื่อระบบ และหัวข้อเรียบร้อยแล้ว', 'success');
+        }
+
+        function getCurrentService() {
+            return servicesData.find(s => s.id === currentServiceId) || servicesData[0];
+        }
+
+        // --- 6. PASSWORD PROTECTION FOR ADMIN MODE (รหัส: Dol1234) ---
+        function handleAdminAccessClick() {
+            if (currentMode === 'admin') {
+                switchMode('citizen');
+                return;
+            }
+            if (isAdminAuthenticated) {
+                switchMode('admin');
+                return;
+            }
+            const modal = document.getElementById('adminPasswordModal');
+            const input = document.getElementById('adminPasswordInput');
+            const err = document.getElementById('passwordErrorText');
+            input.value = '';
+            err.classList.add('hidden');
+            modal.classList.remove('hidden');
+            setTimeout(() => input.focus(), 80);
+        }
+
+        function closePasswordModal() {
+            document.getElementById('adminPasswordModal').classList.add('hidden');
+        }
+
+        function togglePasswordVisibility() {
+            const input = document.getElementById('adminPasswordInput');
+            const icon = document.getElementById('passwordEyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-solid fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-solid fa-eye';
+            }
+        }
+
+        function verifyAdminPassword(event) {
+            event.preventDefault();
+            const input = document.getElementById('adminPasswordInput');
+            const err = document.getElementById('passwordErrorText');
+            const entered = input.value.trim();
+
+            if (entered === ADMIN_PASSWORD_REQUIRED) {
+                isAdminAuthenticated = true;
+                closePasswordModal();
+                switchMode('admin');
+                showToast('เข้าสู่โหมดจัดการระบบสำหรับเจ้าหน้าที่สำเร็จ', 'success');
+            } else {
+                err.classList.remove('hidden');
+                input.select();
+            }
+        }
+
+        function lockAdminAndExit() {
+            isAdminAuthenticated = false;
+            switchMode('citizen');
+            showToast('ล็อกระบบเจ้าหน้าที่และกลับสู่หน้าประชาชนเรียบร้อยแล้ว', 'info');
+        }
+
+        // --- 7. FONT SCALING, HIGH CONTRAST, AUTO-VOICE & MODE SWITCHING ---
+        function setFontScale(scale) {
+            document.documentElement.style.setProperty('--font-scale', scale);
+            const scaleMap = { 1.0: 'fontBtn-1', 1.16: 'fontBtn-2', 1.3: 'fontBtn-3' };
+            ['fontBtn-1', 'fontBtn-2', 'fontBtn-3'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (!btn) return;
+                if (scaleMap[scale] === id) {
+                    btn.className = 'px-2.5 py-1 rounded-lg text-xs sm:text-sm font-heading font-bold bg-amber-400 text-slate-950 transition shadow';
+                } else {
+                    btn.className = 'px-2.5 py-1 rounded-lg text-xs sm:text-sm font-heading font-bold text-white hover:bg-slate-700 transition';
+                }
+            });
+            syncHeaderSpacerHeight();
+        }
+
+        function toggleHighContrast() {
+            document.body.classList.toggle('high-contrast');
+        }
+
+        function toggleAutoPlayVoice() {
+            autoPlayVoice = !autoPlayVoice;
+            const btn = document.getElementById('autoVoiceToggleBtn');
+            const icon = document.getElementById('autoVoiceIcon');
+            const text = document.getElementById('autoVoiceText');
+
+            if (autoPlayVoice) {
+                btn.className = 'px-3.5 py-2 rounded-xl font-heading font-bold text-xs sm:text-sm bg-emerald-600 text-white shadow-sm flex items-center gap-2 transition';
+                icon.className = 'fa-solid fa-volume-high';
+                text.textContent = 'อ่านเสียงอัตโนมัติ: เปิด';
+                playCurrentStepAudio();
+            } else {
+                btn.className = 'px-3.5 py-2 rounded-xl font-heading font-bold text-xs sm:text-sm bg-slate-200 text-slate-700 flex items-center gap-2 transition';
+                icon.className = 'fa-solid fa-volume-xmark';
+                text.textContent = 'อ่านเสียงอัตโนมัติ: ปิด';
+                stopAllAudio();
+            }
+        }
+
+        function setSpeechSpeed(rate) {
+            speechRate = rate;
+            const slowBtn = document.getElementById('speedSlowBtn');
+            const normalBtn = document.getElementById('speedNormalBtn');
+            if (rate < 0.95) {
+                slowBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-heading font-bold bg-gov-navy text-amber-300 shadow-sm transition';
+                normalBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-heading font-bold text-slate-600 hover:bg-white transition';
+            } else {
+                normalBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-heading font-bold bg-gov-navy text-amber-300 shadow-sm transition';
+                slowBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-heading font-bold text-slate-600 hover:bg-white transition';
+            }
+            if (isSpeakingTTS) {
+                playCurrentStepAudio();
+            }
+        }
+
+        function switchMode(mode) {
+            stopAllAudio();
+            currentMode = mode;
+            const citizenSec = document.getElementById('citizenModeSection');
+            const adminSec = document.getElementById('adminModeSection');
+            const stickyBar = document.getElementById('mobileStickyBar');
+            const switchBtn = document.getElementById('headerModeSwitchBtn');
+            const btnIcon = document.getElementById('headerModeBtnIcon');
+            const btnText = document.getElementById('headerModeBtnText');
+
+            if (mode === 'citizen') {
+                citizenSec.classList.remove('hidden');
+                adminSec.classList.add('hidden');
+                if (stickyBar) stickyBar.classList.remove('hidden');
+                switchBtn.className = 'px-3.5 py-1.5 sm:py-2 rounded-xl font-heading font-semibold text-xs sm:text-sm bg-white/10 hover:bg-white/20 text-white border border-white/25 transition flex items-center gap-1.5 shrink-0';
+                btnIcon.className = isAdminAuthenticated ? 'fa-solid fa-table-list text-amber-400' : 'fa-solid fa-lock text-amber-400';
+                btnText.textContent = 'เจ้าหน้าที่';
+                renderServiceSelectorCards();
+                renderCitizenStepView(false);
+            } else {
+                citizenSec.classList.add('hidden');
+                adminSec.classList.remove('hidden');
+                if (stickyBar) stickyBar.classList.add('hidden');
+                switchBtn.className = 'px-3.5 py-1.5 sm:py-2 rounded-xl font-heading font-bold text-xs sm:text-sm bg-amber-400 hover:bg-amber-500 text-slate-950 transition flex items-center gap-1.5 shadow shrink-0';
+                btnIcon.className = 'fa-solid fa-eye text-slate-950';
+                btnText.textContent = 'หน้าประชาชน';
+                applyGlobalHeadingsToDOM();
+                renderAdminCategoriesTable();
+                renderAdminServiceSelect();
+                renderAdminTable();
+            }
+        }
+
+        // --- 8. CITIZEN VIEW RENDERING (REALISTIC LARGE ICONS & DISTINCT COLOR BACKGROUNDS) ---
+        const COLOR_CYCLE = ['emerald', 'indigo', 'amber', 'sky', 'rose', 'teal'];
+
+        function renderServiceSelectorCards() {
+            const container = document.getElementById('serviceCardsContainer');
+            container.innerHTML = '';
+
+            servicesData.forEach((service, idx) => {
+                const isSelected = service.id === currentServiceId;
+                const themeKey = service.theme || COLOR_CYCLE[idx % COLOR_CYCLE.length];
+                const t = getServiceCardThemeClasses(themeKey, isSelected);
+                const realisticSVG = getRealisticServiceCardIllustration(service.icon || 'transfer', service.customIconUrl);
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.onclick = () => selectServiceFromCitizenView(service.id);
+                btn.className = `service-card-item text-left p-4 sm:p-5 rounded-3xl flex flex-col justify-between gap-3.5 relative overflow-hidden ${isSelected ? t.selectedCard : t.unselectedCard}`;
+
+                const statusPillHTML = isSelected
+                    ? `<span class="px-3 py-1 rounded-full text-xs font-heading font-extrabold ${t.badgeSelected} flex items-center gap-1 shadow-sm">
+                         <i class="fa-solid fa-circle-check"></i> กำลังเลือกบริการนี้
+                       </span>`
+                    : `<span class="px-2.5 py-1 rounded-full text-xs font-heading font-bold ${t.badgeUnselected}">
+                         ${service.steps.length} ขั้นตอน
+                       </span>`;
+
+                btn.innerHTML = `
+                    <div class="flex items-start justify-between gap-3 w-full">
+                        <div class="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl ${isSelected ? t.iconWrapSelected : t.iconWrapUnselected} flex items-center justify-center p-2 shrink-0">
+                            ${realisticSVG}
+                        </div>
+                        <div class="flex flex-col items-end gap-1">
+                            ${statusPillHTML}
+                        </div>
+                    </div>
+                    <div class="space-y-1 w-full">
+                        <div class="font-heading font-extrabold elderly-scale-base leading-snug">
+                            ${service.name}
+                        </div>
+                        <p class="text-xs sm:text-sm font-medium line-clamp-2 ${isSelected ? t.descSelected : t.descUnselected}">
+                            ${service.shortDesc || `มีทั้งหมด ${service.steps.length} ขั้นตอน`}
+                        </p>
+                    </div>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function selectServiceFromCitizenView(serviceId) {
+            stopAllAudio();
+            currentServiceId = serviceId;
+            currentStepIndex = 0;
+            renderServiceSelectorCards();
+            renderAdminServiceSelect();
+            renderCitizenStepView(autoPlayVoice);
+
+            // Smoothly scroll to step view on mobile
+            const anchor = document.getElementById('stepNavigationAnchor');
+            if (anchor && window.innerWidth < 768) {
+                anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function changeServiceWorkflow(serviceId) {
+            currentServiceId = serviceId;
+            currentStepIndex = 0;
+            renderServiceSelectorCards();
+            renderCitizenStepView(false);
+            renderAdminTable();
+        }
+
+        function renderCitizenStepView(shouldAutoPlay = false) {
+            const service = getCurrentService();
+            if (!service || !service.steps || service.steps.length === 0) return;
+
+            if (currentStepIndex >= service.steps.length) currentStepIndex = service.steps.length - 1;
+            if (currentStepIndex < 0) currentStepIndex = 0;
+
+            const step = service.steps[currentStepIndex];
+            const totalSteps = service.steps.length;
+            const stepNumber = currentStepIndex + 1;
+
+            document.getElementById('currentServiceTitleDisplay').textContent = service.name;
+            document.getElementById('stepCounterBadge').textContent = `ขั้นตอนที่ ${stepNumber} / ${totalSteps}`;
+
+            // Render Clean Stepper Buttons
+            const stepperContainer = document.getElementById('stepperButtonsContainer');
+            stepperContainer.innerHTML = '';
+            service.steps.forEach((s, idx) => {
+                const isCurrent = idx === currentStepIndex;
+                const isCompleted = idx < currentStepIndex;
+                const stepBtn = document.createElement('button');
+                stepBtn.type = 'button';
+                stepBtn.onclick = () => goToStep(idx);
+
+                let btnStyle = 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200';
+                let circleStyle = 'bg-slate-200 text-slate-700';
+                let numLabel = `${idx + 1}`;
+
+                if (isCurrent) {
+                    btnStyle = 'bg-gov-navy text-white border-2 border-amber-400 shadow-md font-bold';
+                    circleStyle = 'bg-amber-400 text-gov-navy';
+                } else if (isCompleted) {
+                    btnStyle = 'bg-emerald-50/80 hover:bg-emerald-100/80 text-emerald-950 border border-emerald-300';
+                    circleStyle = 'bg-emerald-600 text-white';
+                    numLabel = `<i class="fa-solid fa-check text-sm"></i>`;
+                }
+
+                stepBtn.className = `p-2.5 sm:p-3 rounded-2xl flex items-center gap-2.5 sm:gap-3 text-left transition ${btnStyle}`;
+                stepBtn.innerHTML = `
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl ${circleStyle} font-heading font-extrabold text-sm sm:text-base flex items-center justify-center shrink-0">
+                        ${numLabel}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="text-[11px] font-heading ${isCurrent ? 'text-amber-300' : 'text-slate-500'}">ขั้นตอนที่ ${idx + 1}</div>
+                        <div class="font-heading font-bold text-xs sm:text-sm truncate">${s.title}</div>
+                    </div>
+                `;
+                stepperContainer.appendChild(stepBtn);
+            });
+
+            // Focused Step Card Content
+            document.getElementById('activeStepNumBig').textContent = stepNumber;
+            document.getElementById('activeStepLocation').textContent = step.location;
+            document.getElementById('activeStepTitle').textContent = step.title;
+            document.getElementById('activeStepDescription').textContent = step.description;
+            document.getElementById('activeStepResultDoc').textContent = step.resultDoc || 'ดำเนินการเรียบร้อย';
+
+            // Image (Supports Google Drive links automatically)
+            const imgEl = document.getElementById('activeStepImage');
+            const rawImg = step.imageUrl || generateStepSVGDataURI('queue', stepNumber, step.title, step.resultDoc);
+            imgEl.src = resolveDirectImageUrl(rawImg);
+            document.getElementById('activeStepImageCaption').textContent = step.imageCaption || `ภาพประกอบขั้นตอนที่ ${stepNumber}`;
+
+            // Desktop & Mobile Navigation Buttons
+            const isFirst = currentStepIndex === 0;
+            const isLast = currentStepIndex === totalSteps - 1;
+
+            document.getElementById('prevStepBtn').disabled = isFirst;
+            const mobilePrev = document.getElementById('mobilePrevBtn');
+            if (mobilePrev) mobilePrev.disabled = isFirst;
+
+            const nextBtnText = document.getElementById('nextStepBtnText');
+            const nextBtnIcon = document.getElementById('nextStepBtnIcon');
+            const mobileNextText = document.getElementById('mobileNextText');
+            const mobileNextIcon = document.getElementById('mobileNextIcon');
+
+            if (isLast) {
+                nextBtnText.textContent = 'เสร็จสิ้นขั้นตอนการรับบริการ';
+                nextBtnIcon.className = 'fa-solid fa-circle-check text-xl';
+                if (mobileNextText) mobileNextText.textContent = 'เสร็จสิ้นบริการ';
+                if (mobileNextIcon) mobileNextIcon.className = 'fa-solid fa-circle-check text-base';
+            } else {
+                nextBtnText.textContent = `ขั้นตอนถัดไป (ขั้นตอนที่ ${stepNumber + 1})`;
+                nextBtnIcon.className = 'fa-solid fa-arrow-right text-xl';
+                if (mobileNextText) mobileNextText.textContent = `ไปขั้นตอนที่ ${stepNumber + 1}`;
+                if (mobileNextIcon) mobileNextIcon.className = 'fa-solid fa-arrow-right text-base';
+            }
+
+            if (shouldAutoPlay) {
+                playCurrentStepAudio();
+            }
+        }
+
+        function goToStep(index) {
+            stopAllAudio();
+            currentStepIndex = index;
+            renderCitizenStepView(autoPlayVoice);
+        }
+
+        function prevStep() {
+            if (currentStepIndex > 0) {
+                stopAllAudio();
+                currentStepIndex--;
+                renderCitizenStepView(autoPlayVoice);
+            }
+        }
+
+        function nextStep() {
+            const service = getCurrentService();
+            stopAllAudio();
+            if (currentStepIndex < service.steps.length - 1) {
+                currentStepIndex++;
+                renderCitizenStepView(autoPlayVoice);
+            } else {
+                openAllStepsOverviewModal();
+            }
+        }
+
+        function handleImageFallback(imgElement) {
+            const service = getCurrentService();
+            const step = service?.steps?.[currentStepIndex];
+            imgElement.onerror = null;
+            imgElement.src = generateStepSVGDataURI('queue', currentStepIndex + 1, step ? step.title : 'จุดบริการประชาชน', 'ภาพประกอบขั้นตอน');
+        }
+
+        // --- 9. ROBUST THAI AUDIO GUIDE & TTS ENGINE (ANTI-CUTOFF FOR MOBILE/CHROME) ---
+        function playGentleChime() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.12);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } catch (e) {}
+        }
+
+        function setAudioUIRunning(isRunning, statusMessage = 'กำลังบรรยายเสียงขั้นตอนการรับบริการ...') {
+            const indicator = document.getElementById('audioPlayingIndicator');
+            const stopBtn = document.getElementById('stopAudioBtn');
+            const playText = document.getElementById('mainPlayAudioText');
+            const playIcon = document.getElementById('mainPlayAudioIcon');
+            const statusText = document.getElementById('audioPlayingStatusText');
+
+            if (isRunning) {
+                indicator.classList.remove('hidden');
+                stopBtn.classList.remove('hidden');
+                playText.textContent = 'ฟังเสียงอธิบายซ้ำอีกครั้ง';
+                playIcon.className = 'fa-solid fa-volume-high fa-beat text-xl sm:text-2xl';
+                statusText.textContent = statusMessage;
+            } else {
+                indicator.classList.add('hidden');
+                stopBtn.classList.add('hidden');
+                playText.textContent = 'กดฟังเสียงอธิบายขั้นตอนนี้';
+                playIcon.className = 'fa-solid fa-volume-high text-xl sm:text-2xl';
+            }
+        }
+
+        function stopAllAudio() {
+            if (ttsKeepAliveTimer) {
+                clearInterval(ttsKeepAliveTimer);
+                ttsKeepAliveTimer = null;
+            }
+            if (activeHTMLAudio) {
+                activeHTMLAudio.pause();
+                activeHTMLAudio.currentTime = 0;
+                activeHTMLAudio = null;
+            }
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+            window._activeUtteranceList = [];
+            isSpeakingTTS = false;
+            setAudioUIRunning(false);
+        }
+
+        function playCurrentStepAudio() {
+            const service = getCurrentService();
+            const step = service?.steps?.[currentStepIndex];
+            if (!step) return;
+            playStepAudioObject(step, currentStepIndex + 1);
+        }
+
+        function playStepAudioObject(step, stepNo = 1) {
+            stopAllAudio();
+            playGentleChime();
+
+            if (step.audioDataUrl) {
+                try {
+                    activeHTMLAudio = new Audio(step.audioDataUrl);
+                    setAudioUIRunning(true, 'กำลังเล่นเสียงอธิบายที่เจ้าหน้าที่บันทึกไว้...');
+                    activeHTMLAudio.onended = () => {
+                        setAudioUIRunning(false);
+                        activeHTMLAudio = null;
+                    };
+                    activeHTMLAudio.onerror = () => speakThaiTextFallback(step, stepNo);
+                    activeHTMLAudio.play().catch(() => speakThaiTextFallback(step, stepNo));
+                    return;
+                } catch (err) {
+                    speakThaiTextFallback(step, stepNo);
+                    return;
+                }
+            }
+            speakThaiTextFallback(step, stepNo);
+        }
+
+        function speakThaiTextFallback(step, stepNo = 1) {
+            if (!('speechSynthesis' in window)) {
+                setAudioUIRunning(true, 'กำลังแสดงคำอธิบาย: ' + step.title);
+                setTimeout(() => setAudioUIRunning(false), 4000);
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+            window._activeUtteranceList = [];
+
+            const chunks = [
+                `ขั้นตอนที่ ${stepNo} ${step.title}`,
+                `สถานที่ติดต่อคือ ${step.location}`,
+                `${step.description}`,
+                step.resultDoc ? `สิ่งที่จะได้รับในขั้นตอนนี้คือ ${step.resultDoc}` : ''
+            ].filter(Boolean);
+
+            const voices = window.speechSynthesis.getVoices();
+            const thaiVoice = voices.find(v => v.lang && v.lang.toLowerCase().includes('th'));
+
+            isSpeakingTTS = true;
+            setAudioUIRunning(true, `กำลังอ่านออกเสียง: ขั้นตอนที่ ${stepNo} "${step.title}"`);
+
+            chunks.forEach((textChunk, idx) => {
+                const utterance = new SpeechSynthesisUtterance(textChunk);
+                utterance.lang = 'th-TH';
+                utterance.rate = speechRate;
+                utterance.pitch = 1.0;
+                if (thaiVoice) utterance.voice = thaiVoice;
+
+                if (idx === chunks.length - 1) {
+                    utterance.onend = () => {
+                        if (ttsKeepAliveTimer) clearInterval(ttsKeepAliveTimer);
+                        isSpeakingTTS = false;
+                        setAudioUIRunning(false);
+                    };
+                }
+                utterance.onerror = () => {
+                    if (idx === chunks.length - 1) {
+                        if (ttsKeepAliveTimer) clearInterval(ttsKeepAliveTimer);
+                        isSpeakingTTS = false;
+                        setAudioUIRunning(false);
+                    }
+                };
+
+                window._activeUtteranceList.push(utterance);
+                window.speechSynthesis.speak(utterance);
+            });
+
+            // Keep-alive resume for mobile/Chrome TTS engine
+            ttsKeepAliveTimer = setInterval(() => {
+                if (!window.speechSynthesis.speaking) {
+                    clearInterval(ttsKeepAliveTimer);
+                    ttsKeepAliveTimer = null;
+                } else if (window.speechSynthesis.paused) {
+                    window.speechSynthesis.resume();
+                }
+            }, 3500);
+        }
+
+        // --- 10. ADMIN PART 1: MANAGE SERVICE CATEGORIES ("เลือกงานบริการที่ท่านต้องการติดต่อ:") ---
+        function renderAdminCategoriesTable() {
+            const tbody = document.getElementById('adminCategoriesTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            servicesData.forEach((service, idx) => {
+                const isCurrent = service.id === currentServiceId;
+                const themeKey = service.theme || COLOR_CYCLE[idx % COLOR_CYCLE.length];
+                const themeObj = getServiceCardThemeClasses(themeKey, false);
+                const tr = document.createElement('tr');
+                tr.className = isCurrent ? 'bg-amber-50/60 hover:bg-amber-50 transition' : 'hover:bg-slate-50 transition';
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 text-center">
+                        <div class="inline-flex items-center gap-1">
+                            <span class="font-heading font-bold text-slate-700 mr-1">${idx + 1}.</span>
+                            <button onclick="moveCategoryOrder(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="w-6 h-6 rounded bg-slate-200 hover:bg-slate-300 text-xs disabled:opacity-30" title="เลื่อนขึ้น">
+                                <i class="fa-solid fa-chevron-up"></i>
+                            </button>
+                            <button onclick="moveCategoryOrder(${idx}, 1)" ${idx === servicesData.length - 1 ? 'disabled' : ''} class="w-6 h-6 rounded bg-slate-200 hover:bg-slate-300 text-xs disabled:opacity-30" title="เลื่อนลง">
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </div>
+                    </td>
+                    <td class="py-3 px-4 text-center">
+                        <div class="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center mx-auto p-1 overflow-hidden">
+                            ${getRealisticServiceCardIllustration(service.icon || 'transfer', service.customIconUrl)}
+                        </div>
+                    </td>
+                    <td class="py-3 px-4 font-heading font-bold text-gov-navy">
+                        ${service.name}
+                    </td>
+                    <td class="py-3 px-4">
+                        <div class="text-slate-700">${service.shortDesc || '-'}</div>
+                        <span class="inline-block mt-1 text-xs font-heading font-bold px-2.5 py-0.5 rounded-full ${themeObj.badgeUnselected}">
+                            โทนสี: ${themeObj.label}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-center">
+                        <button onclick="changeServiceWorkflow('${service.id}')" class="px-3 py-1 rounded-full text-xs font-heading font-bold ${isCurrent ? 'bg-gov-navy text-amber-300' : 'bg-slate-200 hover:bg-slate-300 text-slate-700'}">
+                            ${service.steps.length} ขั้นตอน
+                        </button>
+                    </td>
+                    <td class="py-3 px-4 text-center">
+                        <div class="flex items-center justify-center gap-1.5">
+                            <button onclick="openServiceCategoryModal(${idx})" class="px-3 py-1.5 rounded-lg bg-gov-blue hover:bg-blue-800 text-white font-heading font-bold text-xs flex items-center gap-1">
+                                <i class="fa-solid fa-pen"></i>
+                                <span>แก้ไข</span>
+                            </button>
+                            <button onclick="deleteServiceCategory(${idx})" class="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white border border-rose-200 font-heading font-bold text-xs">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openServiceCategoryModal(categoryIndex = -1) {
+            const modal = document.getElementById('serviceCategoryModal');
+            document.getElementById('editCategoryIndex').value = categoryIndex;
+
+            if (categoryIndex >= 0 && servicesData[categoryIndex]) {
+                const cat = servicesData[categoryIndex];
+                document.getElementById('serviceCategoryModalTitle').textContent = `แก้ไขหัวข้อบริการ: ${cat.name}`;
+                document.getElementById('categoryNameInput').value = cat.name;
+                document.getElementById('categoryDescInput').value = cat.shortDesc || '';
+                document.getElementById('categoryIconInput').value = cat.icon || 'transfer';
+                document.getElementById('categoryThemeInput').value = cat.theme || 'emerald';
+                document.getElementById('categoryCustomIconUrlInput').value = cat.customIconUrl || '';
+            } else {
+                document.getElementById('serviceCategoryModalTitle').textContent = 'เพิ่มหัวข้องานบริการใหม่';
+                document.getElementById('categoryNameInput').value = '';
+                document.getElementById('categoryDescInput').value = '';
+                document.getElementById('categoryIconInput').value = 'transfer';
+                document.getElementById('categoryThemeInput').value = COLOR_CYCLE[servicesData.length % COLOR_CYCLE.length];
+                document.getElementById('categoryCustomIconUrlInput').value = '';
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeServiceCategoryModal() {
+            document.getElementById('serviceCategoryModal').classList.add('hidden');
+        }
+
+        function saveServiceCategoryFromModal(event) {
+            event.preventDefault();
+            const idx = parseInt(document.getElementById('editCategoryIndex').value, 10);
+            const name = document.getElementById('categoryNameInput').value.trim();
+            const shortDesc = document.getElementById('categoryDescInput').value.trim();
+            const icon = document.getElementById('categoryIconInput').value;
+            const theme = document.getElementById('categoryThemeInput').value;
+            const customIconUrl = document.getElementById('categoryCustomIconUrlInput').value.trim();
+
+            if (!name) return;
+
+            if (idx >= 0 && servicesData[idx]) {
+                servicesData[idx].name = name;
+                servicesData[idx].shortDesc = shortDesc;
+                servicesData[idx].icon = icon;
+                servicesData[idx].theme = theme;
+                servicesData[idx].customIconUrl = customIconUrl;
+                showToast(`อัปเดตหัวข้องานบริการ "${name}" เรียบร้อยแล้ว`, 'success');
+            } else {
+                const newId = 'service-' + Date.now();
+                servicesData.push({
+                    id: newId,
+                    name,
+                    shortDesc,
+                    icon,
+                    theme,
+                    customIconUrl,
+                    steps: [
+                        {
+                            title: 'ติดต่อจุดคัดกรองและรับบัตรคิว',
+                            location: 'จุดที่ 1 : โต๊ะประชาสัมพันธ์ด้านหน้า',
+                            status: 'จุดเริ่มต้น',
+                            resultDoc: 'ได้รับบัตรคิวและตรวจสอบเอกสารเบื้องต้น',
+                            description: `สำหรับงาน${name} กรุณายื่นบัตรประชาชนและเอกสารที่จุดคัดกรองด้านหน้าเพื่อรับบัตรคิวค่ะ`,
+                            imageUrl: generateStepSVGDataURI('queue', 1, 'รับบัตรคิวและตรวจเอกสาร', 'ได้รับบัตรคิวบริการ'),
+                            imageCaption: 'จุดที่ 1 รับบัตรคิวและตรวจเอกสาร',
+                            audioDataUrl: null,
+                            audioType: 'tts'
+                        }
+                    ]
+                });
+                currentServiceId = newId;
+                currentStepIndex = 0;
+                showToast(`เพิ่มหัวข้องานบริการ "${name}" สำเร็จ`, 'success');
+            }
+
+            saveStateToStorage();
+            closeServiceCategoryModal();
+            renderAdminCategoriesTable();
+            renderAdminServiceSelect();
+            renderAdminTable();
+            renderServiceSelectorCards();
+            renderCitizenStepView(false);
+        }
+
+        function moveCategoryOrder(index, direction) {
+            const target = index + direction;
+            if (target < 0 || target >= servicesData.length) return;
+            const temp = servicesData[index];
+            servicesData[index] = servicesData[target];
+            servicesData[target] = temp;
+            saveStateToStorage();
+            renderAdminCategoriesTable();
+            renderAdminServiceSelect();
+            renderServiceSelectorCards();
+        }
+
+        function deleteServiceCategory(index) {
+            if (servicesData.length <= 1) {
+                showToast('ต้องมีงานบริการอย่างน้อย 1 หัวข้อในระบบ', 'warning');
+                return;
+            }
+            const removed = servicesData.splice(index, 1)[0];
+            if (currentServiceId === removed.id) {
+                currentServiceId = servicesData[0].id;
+                currentStepIndex = 0;
+            }
+            saveStateToStorage();
+            renderAdminCategoriesTable();
+            renderAdminServiceSelect();
+            renderAdminTable();
+            renderServiceSelectorCards();
+            renderCitizenStepView(false);
+            showToast(`ลบหัวข้อ "${removed.name}" เรียบร้อยแล้ว`, 'info');
+        }
+
+        // --- 11. ADMIN PART 2: STEPS DATA TABLE MANAGEMENT ---
+        function renderAdminServiceSelect() {
+            const select = document.getElementById('adminServiceSelect');
+            if (!select) return;
+            select.innerHTML = '';
+            servicesData.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.id;
+                opt.textContent = `งานบริการ: ${s.name} (${s.steps.length} ขั้นตอน)`;
+                if (s.id === currentServiceId) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
+
+        function renderAdminTable() {
+            const service = getCurrentService();
+            if (!service) return;
+
+            document.getElementById('adminTableTitle').textContent = `ส่วนที่ 2 : ตารางขั้นตอนของ "${service.name}"`;
+
+            const tbody = document.getElementById('adminStepsTableBody');
+            tbody.innerHTML = '';
+
+            service.steps.forEach((step, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-blue-50/40 transition';
+
+                const hasCustomAudio = Boolean(step.audioDataUrl);
+                const audioBadgeHTML = hasCustomAudio
+                    ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                         <i class="fa-solid fa-file-audio"></i> ${step.audioType === 'recorded' ? 'เสียงบันทึกไมค์' : 'ไฟล์เสียงอัปโหลด'}
+                       </span>`
+                    : `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900">
+                         <i class="fa-solid fa-volume-high"></i> เสียงพูดไทยอัตโนมัติ
+                       </span>`;
+
+                const previewImgSrc = resolveDirectImageUrl(step.imageUrl || generateStepSVGDataURI('queue', idx + 1, step.title, step.resultDoc));
+
+                tr.innerHTML = `
+                    <td class="py-4 px-4 text-center align-top">
+                        <div class="inline-flex flex-col items-center gap-1">
+                            <span class="w-9 h-9 rounded-xl bg-gov-navy text-amber-400 font-heading font-extrabold text-base flex items-center justify-center">
+                                ${idx + 1}
+                            </span>
+                            <div class="flex items-center gap-1 mt-1">
+                                <button onclick="moveStepOrder(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="w-6 h-6 rounded bg-slate-200 hover:bg-slate-300 text-xs disabled:opacity-30">
+                                    <i class="fa-solid fa-chevron-up"></i>
+                                </button>
+                                <button onclick="moveStepOrder(${idx}, 1)" ${idx === service.steps.length - 1 ? 'disabled' : ''} class="w-6 h-6 rounded bg-slate-200 hover:bg-slate-300 text-xs disabled:opacity-30">
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="py-4 px-4 align-top">
+                        <div class="font-heading font-bold text-gov-navy text-base">${step.title}</div>
+                        <div class="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-900 bg-amber-100 px-2.5 py-1 rounded-lg mt-1.5">
+                            <i class="fa-solid fa-location-dot text-rose-600"></i>
+                            <span>${step.location}</span>
+                        </div>
+                    </td>
+
+                    <td class="py-4 px-4 align-top">
+                        <p class="text-slate-700 text-sm">${step.description}</p>
+                        <div class="mt-2 text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 inline-block">
+                            <i class="fa-solid fa-check mr-1"></i>สิ่งที่ได้รับ: ${step.resultDoc || '-'}
+                        </div>
+                    </td>
+
+                    <td class="py-4 px-4 text-center align-top">
+                        <div class="w-24 h-18 mx-auto rounded-xl overflow-hidden border border-slate-300 bg-slate-50">
+                            <img src="${previewImgSrc}" alt="Preview" class="w-full h-full object-cover" onerror="handleImageFallback(this)">
+                        </div>
+                        <button onclick="openStepEditorModal(${idx})" class="text-xs text-gov-blue hover:underline font-bold mt-1 inline-block">
+                            เปลี่ยนรูป/ลิงก์
+                        </button>
+                    </td>
+
+                    <td class="py-4 px-4 text-center align-top space-y-2">
+                        <div>${audioBadgeHTML}</div>
+                        <div class="flex items-center justify-center gap-1.5">
+                            <button onclick="testStepAudioFromTable(${idx})" class="px-2.5 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-500 text-slate-950 font-heading font-bold text-xs flex items-center gap-1">
+                                <i class="fa-solid fa-play"></i>
+                                <span>ฟังเสียง</span>
+                            </button>
+                            <label class="cursor-pointer px-2.5 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800 font-heading font-bold text-xs flex items-center gap-1">
+                                <i class="fa-solid fa-upload"></i>
+                                <span>อัปโหลด</span>
+                                <input type="file" accept="audio/*" class="hidden" onchange="quickUploadAudioForStep(event, ${idx})">
+                            </label>
+                        </div>
+                    </td>
+
+                    <td class="py-4 px-4 text-center align-top">
+                        <div class="flex flex-col gap-1.5 max-w-[110px] mx-auto">
+                            <button onclick="openStepEditorModal(${idx})" class="px-3 py-1.5 rounded-lg bg-gov-blue hover:bg-blue-800 text-white font-heading font-bold text-xs flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-pen"></i>
+                                <span>แก้ไข</span>
+                            </button>
+                            <button onclick="deleteStepFromTable(${idx})" class="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white border border-rose-200 font-heading font-bold text-xs flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-trash-can"></i>
+                                <span>ลบ</span>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function testStepAudioFromTable(stepIndex) {
+            const service = getCurrentService();
+            const step = service?.steps?.[stepIndex];
+            if (step) playStepAudioObject(step, stepIndex + 1);
+        }
+
+        function quickUploadAudioForStep(event, stepIndex) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const service = getCurrentService();
+                service.steps[stepIndex].audioDataUrl = e.target.result;
+                service.steps[stepIndex].audioType = 'uploaded';
+                saveStateToStorage();
+                renderAdminTable();
+                renderCitizenStepView(false);
+                showToast(`อัปโหลดไฟล์เสียง "${file.name}" เรียบร้อยแล้ว`, 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function moveStepOrder(index, direction) {
+            const service = getCurrentService();
+            const targetIndex = index + direction;
+            if (targetIndex < 0 || targetIndex >= service.steps.length) return;
+            const temp = service.steps[index];
+            service.steps[index] = service.steps[targetIndex];
+            service.steps[targetIndex] = temp;
+            saveStateToStorage();
+            renderAdminTable();
+            renderCitizenStepView(false);
+        }
+
+        function deleteStepFromTable(index) {
+            const service = getCurrentService();
+            if (service.steps.length <= 1) {
+                showToast('ต้องมีอย่างน้อย 1 ขั้นตอนในแต่ละงานบริการ', 'warning');
+                return;
+            }
+            service.steps.splice(index, 1);
+            if (currentStepIndex >= service.steps.length) currentStepIndex = service.steps.length - 1;
+            saveStateToStorage();
+            renderAdminCategoriesTable();
+            renderAdminTable();
+            renderCitizenStepView(false);
+            showToast('ลบขั้นตอนเรียบร้อยแล้ว', 'info');
+        }
+
+        // --- 12. STEP EDITOR MODAL ---
+        function openStepEditorModal(stepIndex = -1) {
+            stopAllAudio();
+            const service = getCurrentService();
+            const modal = document.getElementById('stepEditorModal');
+            document.getElementById('editStepIndex').value = stepIndex;
+
+            if (stepIndex >= 0 && service.steps[stepIndex]) {
+                const step = service.steps[stepIndex];
+                document.getElementById('modalEditorTitle').textContent = `แก้ไขขั้นตอนที่ ${stepIndex + 1} : ${step.title}`;
+                document.getElementById('formStepTitle').value = step.title;
+                document.getElementById('formStepLocation').value = step.location;
+                document.getElementById('formStepStatus').value = step.status || 'ดำเนินการตามขั้นตอน';
+                document.getElementById('formStepResultDoc').value = step.resultDoc || '';
+                document.getElementById('formStepDescription').value = step.description;
+                document.getElementById('formStepImageUrl').value = step.imageUrl && !step.imageUrl.startsWith('data:image/svg') ? step.imageUrl : '';
+                document.getElementById('formStepImageCaption').value = step.imageCaption || '';
+
+                const previewImg = document.getElementById('modalImagePreview');
+                const resolved = resolveDirectImageUrl(step.imageUrl || generateStepSVGDataURI('queue', stepIndex + 1, step.title, step.resultDoc));
+                previewImg.src = resolved;
+                previewImg.dataset.currentImageSource = step.imageUrl || resolved;
+
+                modalTempAudioDataUrl = step.audioDataUrl || null;
+                modalTempAudioType = step.audioType || 'tts';
+            } else {
+                const nextNum = service.steps.length + 1;
+                document.getElementById('modalEditorTitle').textContent = `เพิ่มขั้นตอนใหม่ (ขั้นตอนที่ ${nextNum})`;
+                document.getElementById('formStepTitle').value = '';
+                document.getElementById('formStepLocation').value = `จุดที่ ${nextNum} : ช่องบริการประชาชน`;
+                document.getElementById('formStepStatus').value = 'ดำเนินการตามขั้นตอน';
+                document.getElementById('formStepResultDoc').value = '';
+                document.getElementById('formStepDescription').value = '';
+                document.getElementById('formStepImageUrl').value = '';
+                document.getElementById('formStepImageCaption').value = '';
+
+                const defaultSvg = generateStepSVGDataURI('counter', nextNum, `ขั้นตอนที่ ${nextNum}`, 'จุดบริการประชาชน');
+                const previewImg = document.getElementById('modalImagePreview');
+                previewImg.src = defaultSvg;
+                previewImg.dataset.currentImageSource = defaultSvg;
+
+                modalTempAudioDataUrl = null;
+                modalTempAudioType = 'tts';
+            }
+
+            updateModalAudioUI();
+            modal.classList.remove('hidden');
+        }
+
+        function closeStepEditorModal() {
+            if (isRecordingVoice) stopVoiceRecording();
+            document.getElementById('stepEditorModal').classList.add('hidden');
+        }
+
+        function updateModalImagePreview(url) {
+            const previewImg = document.getElementById('modalImagePreview');
+            if (url && url.trim() !== '') {
+                const resolved = resolveDirectImageUrl(url.trim());
+                previewImg.src = resolved;
+                previewImg.dataset.currentImageSource = url.trim();
+            }
+        }
+
+        function selectPresetIllustration(presetType) {
+            const stepIndex = parseInt(document.getElementById('editStepIndex').value, 10);
+            const service = getCurrentService();
+            const stepNum = stepIndex >= 0 ? stepIndex + 1 : service.steps.length + 1;
+            const title = document.getElementById('formStepTitle').value || `ขั้นตอนที่ ${stepNum}`;
+            const resultDoc = document.getElementById('formStepResultDoc').value || 'ดำเนินการเรียบร้อย';
+
+            const svgUri = generateStepSVGDataURI(presetType, stepNum, title, resultDoc);
+            const previewImg = document.getElementById('modalImagePreview');
+            previewImg.src = svgUri;
+            previewImg.dataset.currentImageSource = svgUri;
+            document.getElementById('formStepImageUrl').value = '';
+        }
+
+        function handleStepImageFileUpload(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const maxW = 800;
+                    const scale = Math.min(1, maxW / img.width);
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+
+                    const previewImg = document.getElementById('modalImagePreview');
+                    previewImg.src = compressedDataUrl;
+                    previewImg.dataset.currentImageSource = compressedDataUrl;
+                    document.getElementById('formStepImageUrl').value = '';
+                    showToast('อัปโหลดรูปภาพประกอบสำเร็จ', 'success');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleAudioFileUpload(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                modalTempAudioDataUrl = e.target.result;
+                modalTempAudioType = 'uploaded';
+                updateModalAudioUI();
+                showToast(`แนบไฟล์เสียง "${file.name}" สำเร็จ`, 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function toggleVoiceRecording() {
+            if (isRecordingVoice) {
+                stopVoiceRecording();
+                return;
+            }
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                showToast('เบราว์เซอร์ไม่รองรับการอัดไมค์ กรุณาใช้อัปโหลดไฟล์เสียงแทน', 'warning');
+                return;
+            }
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                recordedChunks = [];
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) recordedChunks.push(e.data);
+                };
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        modalTempAudioDataUrl = reader.result;
+                        modalTempAudioType = 'recorded';
+                        updateModalAudioUI();
+                        showToast('บันทึกเสียงพูดเรียบร้อยแล้ว', 'success');
+                    };
+                    reader.readAsDataURL(blob);
+                    stream.getTracks().forEach(track => track.stop());
+                };
+                mediaRecorder.start();
+                isRecordingVoice = true;
+
+                const btn = document.getElementById('recordVoiceBtn');
+                const btnText = document.getElementById('recordVoiceBtnText');
+                btn.className = 'px-3.5 py-2 rounded-xl bg-slate-900 text-amber-400 font-heading font-bold text-xs flex items-center gap-1.5 shadow animate-pulse';
+                btnText.textContent = 'กำลังอัดเสียง... (กดเพื่อหยุด)';
+            } catch (err) {
+                showToast('ไม่สามารถเปิดไมโครโฟนได้ กรุณาเลือกอัปโหลดไฟล์เสียง', 'warning');
+            }
+        }
+
+        function stopVoiceRecording() {
+            if (mediaRecorder && isRecordingVoice) {
+                mediaRecorder.stop();
+                isRecordingVoice = false;
+                const btn = document.getElementById('recordVoiceBtn');
+                const btnText = document.getElementById('recordVoiceBtnText');
+                btn.className = 'px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-heading font-bold text-xs flex items-center gap-1.5 shadow-sm transition';
+                btnText.textContent = 'อัดเสียงผ่านไมค์';
+            }
+        }
+
+        function updateModalAudioUI() {
+            const badge = document.getElementById('modalAudioStatusBadge');
+            const playerContainer = document.getElementById('modalAudioPlayerContainer');
+            const player = document.getElementById('modalAudioPreviewPlayer');
+            const clearBtn = document.getElementById('clearCustomAudioBtn');
+
+            if (modalTempAudioDataUrl) {
+                badge.textContent = modalTempAudioType === 'recorded' ? 'ใช้เสียงที่อัดผ่านไมโครโฟน' : 'ใช้ไฟล์เสียงที่อัปโหลด';
+                badge.className = 'text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-200 text-emerald-900';
+                player.src = modalTempAudioDataUrl;
+                playerContainer.classList.remove('hidden');
+                clearBtn.classList.remove('hidden');
+            } else {
+                badge.textContent = 'ใช้เสียงพูดภาษาไทยอัตโนมัติ (TTS)';
+                badge.className = 'text-xs font-bold px-2.5 py-1 rounded-full bg-amber-200 text-amber-900';
+                player.src = '';
+                playerContainer.classList.add('hidden');
+                clearBtn.classList.add('hidden');
+            }
+        }
+
+        function clearModalCustomAudio() {
+            modalTempAudioDataUrl = null;
+            modalTempAudioType = 'tts';
+            document.getElementById('formAudioFileInput').value = '';
+            updateModalAudioUI();
+        }
+
+        function testModalAudio() {
+            const tempStep = {
+                title: document.getElementById('formStepTitle').value || 'ตัวอย่างขั้นตอนบริการ',
+                location: document.getElementById('formStepLocation').value || 'จุดบริการประชาชน',
+                description: document.getElementById('formStepDescription').value || 'กรุณาติดต่อเจ้าหน้าที่ประจำจุดบริการค่ะ',
+                resultDoc: document.getElementById('formStepResultDoc').value || 'เอกสารเรียบร้อย',
+                audioDataUrl: modalTempAudioDataUrl,
+                audioType: modalTempAudioType
+            };
+            playStepAudioObject(tempStep, 1);
+        }
+
+        function saveStepFromModal(event) {
+            event.preventDefault();
+            const service = getCurrentService();
+            const stepIndex = parseInt(document.getElementById('editStepIndex').value, 10);
+
+            const title = document.getElementById('formStepTitle').value.trim();
+            const location = document.getElementById('formStepLocation').value.trim();
+            const status = document.getElementById('formStepStatus').value || 'ดำเนินการตามขั้นตอน';
+            const resultDoc = document.getElementById('formStepResultDoc').value.trim();
+            const description = document.getElementById('formStepDescription').value.trim();
+            const typedUrl = document.getElementById('formStepImageUrl').value.trim();
+            const previewImg = document.getElementById('modalImagePreview');
+            const finalImageUrl = typedUrl || previewImg.dataset.currentImageSource || generateStepSVGDataURI('queue', 1, title, resultDoc);
+            const imageCaption = document.getElementById('formStepImageCaption').value.trim() || `ภาพประกอบขั้นตอน: ${title}`;
+
+            const stepData = {
+                title,
+                location,
+                status,
+                resultDoc,
+                description,
+                imageUrl: finalImageUrl,
+                imageCaption,
+                audioDataUrl: modalTempAudioDataUrl,
+                audioType: modalTempAudioType
+            };
+
+            if (stepIndex >= 0 && stepIndex < service.steps.length) {
+                service.steps[stepIndex] = stepData;
+                showToast(`บันทึกการแก้ไขขั้นตอนที่ ${stepIndex + 1} เรียบร้อยแล้ว`, 'success');
+            } else {
+                service.steps.push(stepData);
+                currentStepIndex = service.steps.length - 1;
+                showToast(`เพิ่มขั้นตอนที่ ${service.steps.length} เรียบร้อยแล้ว`, 'success');
+            }
+
+            saveStateToStorage();
+            closeStepEditorModal();
+            renderAdminCategoriesTable();
+            renderAdminServiceSelect();
+            renderAdminTable();
+            renderServiceSelectorCards();
+            renderCitizenStepView(false);
+        }
+
+        // --- 13. MODALS & UTILITIES ---
+        function openImageZoomModal() {
+            const service = getCurrentService();
+            const step = service?.steps?.[currentStepIndex];
+            if (!step) return;
+
+            document.getElementById('zoomModalTitle').textContent = `ขั้นตอนที่ ${currentStepIndex + 1} : ${step.title}`;
+            document.getElementById('zoomModalImg').src = document.getElementById('activeStepImage').src;
+            document.getElementById('zoomModalCaption').textContent = step.imageCaption || step.resultDoc;
+            document.getElementById('imageZoomModal').classList.remove('hidden');
+        }
+
+        function closeImageZoomModal() {
+            document.getElementById('imageZoomModal').classList.add('hidden');
+        }
+
+        function openAllStepsOverviewModal() {
+            document.getElementById('overviewModal').classList.remove('hidden');
+        }
+
+        function closeOverviewModal() {
+            document.getElementById('overviewModal').classList.add('hidden');
+        }
+
+        function restartServiceFromStep1() {
+            closeOverviewModal();
+            goToStep(0);
+        }
+
+        function exportDataJSON() {
+            const payload = { appTitle, agencyName, logoRawUrl, selectorHeading, services: servicesData };
+            const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(payload, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute('href', dataStr);
+            downloadAnchor.setAttribute('download', 'mae_tha_land_smart_guide_data.json');
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToast('สำรองข้อมูล (JSON) เรียบร้อยแล้ว', 'success');
+        }
+
+        function importDataJSON(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (parsed && Array.isArray(parsed.services) && parsed.services.length > 0) {
+                        appTitle = parsed.appTitle || appTitle;
+                        agencyName = parsed.agencyName || agencyName;
+                        logoRawUrl = parsed.logoRawUrl || logoRawUrl;
+                        selectorHeading = parsed.selectorHeading || selectorHeading;
+                        servicesData = parsed.services;
+                        currentServiceId = servicesData[0].id;
+                        currentStepIndex = 0;
+                        saveStateToStorage();
+                        applyGlobalHeadingsToDOM();
+                        renderServiceSelectorCards();
+                        renderAdminCategoriesTable();
+                        renderAdminServiceSelect();
+                        renderCitizenStepView(false);
+                        renderAdminTable();
+                        showToast('นำเข้าข้อมูล JSON สำเร็จเรียบร้อยแล้ว', 'success');
+                    } else {
+                        showToast('รูปแบบไฟล์ JSON ไม่ถูกต้อง', 'warning');
+                    }
+                } catch (err) {
+                    showToast('ไม่สามารถอ่านไฟล์ JSON ได้', 'warning');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // สร้างไฟล์ index.html ที่ฝังข้อมูลล่าสุดที่เจ้าหน้าที่แก้ไขไว้ในโค้ดทันที พร้อมนำไปอัปโหลดขึ้นเว็บออนไลน์
+        function exportReadyToDeployHTML() {
+            try {
+                const currentPayload = {
+                    appTitle,
+                    agencyName,
+                    logoRawUrl,
+                    selectorHeading,
+                    services: servicesData
+                };
+                const newDefaultFuncCode = `/*__BAKED_DEFAULT_CONFIG_START__*/\n        function getDefaultAppConfig() {\n            return ${JSON.stringify(currentPayload, null, 12)};\n        }\n        /*__BAKED_DEFAULT_CONFIG_END__*/`;
+
+                let fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+                const regex = /\/\*__BAKED_DEFAULT_CONFIG_START__\*\/[\s\S]*?\/\*__BAKED_DEFAULT_CONFIG_END__\*\//;
+                if (regex.test(fullHtml)) {
+                    fullHtml = fullHtml.replace(regex, newDefaultFuncCode);
+                }
+
+                // Ensure the exported file opens in Citizen Mode with header visible by default
+                const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'index.html';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 2000);
+                showToast('ดาวน์โหลดไฟล์ index.html พร้อมอัปโหลดขึ้นเว็บออนไลน์เรียบร้อยแล้ว', 'success');
+            } catch (err) {
+                showToast('เกิดข้อผิดพลาดในการสร้างไฟล์ HTML', 'warning');
+            }
+        }
+
+        function resetToDefaultData() {
+            stopAllAudio();
+            const defaults = getDefaultAppConfig();
+            appTitle = defaults.appTitle;
+            agencyName = defaults.agencyName;
+            logoRawUrl = defaults.logoRawUrl;
+            selectorHeading = defaults.selectorHeading;
+            servicesData = defaults.services;
+            currentServiceId = servicesData[0].id;
+            currentStepIndex = 0;
+            saveStateToStorage();
+            applyGlobalHeadingsToDOM();
+            renderServiceSelectorCards();
+            renderAdminCategoriesTable();
+            renderAdminServiceSelect();
+            renderCitizenStepView(false);
+            renderAdminTable();
+            showToast('คืนค่าเริ่มต้นของระบบเรียบร้อยแล้ว', 'success');
+        }
+
+        let toastTimeout = null;
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toastNotification');
+            const icon = document.getElementById('toastIcon');
+            const msg = document.getElementById('toastMessage');
+
+            msg.textContent = message;
+            if (type === 'warning') {
+                icon.className = 'fa-solid fa-triangle-exclamation text-amber-400 text-xl';
+            } else if (type === 'info') {
+                icon.className = 'fa-solid fa-circle-info text-sky-400 text-xl';
+            } else {
+                icon.className = 'fa-solid fa-circle-check text-emerald-400 text-xl';
+            }
+
+            toast.classList.remove('hidden');
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
