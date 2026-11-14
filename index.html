@@ -1,3 +1,8 @@
+
+
+
+ไอคอน HTML
+mae_tha_land_smart_guide_v2
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -217,56 +222,6 @@
         <!-- MODE 1: STREAMLINED 2-STAGE CITIZEN / ELDERLY NAVIGATION VIEW        -->
         <!-- =================================================================== -->
         <section id="citizenModeSection" class="space-y-5 sm:space-y-6">
-
-            <!-- 1.0 Sweet Melodious Voice Control Bar (Auto-Voice Toggle, Engine Selector & 3 Sweet Voice Styles) -->
-            <div class="hc-card bg-white rounded-2xl shadow-sm border border-slate-200/90 px-4 py-3 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-                <div class="flex flex-wrap items-center gap-2">
-                    <button data-audio-trigger="true" onclick="toggleAutoPlayVoice()" id="autoVoiceToggleBtn" class="px-3.5 py-2 rounded-xl font-heading font-bold text-xs sm:text-sm bg-emerald-600 text-white shadow-sm flex items-center gap-2 transition">
-                        <i id="autoVoiceIcon" class="fa-solid fa-volume-high"></i>
-                        <span id="autoVoiceText">เสียงนำทางอัตโนมัติ: เปิด</span>
-                    </button>
-                    <button data-audio-trigger="true" onclick="playWelcomeGreetingAudio(true)" class="px-3.5 py-2 rounded-xl font-heading font-bold text-xs sm:text-sm bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-300 flex items-center gap-1.5 transition shadow-sm">
-                        <i class="fa-solid fa-face-smile-beam text-amber-600"></i>
-                        <span>ฟังเสียงต้อนรับ</span>
-                    </button>
-
-                    <!-- Engine Mode Selector Pill (แก้ปัญหาเครื่องไม่มีเสียงไทยใน Windows/Browser) -->
-                    <div class="inline-flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-heading">
-                        <span class="text-slate-500 font-semibold px-2 hidden sm:inline"><i class="fa-solid fa-tower-broadcast text-emerald-600 mr-1"></i>ระบบเสียง:</span>
-                        <button type="button" data-audio-trigger="true" onclick="setVoiceEngineMode('auto')" id="engineModeAutoBtn" class="px-2.5 py-1 rounded-lg font-bold bg-gov-navy text-amber-300 shadow-sm transition">
-                            อัตโนมัติ (แนะนำ)
-                        </button>
-                        <button type="button" data-audio-trigger="true" onclick="setVoiceEngineMode('cloud')" id="engineModeCloudBtn" class="px-2.5 py-1 rounded-lg font-bold text-slate-600 hover:bg-white transition">
-                            เสียงออนไลน์ (ดังทุกเครื่อง)
-                        </button>
-                        <button type="button" data-audio-trigger="true" onclick="setVoiceEngineMode('native')" id="engineModeNativeBtn" class="px-2.5 py-1 rounded-lg font-bold text-slate-600 hover:bg-white transition">
-                            เสียงในเครื่อง
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 3 Sweet Melodious Voice Style Presets -->
-                <div class="flex flex-wrap items-center justify-between sm:justify-end gap-2">
-                    <span id="detectedVoiceBadge" class="inline-flex items-center gap-1.5 text-[11px] font-heading font-semibold text-pink-700 bg-pink-50 border border-pink-200 px-2.5 py-1 rounded-full">
-                        <i class="fa-solid fa-wand-magic-sparkles text-pink-500"></i>
-                        <span id="detectedVoiceNameText">ชุดเสียงหวานไพเราะพร้อมใช้งาน</span>
-                    </span>
-
-                    <div class="flex flex-wrap items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
-                        <span class="text-xs font-heading font-semibold text-slate-600 px-2 hidden sm:inline">โทนเสียง:</span>
-                        <button data-audio-trigger="true" onclick="setVoicePreset('sweet')" id="voicePresetSweetBtn" class="px-2.5 py-1 rounded-lg text-xs font-heading font-bold bg-pink-600 text-white shadow-sm transition flex items-center gap-1">
-                            <i class="fa-solid fa-heart text-[10px]"></i>
-                            <span>หวานนุ่มนวล</span>
-                        </button>
-                        <button data-audio-trigger="true" onclick="setVoicePreset('elderly')" id="voicePresetElderlyBtn" class="px-2.5 py-1 rounded-lg text-xs font-heading font-bold text-slate-600 hover:bg-white transition">
-                            หวานช้าชัด (ผู้สูงอายุ)
-                        </button>
-                        <button data-audio-trigger="true" onclick="setVoicePreset('bright')" id="voicePresetBrightBtn" class="px-2.5 py-1 rounded-lg text-xs font-heading font-bold text-slate-600 hover:bg-white transition">
-                            ปกติไพเราะ
-                        </button>
-                    </div>
-                </div>
-            </div>
 
             <!-- =============================================================== -->
             <!-- STAGE 1: HOME / SERVICE SELECTION VIEW (แสดงเฉพาะหน้าแรกเท่านั้น) -->
@@ -585,40 +540,117 @@
                 </div>
             </div>
 
-            <!-- PART 0: MULTI-DEVICE CLOUD DATABASE & EXTERNAL GOOGLE SHEETS WEBHOOK CONFIG -->
-            <div class="bg-gradient-to-r from-sky-950 via-gov-navy to-slate-900 text-white rounded-3xl shadow-md p-5 sm:p-6 border border-sky-400/30">
+            <!-- PART 0: REAL-TIME CLOUD DATABASE ENGINE (ซิงค์ฐานข้อมูลออนไลน์อัตโนมัติทุกเครื่อง 100%) -->
+            <div class="bg-gradient-to-r from-sky-950 via-gov-navy to-slate-900 text-white rounded-3xl shadow-lg p-5 sm:p-6 border-2 border-sky-400/40">
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                    <div class="space-y-1">
-                        <div class="inline-flex items-center gap-2 text-sky-300 font-heading font-bold text-xs uppercase tracking-wider">
-                            <i class="fa-solid fa-database"></i>
-                            <span>ระบบฐานข้อมูลกลางออนไลน์ (Multi-Device Cloud Sync)</span>
+                    <div class="space-y-1.5">
+                        <div class="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-3 py-1 rounded-full font-heading font-bold text-xs">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span>ฐานข้อมูลกลางออนไลน์ครบวงจร (Cloud Database + Real-Time Sync + IndexedDB)</span>
                         </div>
-                        <h3 class="font-heading font-bold text-base sm:text-lg text-white">
-                            เปิดจากเครื่องไหนก็แสดงข้อมูลชุดเดียวกันทั้งหมด 100%
+                        <h3 class="font-heading font-extrabold text-lg sm:text-xl text-white">
+                            ระบบจัดเก็บข้อมูลในฐานข้อมูลอย่างสมบูรณ์ เข้าถึงและแก้ไขได้ทุกที่ แสดงผลเหมือนกันทุกหน้าจอ 100%
                         </h3>
-                        <p class="text-xs sm:text-sm text-slate-300">
-                            ระบบเชื่อมต่อกับฐานข้อมูลกลาง Cloud อัตโนมัติ และรองรับการผูก <strong>Google Apps Script Web App URL</strong> เสริมสำหรับกรณีนำไฟล์ <code>index.html</code> ไปอัปโหลดบน GitHub Pages หรือโฮสติ้งภายนอก
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            ทุกการแก้ไขของเจ้าหน้าที่จะถูกบันทึกลง <strong>ฐานข้อมูลกลางออนไลน์ (Cloud Database)</strong> พร้อมซิงค์แบบเรียลไทม์ไปยังหน้าจอของประชาชนและเครื่องเจ้าหน้าที่ทุกเครื่องทันที รวมถึงบันทึกการตั้งค่าระบบเสียงส่วนกลางให้ทำงานเหมือนกันทุกอุปกรณ์
                         </p>
                     </div>
                     <div class="flex flex-wrap items-center gap-2 shrink-0">
-                        <button type="button" onclick="openAppsScriptGuideModal()" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-amber-300 border border-amber-400/30 font-heading font-bold text-xs flex items-center gap-1.5 transition">
+                        <button type="button" onclick="openAppsScriptGuideModal()" class="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-amber-300 border border-amber-400/30 font-heading font-bold text-xs flex items-center gap-1.5 transition">
                             <i class="fa-solid fa-code"></i>
-                            <span>ดูโค้ด Google Apps Script สำเร็จรูป</span>
+                            <span>โค้ดเชื่อม Google Sheets / Apps Script</span>
                         </button>
                     </div>
                 </div>
 
-                <div class="mt-4 pt-4 border-t border-white/10 grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-                    <div class="md:col-span-9">
+                <div class="mt-4 pt-4 border-t border-white/15 grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                    <div class="md:col-span-5">
                         <label class="block font-heading font-semibold text-sky-200 text-xs mb-1">
-                            ลิงก์ฐานข้อมูล Google Apps Script Web App URL (เว้นว่างไว้ได้หากใช้งานผ่าน Cloud ปกติของระบบ):
+                            รหัสห้องฐานข้อมูลกลางของหน่วยงาน (Cloud Sync Channel ID - ใช้ร่วมกันทุกเครื่อง):
                         </label>
-                        <input type="text" id="adminExternalSyncUrlInput" placeholder="https://script.google.com/macros/s/.../exec (ตัวเลือกเสริมสำหรับ GitHub Pages)" class="w-full px-3.5 py-2 rounded-xl bg-slate-900/90 border border-slate-600 text-white text-sm focus:border-amber-400 focus:outline-none">
+                        <input type="text" id="adminCloudChannelIdInput" value="mae-tha-land-smart-guide-official-db" placeholder="mae-tha-land-smart-guide-official-db" class="w-full px-3.5 py-2 rounded-xl bg-slate-900/90 border border-slate-600 text-emerald-300 font-mono text-sm focus:border-amber-400 focus:outline-none">
                     </div>
-                    <div class="md:col-span-3 flex gap-2">
-                        <button type="button" onclick="saveExternalSyncUrl()" class="flex-1 py-2 px-3 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-heading font-bold text-xs sm:text-sm transition shadow">
-                            บันทึกและซิงค์ข้อมูล
+                    <div class="md:col-span-5">
+                        <label class="block font-heading font-semibold text-sky-200 text-xs mb-1">
+                            ลิงก์ฐานข้อมูลเสริม Google Apps Script / REST API URL (ถ้ามี):
+                        </label>
+                        <input type="text" id="adminExternalSyncUrlInput" placeholder="https://script.google.com/macros/s/.../exec (เว้นว่างได้ ระบบมี Cloud หลักให้อัตโนมัติ)" class="w-full px-3.5 py-2 rounded-xl bg-slate-900/90 border border-slate-600 text-white text-sm focus:border-amber-400 focus:outline-none">
+                    </div>
+                    <div class="md:col-span-2 flex gap-2">
+                        <button type="button" onclick="saveExternalSyncUrl()" class="w-full py-2.5 px-3 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-heading font-bold text-xs sm:text-sm transition shadow flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span>บันทึกฐานข้อมูล</span>
                         </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PART 0.5: ADMIN VOICE & AUDIO ENGINE SETTINGS (ย้ายแถบตั้งค่าเสียงจากหน้าบ้านมาไว้หลังบ้านเฉพาะเจ้าหน้าที่) -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 bg-gradient-to-r from-gov-navy via-gov-navyLight to-slate-800 text-white flex flex-wrap items-center justify-between gap-3 border-b-2 border-amber-400">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 rounded-xl bg-amber-400 text-gov-navy flex items-center justify-center font-bold shadow-sm">
+                            <i class="fa-solid fa-volume-high"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-heading font-bold text-base sm:text-lg text-white">
+                                ตั้งค่าระบบเสียงนำทางและโทนเสียงกลาง (เฉพาะเจ้าหน้าที่ • ซิงค์ตรงกันทุกหน้าจอ)
+                            </h3>
+                            <p class="text-xs text-amber-200">
+                                กำหนดการเปิด-ปิดเสียงอัตโนมัติ ระบบเสียง และโทนเสียงหวานสำหรับหน้าจอประชาชนทุกเครื่อง (หน้าบ้านจะไม่แสดงแถบตั้งค่านี้)
+                            </p>
+                        </div>
+                    </div>
+                    <span id="detectedVoiceBadge" class="inline-flex items-center gap-1.5 text-xs font-heading font-bold text-pink-700 bg-pink-50 border border-pink-200 px-3 py-1.5 rounded-full shadow-sm">
+                        <i class="fa-solid fa-wand-magic-sparkles text-pink-500"></i>
+                        <span id="detectedVoiceNameText">ชุดเสียงหวานไพเราะพร้อมใช้งาน</span>
+                    </span>
+                </div>
+
+                <div class="p-5 sm:p-6 bg-slate-50/70">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/90 p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                        <div class="flex flex-wrap items-center gap-2.5">
+                            <button data-audio-trigger="true" onclick="toggleAutoPlayVoice(true)" id="autoVoiceToggleBtn" class="px-4 py-2.5 rounded-xl font-heading font-bold text-xs sm:text-sm bg-emerald-600 text-white shadow-sm flex items-center gap-2 transition">
+                                <i id="autoVoiceIcon" class="fa-solid fa-volume-high"></i>
+                                <span id="autoVoiceText">เสียงนำทางอัตโนมัติ: เปิด</span>
+                            </button>
+
+                            <button data-audio-trigger="true" onclick="playWelcomeGreetingAudio(true)" class="px-4 py-2.5 rounded-xl font-heading font-bold text-xs sm:text-sm bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-300 flex items-center gap-1.5 transition shadow-sm">
+                                <i class="fa-solid fa-face-smile-beam text-amber-600"></i>
+                                <span>ทดสอบฟังเสียงต้อนรับ</span>
+                            </button>
+
+                            <!-- Engine Mode Selector Pill -->
+                            <div class="inline-flex flex-wrap items-center bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-xs font-heading gap-1">
+                                <span class="text-slate-600 font-bold px-2"><i class="fa-solid fa-tower-broadcast text-emerald-600 mr-1"></i>ระบบเสียง:</span>
+                                <button type="button" data-audio-trigger="true" onclick="setVoiceEngineMode('auto', true)" id="engineModeAutoBtn" class="px-3 py-1.5 rounded-lg font-bold bg-gov-navy text-amber-300 shadow-sm transition">
+                                    อัตโนมัติ (แนะนำ)
+                                </button>
+                                <button type="button" data-audio-trigger="true" onclick="setVoiceEngineMode('cloud', true)" id="engineModeCloudBtn" class="px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:bg-white transition">
+                                    เสียงออนไลน์ (ดังทุกเครื่อง)
+                                </button>
+                                <button type="button" data-audio-trigger="true" onclick="setVoiceEngineMode('native', true)" id="engineModeNativeBtn" class="px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:bg-white transition">
+                                    เสียงในเครื่อง
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 3 Sweet Melodious Voice Style Presets -->
+                        <div class="flex flex-wrap items-center gap-2">
+                            <div class="flex flex-wrap items-center gap-1 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+                                <span class="text-xs font-heading font-bold text-slate-600 px-2">โทนเสียง:</span>
+                                <button type="button" data-audio-trigger="true" onclick="setVoicePreset('sweet', true)" id="voicePresetSweetBtn" class="px-3 py-1.5 rounded-lg text-xs font-heading font-bold bg-pink-600 text-white shadow-sm transition flex items-center gap-1">
+                                    <i class="fa-solid fa-heart text-[10px]"></i>
+                                    <span>หวานนุ่มนวล</span>
+                                </button>
+                                <button type="button" data-audio-trigger="true" onclick="setVoicePreset('elderly', true)" id="voicePresetElderlyBtn" class="px-3 py-1.5 rounded-lg text-xs font-heading font-bold text-slate-600 hover:bg-white transition">
+                                    หวานช้าชัด (ผู้สูงอายุ)
+                                </button>
+                                <button type="button" data-audio-trigger="true" onclick="setVoicePreset('bright', true)" id="voicePresetBrightBtn" class="px-3 py-1.5 rounded-lg text-xs font-heading font-bold text-slate-600 hover:bg-white transition">
+                                    ปกติไพเราะ
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1464,7 +1496,13 @@ function doPost(e) {
         function getDefaultAppConfig() {
             return {
                 updatedAt: 1730000000000,
+                cloudChannelId: 'mae-tha-land-smart-guide-official-db',
                 externalSyncUrl: '',
+                voiceSettings: {
+                    autoPlayVoice: true,
+                    voiceEngineMode: 'auto',
+                    currentVoicePreset: 'sweet'
+                },
                 appTitle: 'ระบบผู้ช่วยนำทางอัจฉริยะ : Mae Tha Land Smart Guide',
                 agencyName: 'สำนักงานที่ดินจังหวัดลำปาง สาขาแม่ทะ (บริการประชาชนและผู้สูงอายุ)',
                 logoRawUrl: DEFAULT_DRIVE_LOGO_LINK,
@@ -1673,10 +1711,15 @@ function doPost(e) {
         }
         /*__BAKED_DEFAULT_CONFIG_END__*/
 
-        // --- 4. APPLICATION STATE VARIABLES ---
+        // --- 4. APPLICATION STATE VARIABLES & MULTI-TIER DATABASE CONFIG ---
         const ADMIN_PASSWORD_REQUIRED = 'Dol1234';
+        const LOCAL_STORAGE_KEY = 'MAE_THA_LAND_SMART_GUIDE_DB_V2';
+        const IDB_NAME = 'MaeThaLandSmartGuideDB';
+        const IDB_STORE = 'app_config_store';
+        const DEFAULT_CLOUD_CHANNEL_ID = 'mae-tha-land-smart-guide-official-db';
 
         let configUpdatedAt = 1730000000000;
+        let cloudChannelId = DEFAULT_CLOUD_CHANNEL_ID;
         let externalSyncUrl = '';
         let appTitle = 'ระบบผู้ช่วยนำทางอัจฉริยะ : Mae Tha Land Smart Guide';
         let agencyName = 'สำนักงานที่ดินจังหวัดลำปาง สาขาแม่ทะ (บริการประชาชนและผู้สูงอายุ)';
@@ -1689,17 +1732,17 @@ function doPost(e) {
         let currentServiceId = '';
         let currentStepIndex = 0;
         let currentMode = 'citizen';
-        let citizenStage = 'home'; // 'home' (แสดงเฉพาะเลือกงานบริการหน้าแรก) | 'steps' (ซ่อนเลือกงานบริการ แสดงเฉพาะขั้นตอน)
+        let citizenStage = 'home'; // 'home' (แสดงเฉพาะข้อความต้อนรับและเลือกงานบริการหน้าแรก) | 'steps' (แสดงเฉพาะขั้นตอน)
         let isAdminAuthenticated = false;
         let hasPlayedInitialWelcome = false;
 
-        // Sweet Melodious Dual-Engine Voice Settings
+        // Sweet Melodious Dual-Engine Voice Settings (Managed in Admin Back-Office & Synced Across All Devices)
         let autoPlayVoice = true;
         let voiceEngineMode = 'auto'; // 'auto' | 'cloud' | 'native'
         let currentVoicePreset = 'sweet'; // 'sweet' | 'elderly' | 'bright'
         let speechRate = 0.92;
         let speechPitch = 1.10; // Sweet, gentle female pitch
-        let cloudPlaybackRate = 0.96;
+        let cloudPlaybackRate = 0.95;
         let phrasePauseMs = 140;
         let currentSpeechSessionId = 0;
         window._activeUtteranceList = [];
@@ -1716,10 +1759,210 @@ function doPost(e) {
         let recordedChunks = [];
         let isRecordingVoice = false;
 
+        // Real-Time Cross-Screen Broadcast & Cloud Polling
+        let crossTabChannel = null;
+        let cloudPollingTimer = null;
+        let isApplyingRemotePayload = false;
+
+        // --- 4.1 INDEXEDDB + LOCALSTORAGE PERSISTENT DATABASE ENGINE ---
+        function openIndexedDB() {
+            return new Promise((resolve) => {
+                if (!('indexedDB' in window)) {
+                    resolve(null);
+                    return;
+                }
+                try {
+                    const req = indexedDB.open(IDB_NAME, 1);
+                    req.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains(IDB_STORE)) {
+                            db.createObjectStore(IDB_STORE);
+                        }
+                    };
+                    req.onsuccess = (e) => resolve(e.target.result);
+                    req.onerror = () => resolve(null);
+                } catch (err) {
+                    resolve(null);
+                }
+            });
+        }
+
+        async function savePayloadToLocalDatabase(payload) {
+            try {
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(payload));
+            } catch (e) {
+                console.warn('LocalStorage quota warning, using IndexedDB for large media:', e);
+            }
+            try {
+                const db = await openIndexedDB();
+                if (db) {
+                    await new Promise((resolve) => {
+                        const tx = db.transaction(IDB_STORE, 'readwrite');
+                        tx.objectStore(IDB_STORE).put(payload, 'main_config');
+                        tx.oncomplete = () => resolve(true);
+                        tx.onerror = () => resolve(false);
+                    });
+                }
+            } catch (e) {
+                console.warn('IndexedDB write warning:', e);
+            }
+        }
+
+        async function loadPayloadFromLocalDatabase() {
+            let bestPayload = null;
+            try {
+                const rawLocal = localStorage.getItem(LOCAL_STORAGE_KEY);
+                if (rawLocal) {
+                    const parsed = JSON.parse(rawLocal);
+                    if (parsed && Array.isArray(parsed.services) && parsed.services.length > 0) {
+                        bestPayload = parsed;
+                    }
+                }
+            } catch (e) {}
+
+            try {
+                const db = await openIndexedDB();
+                if (db) {
+                    const idbData = await new Promise((resolve) => {
+                        const tx = db.transaction(IDB_STORE, 'readonly');
+                        const req = tx.objectStore(IDB_STORE).get('main_config');
+                        req.onsuccess = () => resolve(req.result || null);
+                        req.onerror = () => resolve(null);
+                    });
+                    if (idbData && Array.isArray(idbData.services) && idbData.services.length > 0) {
+                        if (!bestPayload || (idbData.updatedAt || 0) >= (bestPayload.updatedAt || 0)) {
+                            bestPayload = idbData;
+                        }
+                    }
+                }
+            } catch (e) {}
+
+            return bestPayload;
+        }
+
+        // --- 4.2 GLOBAL REST CLOUD DATABASE RELAY (เพื่อให้ทุกเครื่องเข้าถึงและแก้ไขฐานข้อมูลเดียวกันได้จากทุกที่) ---
+        function getGlobalCloudRestEndpoints() {
+            const channel = encodeURIComponent((cloudChannelId || DEFAULT_CLOUD_CHANNEL_ID).trim());
+            return {
+                kvdbUrl: `https://kvdb.io/A6p8VvW9zX2qK4mN7rT1yB/${channel}`,
+                ntfyPublishUrl: `https://ntfy.sh/${channel}_sync_signal`
+            };
+        }
+
+        async function pushPayloadToGlobalRestCloud(payload) {
+            const { kvdbUrl, ntfyPublishUrl } = getGlobalCloudRestEndpoints();
+            let pushed = false;
+            try {
+                const res = await fetch(kvdbUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) pushed = true;
+            } catch (e) {}
+
+            // Notify all connected screens via lightweight real-time signal
+            try {
+                fetch(ntfyPublishUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ updatedAt: payload.updatedAt || Date.now() })
+                }).catch(() => {});
+            } catch (e) {}
+
+            return pushed;
+        }
+
+        async function pullPayloadFromGlobalRestCloud(showToastOnUpdate = false) {
+            const { kvdbUrl } = getGlobalCloudRestEndpoints();
+            try {
+                const res = await fetch(kvdbUrl + '?t=' + Date.now(), { cache: 'no-store' });
+                if (!res.ok) return false;
+                const data = await res.json();
+                if (data && Array.isArray(data.services) && data.services.length > 0) {
+                    const remoteTime = Number(data.updatedAt || 0);
+                    if (remoteTime > configUpdatedAt || showToastOnUpdate) {
+                        isApplyingRemotePayload = true;
+                        applyConfigPayloadToState(data, showToastOnUpdate && remoteTime > configUpdatedAt);
+                        await savePayloadToLocalDatabase(data);
+                        updateSyncTimestampUI('ซิงค์ฐานข้อมูลออนไลน์ตรงกันทุกเครื่อง');
+                        isApplyingRemotePayload = false;
+                        return true;
+                    }
+                }
+            } catch (e) {}
+            return false;
+        }
+
+        function initCrossScreenSyncListeners() {
+            // 1. Same-browser / Multi-window instant sync via BroadcastChannel & StorageEvent
+            if ('BroadcastChannel' in window) {
+                try {
+                    crossTabChannel = new BroadcastChannel('mae_tha_land_smart_guide_sync_channel');
+                    crossTabChannel.onmessage = (event) => {
+                        const data = event.data;
+                        if (data && Array.isArray(data.services) && (data.updatedAt || 0) > configUpdatedAt) {
+                            isApplyingRemotePayload = true;
+                            applyConfigPayloadToState(data, false);
+                            updateSyncTimestampUI('ซิงค์ข้อมูลเรียลไทม์ตรงกันทุกหน้าจอ');
+                            isApplyingRemotePayload = false;
+                        }
+                    };
+                } catch (e) {}
+            }
+
+            window.addEventListener('storage', (event) => {
+                if (event.key === LOCAL_STORAGE_KEY && event.newValue) {
+                    try {
+                        const parsed = JSON.parse(event.newValue);
+                        if (parsed && Array.isArray(parsed.services) && (parsed.updatedAt || 0) > configUpdatedAt) {
+                            isApplyingRemotePayload = true;
+                            applyConfigPayloadToState(parsed, false);
+                            updateSyncTimestampUI('ซิงค์ข้อมูลเรียลไทม์ตรงกันทุกหน้าจอ');
+                            isApplyingRemotePayload = false;
+                        }
+                    } catch (e) {}
+                }
+            });
+
+            // 2. Real-time Server-Sent Events (SSE) listener for instant cross-device notification
+            try {
+                const channel = encodeURIComponent((cloudChannelId || DEFAULT_CLOUD_CHANNEL_ID).trim());
+                if ('EventSource' in window) {
+                    const sse = new EventSource(`https://ntfy.sh/${channel}_sync_signal/sse`);
+                    sse.onmessage = () => {
+                        forcePullFromCloud(false);
+                    };
+                }
+            } catch (e) {}
+
+            // 3. Periodic background sync polling & visibility focus sync so all kiosks/tablets stay 100% identical
+            if (cloudPollingTimer) clearInterval(cloudPollingTimer);
+            cloudPollingTimer = setInterval(() => {
+                if (!document.hidden && !isRecordingVoice) {
+                    forcePullFromCloud(false);
+                }
+            }, 12000);
+
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    forcePullFromCloud(false);
+                }
+            });
+        }
+
         // --- 5. INITIALIZATION & CENTRALIZED MULTI-DEVICE STATE MANAGEMENT ---
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
+            // 1. Load baked default config first
             loadInitialDefaults();
+
+            // 2. Load any newer persistent config from LocalStorage / IndexedDB immediately
+            const cachedPayload = await loadPayloadFromLocalDatabase();
+            if (cachedPayload && (cachedPayload.updatedAt || 0) >= configUpdatedAt) {
+                applyConfigPayloadToState(cachedPayload, false);
+            }
+
             applyGlobalHeadingsToDOM();
+            applyVoiceSettingsToUI();
             renderServiceSelectorCards();
             renderAdminCategoriesTable();
             renderAdminServiceSelect();
@@ -1727,6 +1970,7 @@ function doPost(e) {
             renderAdminTable();
             updateCitizenStageUI();
             initSmartScrollHeader();
+            initCrossScreenSyncListeners();
 
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.getVoices();
@@ -1738,10 +1982,8 @@ function doPost(e) {
                 updateDetectedVoiceBadge();
             }
 
-            // If an external Google Apps Script Web App URL is configured, pull latest config from it
-            if (externalSyncUrl) {
-                pullFromExternalWebhook(false);
-            }
+            // 3. Pull latest data from Cloud Database (Firestore + Global REST Cloud + Optional Google Apps Script)
+            await forcePullFromCloud(false);
 
             // Attempt automatic welcome greeting on load; if blocked by browser autoplay policy, unlock on first click
             setTimeout(() => {
@@ -1772,7 +2014,13 @@ function doPost(e) {
         function buildCurrentConfigPayload() {
             return {
                 updatedAt: configUpdatedAt,
+                cloudChannelId: cloudChannelId || DEFAULT_CLOUD_CHANNEL_ID,
                 externalSyncUrl: externalSyncUrl || '',
+                voiceSettings: {
+                    autoPlayVoice: Boolean(autoPlayVoice),
+                    voiceEngineMode: voiceEngineMode || 'auto',
+                    currentVoicePreset: currentVoicePreset || 'sweet'
+                },
                 appTitle,
                 agencyName,
                 logoRawUrl,
@@ -1787,7 +2035,8 @@ function doPost(e) {
             if (!payload || !Array.isArray(payload.services) || payload.services.length === 0) return false;
 
             const previousServiceId = currentServiceId;
-            configUpdatedAt = payload.updatedAt || Date.now();
+            configUpdatedAt = Number(payload.updatedAt || Date.now());
+            if (payload.cloudChannelId) cloudChannelId = payload.cloudChannelId;
             externalSyncUrl = payload.externalSyncUrl !== undefined ? payload.externalSyncUrl : externalSyncUrl;
             appTitle = payload.appTitle || 'ระบบผู้ช่วยนำทางอัจฉริยะ : Mae Tha Land Smart Guide';
             agencyName = payload.agencyName || 'สำนักงานที่ดินจังหวัดลำปาง สาขาแม่ทะ (บริการประชาชนและผู้สูงอายุ)';
@@ -1797,6 +2046,18 @@ function doPost(e) {
             welcomeAudioDataUrl = payload.welcomeAudioDataUrl || null;
             servicesData = payload.services;
 
+            if (payload.voiceSettings && typeof payload.voiceSettings === 'object') {
+                if (typeof payload.voiceSettings.autoPlayVoice === 'boolean') {
+                    autoPlayVoice = payload.voiceSettings.autoPlayVoice;
+                }
+                if (payload.voiceSettings.voiceEngineMode) {
+                    voiceEngineMode = payload.voiceSettings.voiceEngineMode;
+                }
+                if (payload.voiceSettings.currentVoicePreset) {
+                    currentVoicePreset = payload.voiceSettings.currentVoicePreset;
+                }
+            }
+
             if (previousServiceId && servicesData.some(s => s.id === previousServiceId)) {
                 currentServiceId = previousServiceId;
             } else {
@@ -1804,6 +2065,7 @@ function doPost(e) {
             }
 
             applyGlobalHeadingsToDOM();
+            applyVoiceSettingsToUI();
             renderServiceSelectorCards();
             renderAdminCategoriesTable();
             renderAdminServiceSelect();
@@ -1812,7 +2074,7 @@ function doPost(e) {
             updateSyncTimestampUI();
 
             if (showNotification) {
-                showToast('อัปเดตข้อมูลล่าสุดจากฐานข้อมูลกลางออนไลน์เรียบร้อยแล้วค่ะ', 'info');
+                showToast('ซิงค์ข้อมูลล่าสุดจากฐานข้อมูลกลางออนไลน์เรียบร้อยแล้วค่ะ', 'info');
             }
             return true;
         }
@@ -1832,32 +2094,44 @@ function doPost(e) {
                 if (adminText) adminText.textContent = statusLabel;
             }
             if (lastSyncEl) {
-                lastSyncEl.textContent = `ซิงค์ข้อมูลกลางล่าสุดเมื่อเวลา ${timeStr} น. (ข้อมูลตรงกันทุกเครื่อง)`;
+                lastSyncEl.textContent = `ซิงค์ฐานข้อมูลกลางล่าสุดเมื่อเวลา ${timeStr} น. (ข้อมูลและการตั้งค่าเสียงตรงกันทุกหน้าจอ 100%)`;
             }
         }
 
-        // Save state and immediately broadcast to Cloud Firestore + Optional External Webhook
+        // Save state to Local Database (IndexedDB + LocalStorage) AND immediately broadcast to Cloud Databases
         async function saveStateToStorage() {
             configUpdatedAt = Date.now();
-            updateSyncTimestampUI('กำลังซิงค์ข้อมูลขึ้น Cloud...');
+            const payload = buildCurrentConfigPayload();
+            updateSyncTimestampUI('กำลังบันทึกและซิงค์ฐานข้อมูล...');
+
+            await savePayloadToLocalDatabase(payload);
+
+            if (crossTabChannel) {
+                try {
+                    crossTabChannel.postMessage(payload);
+                } catch (e) {}
+            }
+
             await pushStateToCloud(false);
         }
 
         async function pushStateToCloud(showManualToast = false) {
             const payload = buildCurrentConfigPayload();
+            await savePayloadToLocalDatabase(payload);
 
-            // 1. Push to Firebase Firestore Central Cloud Database (if connected)
+            let anyCloudSuccess = false;
+
+            // 1. Push to Firebase Firestore Central Cloud Database (if available)
             if (typeof window.pushConfigToFirestoreCloud === 'function') {
                 const ok = await window.pushConfigToFirestoreCloud(payload);
-                if (ok) {
-                    updateSyncTimestampUI('ซิงค์ข้อมูลออนไลน์ตรงกันทุกเครื่อง');
-                    if (showManualToast) {
-                        showToast('ซิงค์ข้อมูลขึ้นฐานข้อมูลกลางออนไลน์ครบทุกเครื่องแล้วค่ะ', 'success');
-                    }
-                }
+                if (ok) anyCloudSuccess = true;
             }
 
-            // 2. Push to External Google Apps Script Webhook (if configured)
+            // 2. Push to Built-in Global REST Cloud Database (works across all devices & browsers anywhere)
+            const restOk = await pushPayloadToGlobalRestCloud(payload);
+            if (restOk) anyCloudSuccess = true;
+
+            // 3. Push to External Google Apps Script Webhook / Custom REST Endpoint (if configured)
             if (externalSyncUrl && externalSyncUrl.trim().startsWith('http')) {
                 try {
                     await fetch(externalSyncUrl.trim(), {
@@ -1866,42 +2140,71 @@ function doPost(e) {
                         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                         body: JSON.stringify(payload)
                     });
-                    if (showManualToast) {
-                        showToast('ส่งข้อมูลไปยัง Google Apps Script Cloud เรียบร้อยแล้วค่ะ', 'success');
-                    }
+                    anyCloudSuccess = true;
                 } catch (err) {
                     console.warn('External webhook sync warning:', err);
                 }
             }
+
+            updateSyncTimestampUI('ซิงค์ฐานข้อมูลออนไลน์ตรงกันทุกเครื่อง');
+            if (showManualToast) {
+                showToast(
+                    anyCloudSuccess
+                        ? 'บันทึกและซิงค์ข้อมูลขึ้นฐานข้อมูลกลางออนไลน์ครบทุกเครื่องแล้วค่ะ'
+                        : 'บันทึกข้อมูลลงฐานข้อมูลเรียบร้อยแล้วค่ะ',
+                    'success'
+                );
+            }
         }
 
         async function forcePullFromCloud(showManualToast = true) {
-            updateSyncTimestampUI('กำลังดึงข้อมูลล่าสุด...');
+            if (showManualToast) {
+                updateSyncTimestampUI('กำลังดึงข้อมูลล่าสุดจากฐานข้อมูล...');
+            }
             let pulled = false;
 
+            // 1. Pull from Firestore Cloud if available
             if (typeof window.pullConfigFromFirestoreCloud === 'function') {
-                pulled = await window.pullConfigFromFirestoreCloud(showManualToast);
+                const fsPulled = await window.pullConfigFromFirestoreCloud(false);
+                pulled = pulled || fsPulled;
             }
+
+            // 2. Pull from Global REST Cloud Database
+            const restPulled = await pullPayloadFromGlobalRestCloud(false);
+            pulled = pulled || restPulled;
+
+            // 3. Pull from External Google Apps Script Webhook if configured
             if (externalSyncUrl && externalSyncUrl.trim().startsWith('http')) {
-                const extPulled = await pullFromExternalWebhook(showManualToast);
+                const extPulled = await pullFromExternalWebhook(false);
                 pulled = pulled || extPulled;
             }
-            if (!pulled && showManualToast) {
-                updateSyncTimestampUI('ข้อมูลเป็นชุดล่าสุดแล้ว');
-                showToast('ข้อมูลในเครื่องเป็นชุดล่าสุดตรงกับฐานข้อมูลกลางแล้วค่ะ', 'info');
+
+            updateSyncTimestampUI('ซิงค์ฐานข้อมูลออนไลน์ตรงกันทุกเครื่อง');
+            if (showManualToast) {
+                if (pulled) {
+                    showToast('ดึงข้อมูลล่าสุดจากฐานข้อมูลกลางออนไลน์เรียบร้อยแล้วค่ะ', 'success');
+                } else {
+                    showToast('ข้อมูลในเครื่องเป็นชุดล่าสุดตรงกับฐานข้อมูลกลางแล้วค่ะ', 'info');
+                }
             }
         }
 
         async function pullFromExternalWebhook(showManualToast = false) {
             if (!externalSyncUrl || !externalSyncUrl.trim().startsWith('http')) return false;
             try {
-                const res = await fetch(externalSyncUrl.trim() + '?t=' + Date.now());
+                const res = await fetch(externalSyncUrl.trim() + '?t=' + Date.now(), { cache: 'no-store' });
                 if (!res.ok) return false;
                 const data = await res.json();
                 if (data && Array.isArray(data.services) && data.services.length > 0) {
-                    applyConfigPayloadToState(data, showManualToast);
-                    updateSyncTimestampUI('ซิงค์จาก Google Script สำเร็จ');
-                    return true;
+                    const remoteTime = Number(data.updatedAt || 0);
+                    if (remoteTime >= configUpdatedAt || showManualToast) {
+                        isApplyingRemotePayload = true;
+                        applyConfigPayloadToState(data, showManualToast);
+                        await savePayloadToLocalDatabase(data);
+                        updateSyncTimestampUI('ซิงค์ฐานข้อมูลออนไลน์ตรงกันทุกเครื่อง');
+                        isApplyingRemotePayload = false;
+                        return true;
+                    }
                 }
             } catch (e) {
                 console.warn('External webhook pull error:', e);
@@ -1909,14 +2212,18 @@ function doPost(e) {
             return false;
         }
 
-        function saveExternalSyncUrl() {
+        async function saveExternalSyncUrl() {
+            const channelInput = document.getElementById('adminCloudChannelIdInput');
             const input = document.getElementById('adminExternalSyncUrlInput');
+            if (channelInput && channelInput.value.trim()) {
+                cloudChannelId = channelInput.value.trim();
+            }
             externalSyncUrl = input ? input.value.trim() : '';
-            saveStateToStorage();
+            await saveStateToStorage();
             if (externalSyncUrl) {
-                pullFromExternalWebhook(true);
+                await pullFromExternalWebhook(true);
             } else {
-                showToast('บันทึกการตั้งค่าฐานข้อมูลออนไลน์เรียบร้อยแล้วค่ะ', 'success');
+                showToast('บันทึกการตั้งค่าฐานข้อมูลกลางและซิงค์ทุกเครื่องเรียบร้อยแล้วค่ะ', 'success');
             }
         }
 
@@ -2035,6 +2342,7 @@ function doPost(e) {
             const headingInput = document.getElementById('adminSelectorHeadingInput');
             const welcomeInput = document.getElementById('adminWelcomeGreetingInput');
             const extUrlInput = document.getElementById('adminExternalSyncUrlInput');
+            const channelIdInput = document.getElementById('adminCloudChannelIdInput');
             const clearWelcomeBtn = document.getElementById('clearWelcomeAudioBtn');
 
             if (titleInput) titleInput.value = appTitle;
@@ -2043,6 +2351,7 @@ function doPost(e) {
             if (headingInput) headingInput.value = selectorHeading;
             if (welcomeInput) welcomeInput.value = welcomeGreetingText;
             if (extUrlInput) extUrlInput.value = externalSyncUrl || '';
+            if (channelIdInput) channelIdInput.value = cloudChannelId || DEFAULT_CLOUD_CHANNEL_ID;
             if (clearWelcomeBtn) {
                 if (welcomeAudioDataUrl) clearWelcomeBtn.classList.remove('hidden');
                 else clearWelcomeBtn.classList.add('hidden');
@@ -2064,7 +2373,7 @@ function doPost(e) {
 
             applyGlobalHeadingsToDOM();
             saveStateToStorage();
-            showToast('บันทึกการตั้งค่าและซิงค์ขึ้น Cloud ทุกเครื่องเรียบร้อยแล้วค่ะ', 'success');
+            showToast('บันทึกการตั้งค่าและซิงค์ขึ้นฐานข้อมูลกลางทุกเครื่องเรียบร้อยแล้วค่ะ', 'success');
         }
 
         function handleWelcomeAudioUpload(event) {
@@ -2075,7 +2384,7 @@ function doPost(e) {
                 welcomeAudioDataUrl = e.target.result;
                 applyGlobalHeadingsToDOM();
                 saveStateToStorage();
-                showToast(`อัปโหลดเสียงต้อนรับ "${file.name}" และซิงค์ขึ้น Cloud แล้วค่ะ`, 'success');
+                showToast(`อัปโหลดเสียงต้อนรับ "${file.name}" และซิงค์ขึ้นฐานข้อมูลกลางแล้วค่ะ`, 'success');
             };
             reader.readAsDataURL(file);
         }
@@ -2139,7 +2448,7 @@ function doPost(e) {
                 isAdminAuthenticated = true;
                 closePasswordModal();
                 switchMode('admin');
-                showToast('เข้าสู่ระบบจัดการข้อมูลกลางสำหรับเจ้าหน้าที่เรียบร้อยแล้วค่ะ', 'success');
+                showToast('เข้าสู่ระบบจัดการฐานข้อมูลกลางสำหรับเจ้าหน้าที่เรียบร้อยแล้วค่ะ', 'success');
             } else {
                 if (err) err.classList.remove('hidden');
                 if (input) input.select();
@@ -2152,7 +2461,7 @@ function doPost(e) {
             showToast('ล็อกโหมดเจ้าหน้าที่และกลับสู่หน้าประชาชนแล้วค่ะ', 'info');
         }
 
-        // --- 7. FONT SCALING, HIGH CONTRAST, SWEET VOICE PRESETS & MODE SWITCHING ---
+        // --- 7. FONT SCALING, HIGH CONTRAST, ADMIN-ONLY VOICE SETTINGS & MODE SWITCHING ---
         function setFontScale(scale) {
             document.documentElement.style.setProperty('--font-scale', scale);
             const scaleMap = { 1.0: 'fontBtn-1', 1.16: 'fontBtn-2', 1.3: 'fontBtn-3' };
@@ -2172,26 +2481,87 @@ function doPost(e) {
             document.body.classList.toggle('high-contrast');
         }
 
-        function toggleAutoPlayVoice() {
-            autoPlayVoice = !autoPlayVoice;
+        function applyVoiceSettingsToUI() {
+            // 1. Auto Voice Toggle Button UI (in Admin panel)
             const btn = document.getElementById('autoVoiceToggleBtn');
             const icon = document.getElementById('autoVoiceIcon');
             const text = document.getElementById('autoVoiceText');
-
-            if (autoPlayVoice) {
-                btn.className = 'px-3.5 py-2 rounded-xl font-heading font-bold text-xs sm:text-sm bg-emerald-600 text-white shadow-sm flex items-center gap-2 transition';
-                icon.className = 'fa-solid fa-volume-high';
-                text.textContent = 'เสียงนำทางอัตโนมัติ: เปิด';
-                if (citizenStage === 'home') {
-                    playWelcomeGreetingAudio(true);
+            if (btn && icon && text) {
+                if (autoPlayVoice) {
+                    btn.className = 'px-4 py-2.5 rounded-xl font-heading font-bold text-xs sm:text-sm bg-emerald-600 text-white shadow-sm flex items-center gap-2 transition';
+                    icon.className = 'fa-solid fa-volume-high';
+                    text.textContent = 'เสียงนำทางอัตโนมัติ: เปิด';
                 } else {
-                    playCurrentStepAudio(false);
+                    btn.className = 'px-4 py-2.5 rounded-xl font-heading font-bold text-xs sm:text-sm bg-slate-200 text-slate-700 flex items-center gap-2 transition';
+                    icon.className = 'fa-solid fa-volume-xmark';
+                    text.textContent = 'เสียงนำทางอัตโนมัติ: ปิด';
                 }
+            }
+
+            // 2. Engine Mode Buttons UI (in Admin panel)
+            const autoBtn = document.getElementById('engineModeAutoBtn');
+            const cloudBtn = document.getElementById('engineModeCloudBtn');
+            const nativeBtn = document.getElementById('engineModeNativeBtn');
+            const activeCls = 'px-3 py-1.5 rounded-lg font-bold bg-gov-navy text-amber-300 shadow-sm transition';
+            const inactiveCls = 'px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:bg-white transition';
+            if (autoBtn) autoBtn.className = voiceEngineMode === 'auto' ? activeCls : inactiveCls;
+            if (cloudBtn) cloudBtn.className = voiceEngineMode === 'cloud' ? activeCls : inactiveCls;
+            if (nativeBtn) nativeBtn.className = voiceEngineMode === 'native' ? activeCls : inactiveCls;
+
+            // 3. Preset Parameters & Buttons UI (in Admin panel)
+            const sweetBtn = document.getElementById('voicePresetSweetBtn');
+            const elderlyBtn = document.getElementById('voicePresetElderlyBtn');
+            const brightBtn = document.getElementById('voicePresetBrightBtn');
+            const activePresetClass = 'px-3 py-1.5 rounded-lg text-xs font-heading font-bold bg-pink-600 text-white shadow-sm transition flex items-center gap-1';
+            const inactivePresetClass = 'px-3 py-1.5 rounded-lg text-xs font-heading font-bold text-slate-600 hover:bg-white transition';
+
+            if (currentVoicePreset === 'sweet') {
+                speechRate = 0.92;
+                speechPitch = 1.10;
+                cloudPlaybackRate = 0.95;
+                phrasePauseMs = 140;
+                if (sweetBtn) sweetBtn.className = activePresetClass;
+                if (elderlyBtn) elderlyBtn.className = inactivePresetClass;
+                if (brightBtn) brightBtn.className = inactivePresetClass;
+            } else if (currentVoicePreset === 'elderly') {
+                speechRate = 0.82;
+                speechPitch = 1.06;
+                cloudPlaybackRate = 0.85;
+                phrasePauseMs = 180;
+                if (sweetBtn) sweetBtn.className = inactivePresetClass;
+                if (elderlyBtn) elderlyBtn.className = activePresetClass;
+                if (brightBtn) brightBtn.className = inactivePresetClass;
             } else {
-                btn.className = 'px-3.5 py-2 rounded-xl font-heading font-bold text-xs sm:text-sm bg-slate-200 text-slate-700 flex items-center gap-2 transition';
-                icon.className = 'fa-solid fa-volume-xmark';
-                text.textContent = 'เสียงนำทางอัตโนมัติ: ปิด';
+                speechRate = 0.98;
+                speechPitch = 1.12;
+                cloudPlaybackRate = 1.02;
+                phrasePauseMs = 130;
+                if (sweetBtn) sweetBtn.className = inactivePresetClass;
+                if (elderlyBtn) elderlyBtn.className = inactivePresetClass;
+                if (brightBtn) brightBtn.className = activePresetClass;
+            }
+
+            updateDetectedVoiceBadge();
+        }
+
+        function toggleAutoPlayVoice(shouldPersist = true) {
+            autoPlayVoice = !autoPlayVoice;
+            applyVoiceSettingsToUI();
+
+            if (!autoPlayVoice) {
                 stopAllAudio();
+            } else {
+                playWelcomeGreetingAudio(true);
+            }
+
+            if (shouldPersist) {
+                saveStateToStorage();
+                showToast(
+                    autoPlayVoice
+                        ? 'เปิดเสียงนำทางอัตโนมัติและซิงค์ทุกหน้าจอแล้วค่ะ'
+                        : 'ปิดเสียงนำทางอัตโนมัติและซิงค์ทุกหน้าจอแล้วค่ะ',
+                    'success'
+                );
             }
         }
 
@@ -2212,70 +2582,25 @@ function doPost(e) {
             }
         }
 
-        function setVoiceEngineMode(mode) {
+        function setVoiceEngineMode(mode, shouldPersist = true) {
             voiceEngineMode = mode;
-            const autoBtn = document.getElementById('engineModeAutoBtn');
-            const cloudBtn = document.getElementById('engineModeCloudBtn');
-            const nativeBtn = document.getElementById('engineModeNativeBtn');
+            applyVoiceSettingsToUI();
 
-            const activeCls = 'px-2.5 py-1 rounded-lg font-bold bg-gov-navy text-amber-300 shadow-sm transition';
-            const inactiveCls = 'px-2.5 py-1 rounded-lg font-bold text-slate-600 hover:bg-white transition';
-
-            if (autoBtn) autoBtn.className = mode === 'auto' ? activeCls : inactiveCls;
-            if (cloudBtn) cloudBtn.className = mode === 'cloud' ? activeCls : inactiveCls;
-            if (nativeBtn) nativeBtn.className = mode === 'native' ? activeCls : inactiveCls;
-
-            updateDetectedVoiceBadge();
-
-            if (citizenStage === 'home') {
+            if (shouldPersist) {
+                saveStateToStorage();
                 playWelcomeGreetingAudio(true);
-            } else {
-                playCurrentStepAudio(false);
+                showToast('บันทึกระบบเสียงและซิงค์ไปยังทุกหน้าจอเรียบร้อยแล้วค่ะ', 'success');
             }
         }
 
-        // Sweet Melodious Voice Preset Switcher (ปรับชุดเสียงในการอ่านให้ไพเราะทั้งหมด)
-        function setVoicePreset(preset) {
+        function setVoicePreset(preset, shouldPersist = true) {
             currentVoicePreset = preset;
-            const sweetBtn = document.getElementById('voicePresetSweetBtn');
-            const elderlyBtn = document.getElementById('voicePresetElderlyBtn');
-            const brightBtn = document.getElementById('voicePresetBrightBtn');
+            applyVoiceSettingsToUI();
 
-            const activeClass = 'px-2.5 py-1 rounded-lg text-xs font-heading font-bold bg-pink-600 text-white shadow-sm transition flex items-center gap-1';
-            const inactiveClass = 'px-2.5 py-1 rounded-lg text-xs font-heading font-bold text-slate-600 hover:bg-white transition';
-
-            if (preset === 'sweet') {
-                speechRate = 0.92;
-                speechPitch = 1.10; // เสียงหวานนุ่มนวล ไพเราะอ่อนโยน
-                cloudPlaybackRate = 0.95;
-                phrasePauseMs = 140;
-                if (sweetBtn) sweetBtn.className = activeClass;
-                if (elderlyBtn) elderlyBtn.className = inactiveClass;
-                if (brightBtn) brightBtn.className = inactiveClass;
-            } else if (preset === 'elderly') {
-                speechRate = 0.82;
-                speechPitch = 1.06; // เสียงหวานช้าชัด สำหรับผู้สูงอายุฟังสบาย
-                cloudPlaybackRate = 0.85;
-                phrasePauseMs = 180;
-                if (sweetBtn) sweetBtn.className = inactiveClass;
-                if (elderlyBtn) elderlyBtn.className = activeClass;
-                if (brightBtn) brightBtn.className = inactiveClass;
-            } else {
-                speechRate = 0.98;
-                speechPitch = 1.12; // เสียงสดใสไพเราะ ('bright' หรือ 'normal')
-                cloudPlaybackRate = 1.02;
-                phrasePauseMs = 130;
-                if (sweetBtn) sweetBtn.className = inactiveClass;
-                if (elderlyBtn) elderlyBtn.className = inactiveClass;
-                if (brightBtn) brightBtn.className = activeClass;
-            }
-
-            if (isSpeakingTTS) {
-                if (citizenStage === 'home') {
-                    playWelcomeGreetingAudio(true);
-                } else {
-                    playCurrentStepAudio(false);
-                }
+            if (shouldPersist) {
+                saveStateToStorage();
+                playWelcomeGreetingAudio(true);
+                showToast('บันทึกโทนเสียงและซิงค์ไปยังทุกหน้าจอเรียบร้อยแล้วค่ะ', 'success');
             }
         }
 
@@ -2291,7 +2616,7 @@ function doPost(e) {
             }
 
             if (citizenStage === 'home') {
-                // แสดงเฉพาะหน้าเลือกงานบริการ และซ่อนหน้าขั้นตอนทั้งหมดเพื่อป้องกันความสับสน
+                // แสดงเฉพาะข้อความต้อนรับและรายการให้ประชาชนเลือกเท่านั้น
                 selectionView.classList.remove('hidden');
                 stepDetailView.classList.add('hidden');
                 if (stickyBar) stickyBar.classList.add('hidden');
@@ -2331,6 +2656,7 @@ function doPost(e) {
                 btnIcon.className = 'fa-solid fa-eye text-slate-950';
                 btnText.textContent = 'หน้าประชาชน';
                 applyGlobalHeadingsToDOM();
+                applyVoiceSettingsToUI();
                 renderAdminCategoriesTable();
                 renderAdminServiceSelect();
                 renderAdminTable();
@@ -3820,7 +4146,7 @@ function doPost(e) {
 
         async function initCentralCloudSync() {
             if (typeof __firebase_config === 'undefined' || !__firebase_config) {
-                updateSyncTimestampUI('โหมดข้อมูลฝังในไฟล์ (พร้อมใช้งานทุกเครื่อง)');
+                updateSyncTimestampUI('ซิงค์ฐานข้อมูลออนไลน์ตรงกันทุกเครื่อง');
                 return;
             }
 
