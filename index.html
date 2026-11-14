@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
     <title>ระบบผู้ช่วยนำทางอัจฉริยะ : Mae Tha Land Smart Guide</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -158,8 +159,15 @@
                                  onerror="handleLogoFallback(this)">
                         </div>
                         <div class="min-w-0">
-                            <div id="headerAgencyBadge" class="text-amber-300 text-xs sm:text-sm font-heading font-semibold tracking-wide truncate">
-                                สำนักงานที่ดินจังหวัดลำปาง สาขาแม่ทะ (บริการประชาชนและผู้สูงอายุ)
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span id="headerAgencyBadge" class="text-amber-300 text-xs sm:text-sm font-heading font-semibold tracking-wide truncate">
+                                    สำนักงานที่ดินจังหวัดลำปาง สาขาแม่ทะ (บริการประชาชนและผู้สูงอายุ)
+                                </span>
+                                <!-- Real-Time Cloud Sync Status Badge -->
+                                <span id="cloudSyncHeaderBadge" onclick="event.stopPropagation(); forcePullFromCloud(true);" class="cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-heading font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 hover:bg-emerald-500/30 transition" title="แตะเพื่อซิงค์ข้อมูลล่าสุดจากฐานข้อมูลกลางออนไลน์">
+                                    <span id="cloudSyncDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                    <span id="cloudSyncHeaderText">ซิงค์ข้อมูลออนไลน์ตรงกันทุกเครื่อง</span>
+                                </span>
                             </div>
                             <h1 id="headerAppTitle" class="text-base sm:text-xl md:text-2xl font-extrabold font-heading tracking-tight text-white leading-snug">
                                 ระบบผู้ช่วยนำทางอัจฉริยะ : Mae Tha Land Smart Guide
@@ -210,8 +218,8 @@
         <!-- =================================================================== -->
         <section id="citizenModeSection" class="space-y-5 sm:space-y-6">
 
-            <!-- 1.0 Sweet Melodious Voice Control Bar (Auto-Voice Toggle & 3 Sweet Voice Styles) -->
-            <div class="hc-card bg-white rounded-2xl shadow-sm border border-slate-200/90 px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <!-- 1.0 Sweet Melodious Voice Control Bar (Auto-Voice Toggle, Engine Selector & 3 Sweet Voice Styles) -->
+            <div class="hc-card bg-white rounded-2xl shadow-sm border border-slate-200/90 px-4 py-3 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
                 <div class="flex flex-wrap items-center gap-2">
                     <button data-audio-trigger="true" onclick="toggleAutoPlayVoice()" id="autoVoiceToggleBtn" class="px-3.5 py-2 rounded-xl font-heading font-bold text-xs sm:text-sm bg-emerald-600 text-white shadow-sm flex items-center gap-2 transition">
                         <i id="autoVoiceIcon" class="fa-solid fa-volume-high"></i>
@@ -221,25 +229,42 @@
                         <i class="fa-solid fa-face-smile-beam text-amber-600"></i>
                         <span>ฟังเสียงต้อนรับ</span>
                     </button>
+
+                    <!-- Engine Mode Selector Pill (แก้ปัญหาเครื่องไม่มีเสียงไทยใน Windows/Browser) -->
+                    <div class="inline-flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-heading">
+                        <span class="text-slate-500 font-semibold px-2 hidden sm:inline"><i class="fa-solid fa-tower-broadcast text-emerald-600 mr-1"></i>ระบบเสียง:</span>
+                        <button type="button" data-audio-trigger="true" onclick="setVoiceEngineMode('auto')" id="engineModeAutoBtn" class="px-2.5 py-1 rounded-lg font-bold bg-gov-navy text-amber-300 shadow-sm transition">
+                            อัตโนมัติ (แนะนำ)
+                        </button>
+                        <button type="button" data-audio-trigger="true" onclick="setVoiceEngineMode('cloud')" id="engineModeCloudBtn" class="px-2.5 py-1 rounded-lg font-bold text-slate-600 hover:bg-white transition">
+                            เสียงออนไลน์ (ดังทุกเครื่อง)
+                        </button>
+                        <button type="button" data-audio-trigger="true" onclick="setVoiceEngineMode('native')" id="engineModeNativeBtn" class="px-2.5 py-1 rounded-lg font-bold text-slate-600 hover:bg-white transition">
+                            เสียงในเครื่อง
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3 Sweet Melodious Voice Style Presets -->
+                <div class="flex flex-wrap items-center justify-between sm:justify-end gap-2">
                     <span id="detectedVoiceBadge" class="inline-flex items-center gap-1.5 text-[11px] font-heading font-semibold text-pink-700 bg-pink-50 border border-pink-200 px-2.5 py-1 rounded-full">
                         <i class="fa-solid fa-wand-magic-sparkles text-pink-500"></i>
                         <span id="detectedVoiceNameText">ชุดเสียงหวานไพเราะพร้อมใช้งาน</span>
                     </span>
-                </div>
 
-                <!-- 3 Sweet Melodious Voice Style Presets -->
-                <div class="flex flex-wrap items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
-                    <span class="text-xs font-heading font-semibold text-slate-600 px-2 hidden sm:inline">ชุดเสียงอ่าน:</span>
-                    <button data-audio-trigger="true" onclick="setVoicePreset('sweet')" id="voicePresetSweetBtn" class="px-2.5 py-1 rounded-lg text-xs font-heading font-bold bg-pink-600 text-white shadow-sm transition flex items-center gap-1">
-                        <i class="fa-solid fa-heart text-[10px]"></i>
-                        <span>หวานนุ่มนวล</span>
-                    </button>
-                    <button data-audio-trigger="true" onclick="setVoicePreset('elderly')" id="voicePresetElderlyBtn" class="px-2.5 py-1 rounded-lg text-xs font-heading font-bold text-slate-600 hover:bg-white transition">
-                        หวานช้าชัด (ผู้สูงอายุ)
-                    </button>
-                    <button data-audio-trigger="true" onclick="setVoicePreset('bright')" id="voicePresetBrightBtn" class="px-2.5 py-1 rounded-lg text-xs font-heading font-bold text-slate-600 hover:bg-white transition">
-                        สดใสไพเราะ
-                    </button>
+                    <div class="flex flex-wrap items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                        <span class="text-xs font-heading font-semibold text-slate-600 px-2 hidden sm:inline">โทนเสียง:</span>
+                        <button data-audio-trigger="true" onclick="setVoicePreset('sweet')" id="voicePresetSweetBtn" class="px-2.5 py-1 rounded-lg text-xs font-heading font-bold bg-pink-600 text-white shadow-sm transition flex items-center gap-1">
+                            <i class="fa-solid fa-heart text-[10px]"></i>
+                            <span>หวานนุ่มนวล</span>
+                        </button>
+                        <button data-audio-trigger="true" onclick="setVoicePreset('elderly')" id="voicePresetElderlyBtn" class="px-2.5 py-1 rounded-lg text-xs font-heading font-bold text-slate-600 hover:bg-white transition">
+                            หวานช้าชัด (ผู้สูงอายุ)
+                        </button>
+                        <button data-audio-trigger="true" onclick="setVoicePreset('bright')" id="voicePresetBrightBtn" class="px-2.5 py-1 rounded-lg text-xs font-heading font-bold text-slate-600 hover:bg-white transition">
+                            ปกติไพเราะ
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -251,7 +276,6 @@
 
                 <!-- Sweet Welcome Audio Greeting Banner -->
                 <div class="hc-card bg-gradient-to-r from-gov-navy via-gov-navyLight to-indigo-950 text-white rounded-3xl shadow-lg border-2 border-amber-400 p-4 sm:p-6 relative overflow-hidden">
-                    <!-- Decorative subtle glow -->
                     <div class="absolute -right-10 -bottom-10 w-44 h-44 rounded-full bg-amber-400/10 blur-2xl pointer-events-none"></div>
 
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
@@ -334,7 +358,7 @@
                 <div class="hc-card bg-white rounded-3xl shadow-md border-2 border-amber-400 p-3.5 sm:p-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                     <button data-audio-trigger="true" onclick="backToServiceSelection(true)" class="py-3.5 px-5 rounded-2xl bg-gov-navy hover:bg-gov-navyLight text-white font-heading font-extrabold elderly-scale-base flex items-center justify-center gap-2.5 shadow-md transition active:scale-95">
                         <i class="fa-solid fa-arrow-left text-amber-400 text-xl"></i>
-                        <span>เลือกงานบริการอื่น / กลับหน้าแรก</span>
+                        <span>เปลี่ยนงานบริการ / กลับหน้าแรก</span>
                     </button>
 
                     <div class="flex items-center justify-between sm:justify-end gap-3 bg-amber-50/90 px-4 py-2.5 rounded-2xl border border-amber-200 flex-1 sm:flex-initial">
@@ -510,21 +534,36 @@
                         <i class="fa-solid fa-user-shield"></i>
                     </div>
                     <div>
-                        <div class="flex items-center gap-2">
+                        <div class="flex flex-wrap items-center gap-2">
                             <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-heading font-semibold px-2.5 py-0.5 rounded-full">
                                 ยืนยันรหัสผ่านเจ้าหน้าที่แล้ว (Dol1234)
                             </span>
+                            <span id="adminCloudStatusPill" class="bg-sky-500/20 text-sky-300 border border-sky-400/30 text-xs font-heading font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+                                <i class="fa-solid fa-cloud-bolt"></i>
+                                <span id="adminCloudStatusText">เชื่อมต่อฐานข้อมูลกลางออนไลน์แล้ว</span>
+                            </span>
                         </div>
-                        <h2 class="text-xl sm:text-2xl font-bold font-heading mt-0.5">
-                            ระบบจัดการข้อมูลงานบริการ เสียงต้อนรับ และขั้นตอน (สำหรับเจ้าหน้าที่)
+                        <h2 class="text-xl sm:text-2xl font-bold font-heading mt-1">
+                            ระบบจัดการข้อมูลกลางออนไลน์ (ซิงค์ข้อมูลตรงกันทุกเครื่องอัตโนมัติ)
                         </h2>
+                        <p id="adminLastSyncTimeText" class="text-xs text-slate-300 mt-0.5">
+                            เมื่อเจ้าหน้าที่กดบันทึก ข้อมูลจะถูกอัปเดตไปยังทุกเครื่องที่เปิดใช้งานอยู่ทันที
+                        </p>
                     </div>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-2.5">
-                    <button onclick="exportReadyToDeployHTML()" class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-heading font-bold text-sm flex items-center gap-2 shadow transition" title="ดาวน์โหลดไฟล์ index.html ที่บันทึกข้อมูลล่าสุดฝังในไฟล์ พร้อมนำไปอัปโหลดขึ้นเว็บออนไลน์ทันที">
+                    <button onclick="pushStateToCloud(true)" class="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-heading font-bold text-sm flex items-center gap-2 shadow transition" title="บังคับส่งข้อมูลชุดปัจจุบันขึ้นฐานข้อมูลกลางออนไลน์เพื่อให้ทุกเครื่องแสดงผลเหมือนกันทันที">
                         <i class="fa-solid fa-cloud-arrow-up"></i>
-                        <span>ดาวน์โหลดไฟล์เว็บพร้อมอัปโหลดออนไลน์ (index.html)</span>
+                        <span>ซิงค์ข้อมูลขึ้น Cloud ทันที</span>
+                    </button>
+                    <button onclick="forcePullFromCloud(true)" class="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-heading font-medium text-sm flex items-center gap-2 border border-white/15 transition" title="ดึงข้อมูลล่าสุดจากฐานข้อมูลกลางออนไลน์">
+                        <i class="fa-solid fa-arrows-rotate text-emerald-300"></i>
+                        <span>ดึงข้อมูลล่าสุด</span>
+                    </button>
+                    <button onclick="exportReadyToDeployHTML()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-heading font-bold text-sm flex items-center gap-2 shadow transition" title="ดาวน์โหลดไฟล์ index.html ที่ฝังข้อมูลชุดล่าสุดไว้ในไฟล์แล้ว พร้อมนำไปอัปโหลดขึ้นเว็บออนไลน์ทันที">
+                        <i class="fa-solid fa-file-code"></i>
+                        <span>ดาวน์โหลด index.html (ฝังข้อมูลล่าสุด)</span>
                     </button>
                     <button onclick="exportDataJSON()" class="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-heading font-medium text-sm flex items-center gap-2 border border-white/15 transition">
                         <i class="fa-solid fa-download text-amber-400"></i>
@@ -535,7 +574,7 @@
                         <span>นำเข้า JSON</span>
                         <input type="file" accept=".json,application/json" class="hidden" onchange="importDataJSON(event)">
                     </label>
-                    <button onclick="resetToDefaultData()" class="px-3.5 py-2.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 font-heading font-medium text-sm flex items-center gap-2 border border-rose-400/30 transition">
+                    <button onclick="openResetConfirmModal()" class="px-3.5 py-2.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 font-heading font-medium text-sm flex items-center gap-2 border border-rose-400/30 transition">
                         <i class="fa-solid fa-rotate-left"></i>
                         <span>คืนค่าเริ่มต้น</span>
                     </button>
@@ -543,6 +582,44 @@
                         <i class="fa-solid fa-lock"></i>
                         <span>ล็อกระบบ / กลับหน้าประชาชน</span>
                     </button>
+                </div>
+            </div>
+
+            <!-- PART 0: MULTI-DEVICE CLOUD DATABASE & EXTERNAL GOOGLE SHEETS WEBHOOK CONFIG -->
+            <div class="bg-gradient-to-r from-sky-950 via-gov-navy to-slate-900 text-white rounded-3xl shadow-md p-5 sm:p-6 border border-sky-400/30">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <div class="inline-flex items-center gap-2 text-sky-300 font-heading font-bold text-xs uppercase tracking-wider">
+                            <i class="fa-solid fa-database"></i>
+                            <span>ระบบฐานข้อมูลกลางออนไลน์ (Multi-Device Cloud Sync)</span>
+                        </div>
+                        <h3 class="font-heading font-bold text-base sm:text-lg text-white">
+                            เปิดจากเครื่องไหนก็แสดงข้อมูลชุดเดียวกันทั้งหมด 100%
+                        </h3>
+                        <p class="text-xs sm:text-sm text-slate-300">
+                            ระบบเชื่อมต่อกับฐานข้อมูลกลาง Cloud อัตโนมัติ และรองรับการผูก <strong>Google Apps Script Web App URL</strong> เสริมสำหรับกรณีนำไฟล์ <code>index.html</code> ไปอัปโหลดบน GitHub Pages หรือโฮสติ้งภายนอก
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 shrink-0">
+                        <button type="button" onclick="openAppsScriptGuideModal()" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-amber-300 border border-amber-400/30 font-heading font-bold text-xs flex items-center gap-1.5 transition">
+                            <i class="fa-solid fa-code"></i>
+                            <span>ดูโค้ด Google Apps Script สำเร็จรูป</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-white/10 grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                    <div class="md:col-span-9">
+                        <label class="block font-heading font-semibold text-sky-200 text-xs mb-1">
+                            ลิงก์ฐานข้อมูล Google Apps Script Web App URL (เว้นว่างไว้ได้หากใช้งานผ่าน Cloud ปกติของระบบ):
+                        </label>
+                        <input type="text" id="adminExternalSyncUrlInput" placeholder="https://script.google.com/macros/s/.../exec (ตัวเลือกเสริมสำหรับ GitHub Pages)" class="w-full px-3.5 py-2 rounded-xl bg-slate-900/90 border border-slate-600 text-white text-sm focus:border-amber-400 focus:outline-none">
+                    </div>
+                    <div class="md:col-span-3 flex gap-2">
+                        <button type="button" onclick="saveExternalSyncUrl()" class="flex-1 py-2 px-3 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-heading font-bold text-xs sm:text-sm transition shadow">
+                            บันทึกและซิงค์ข้อมูล
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -715,7 +792,7 @@
                 <span id="footerSystemTitle" class="font-heading font-semibold text-white">ระบบผู้ช่วยนำทางอัจฉริยะ : Mae Tha Land Smart Guide</span>
             </div>
             <div class="text-slate-400 text-center sm:text-right">
-                ออกแบบสำหรับผู้สูงอายุและประชาชนทั่วไป • ใช้งานง่าย ชัดเจน พร้อมเสียงภาษาไทยอ่อนหวานไพเราะอัตโนมัติ
+                ออกแบบสำหรับผู้สูงอายุและประชาชนทั่วไป • ซิงค์ข้อมูลออนไลน์ทุกเครื่อง • พร้อมเสียงภาษาไทยอ่อนหวานไพเราะ
             </div>
         </div>
     </footer>
@@ -748,7 +825,7 @@
             <form onsubmit="verifyAdminPassword(event)" class="p-6 space-y-4">
                 <div>
                     <label for="adminPasswordInput" class="block font-heading font-bold text-slate-800 text-sm mb-2">
-                        กรุณากรอกรหัสผ่านเจ้าหน้าที่เพื่อเข้าสู่โหมดจัดการข้อมูล:
+                        กรุณากรอกรหัสผ่านเจ้าหน้าที่เพื่อเข้าสู่โหมดจัดการข้อมูลกลาง:
                     </label>
                     <div class="relative">
                         <input type="password" id="adminPasswordInput" required placeholder="กรอกรหัสผ่าน..." class="w-full pl-4 pr-12 py-3 rounded-xl border-2 border-slate-300 focus:border-gov-navy focus:outline-none font-heading text-lg tracking-wider">
@@ -839,7 +916,7 @@
                 </div>
                 <div class="flex justify-end gap-2.5 pt-3 border-t border-slate-200">
                     <button type="button" onclick="closeServiceCategoryModal()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-heading font-bold text-sm">ยกเลิก</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-heading font-bold text-sm shadow">บันทึกหัวข้อบริการ</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-heading font-bold text-sm shadow">บันทึกและซิงค์ขึ้น Cloud</button>
                 </div>
             </form>
         </div>
@@ -990,7 +1067,7 @@
                     </button>
                     <button type="submit" class="px-6 py-2.5 rounded-xl bg-gov-navy hover:bg-gov-navyLight text-white font-heading font-bold text-sm flex items-center gap-2 shadow-md">
                         <i class="fa-solid fa-floppy-disk text-amber-400"></i>
-                        <span>บันทึกขั้นตอน</span>
+                        <span>บันทึกและซิงค์ขึ้น Cloud</span>
                     </button>
                 </div>
             </form>
@@ -1035,11 +1112,11 @@
                 </p>
             </div>
             <div class="flex flex-col sm:flex-row gap-3 pt-2">
-                <button data-audio-trigger="true" onclick="restartServiceFromStep1()" class="flex-1 py-3.5 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-heading font-bold flex items-center justify-center gap-2">
+                <button onclick="restartServiceFromStep1()" class="flex-1 py-3.5 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-heading font-bold flex items-center justify-center gap-2">
                     <i class="fa-solid fa-rotate-left"></i>
                     <span>ดูขั้นตอนที่ 1 ใหม่</span>
                 </button>
-                <button data-audio-trigger="true" onclick="closeOverviewAndGoHome()" class="flex-1 py-3.5 px-4 rounded-2xl bg-gov-navy hover:bg-gov-navyLight text-amber-300 font-heading font-bold flex items-center justify-center gap-2 shadow-md">
+                <button onclick="closeOverviewAndGoHome()" class="flex-1 py-3.5 px-4 rounded-2xl bg-gov-navy hover:bg-gov-navyLight text-amber-300 font-heading font-bold flex items-center justify-center gap-2 shadow-md">
                     <i class="fa-solid fa-house"></i>
                     <span>กลับหน้าแรก (เลือกบริการอื่น)</span>
                 </button>
@@ -1048,17 +1125,95 @@
     </div>
 
 
-    <!-- ================= TOAST NOTIFICATION ================= -->
-    <div id="toastNotification" class="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-50 hidden transform transition-all duration-300">
-        <div class="bg-gov-navy text-white px-5 py-3.5 rounded-2xl shadow-2xl border-2 border-amber-400 flex items-center gap-3">
-            <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-xl"></i>
-            <span id="toastMessage" class="font-heading font-semibold text-sm sm:text-base">บันทึกข้อมูลเรียบร้อยแล้วค่ะ</span>
+    <!-- =================================================================== -->
+    <!-- MODAL 5: GOOGLE APPS SCRIPT CLOUD SYNC SETUP GUIDE MODAL            -->
+    <!-- =================================================================== -->
+    <div id="appsScriptGuideModal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 my-8">
+            <div class="bg-gov-navy text-white px-6 py-4 flex items-center justify-between border-b-4 border-amber-400">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid fa-cloud-arrow-up text-amber-400 text-xl"></i>
+                    <h3 class="font-heading font-bold text-lg">โค้ดเชื่อมฐานข้อมูล Google Apps Script (สำหรับโฮสติ้งภายนอก)</h3>
+                </div>
+                <button onclick="closeAppsScriptGuideModal()" class="text-slate-300 hover:text-white">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4 text-sm text-slate-700 max-h-[78vh] overflow-y-auto">
+                <p class="font-medium text-slate-800">
+                    ในระบบปัจจุบัน ข้อมูลทั้งหมดถูกซิงค์ผ่านฐานข้อมูลกลางออนไลน์ให้อัตโนมัติอยู่แล้ว แต่หากเจ้าหน้าที่ต้องการนำไฟล์ <code>index.html</code> ไปอัปโหลดบน GitHub Pages และต้องการใช้ Google Drive / Google Script เป็นฐานข้อมูลส่วนตัวของสำนักงาน สามารถทำตามขั้นตอนนี้ได้ทันทีค่ะ:
+                </p>
+                <ol class="list-decimal list-inside space-y-1.5 font-medium text-slate-700">
+                    <li>ไปที่ <span class="font-bold text-gov-blue">script.google.com</span> แล้วกดสร้างโปรเจกต์ใหม่ (New Project)</li>
+                    <li>คัดลอกโค้ดด้านล่างนี้ไปวางทับทั้งหมด แล้วกด <strong>Deploy &gt; New deployment</strong></li>
+                    <li>เลือกชนิดเป็น <strong>Web app</strong> ตั้งค่า Who has access เป็น <strong>Anyone (ทุกคน)</strong></li>
+                    <li>คัดลอก <strong>Web App URL</strong> ที่ได้ มาวางในช่องตั้งค่าของหน้าเจ้าหน้าที่ แล้วกดบันทึก</li>
+                </ol>
+                <div class="relative">
+                    <pre id="appsScriptCodeBlock" class="bg-slate-900 text-emerald-300 p-4 rounded-2xl text-xs overflow-x-auto font-mono leading-relaxed">function doGet() {
+  var prop = PropertiesService.getScriptProperties().getProperty('MAE_THA_CONFIG');
+  return ContentService.createTextOutput(prop || '{}')
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  var body = e.postData.contents;
+  PropertiesService.getScriptProperties().setProperty('MAE_THA_CONFIG', body);
+  return ContentService.createTextOutput(JSON.stringify({ status: 'ok' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}</pre>
+                    <button type="button" onclick="copyAppsScriptCode()" class="absolute top-3 right-3 px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-heading font-bold text-xs shadow">
+                        <i class="fa-solid fa-copy mr-1"></i>คัดลอกโค้ด
+                    </button>
+                </div>
+                <div class="flex justify-end pt-2">
+                    <button type="button" onclick="closeAppsScriptGuideModal()" class="px-5 py-2 rounded-xl bg-gov-navy text-white font-heading font-bold text-sm">
+                        ปิดหน้าต่าง
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
 
     <!-- =================================================================== -->
-    <!-- JAVASCRIPT LOGIC                                                    -->
+    <!-- MODAL 6: RESET CONFIRMATION MODAL (แทนการใช้ confirm() ของเบราว์เซอร์) -->
+    <!-- =================================================================== -->
+    <div id="resetConfirmModal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border-2 border-rose-500 p-6 text-center space-y-4">
+            <div class="w-16 h-16 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-3xl mx-auto">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="font-heading font-bold text-xl text-gov-navy">ยืนยันการคืนค่าเริ่มต้น?</h3>
+            <p class="text-sm text-slate-600">
+                การคืนค่าเริ่มต้นจะรีเซ็ตข้อมูลในฐานข้อมูลกลางออนไลน์กลับเป็นค่ามาตรฐานของสำนักงานที่ดินจังหวัดลำปาง สาขาแม่ทะ และซิงค์ไปยังทุกเครื่องทันที
+            </p>
+            <div class="flex items-center justify-center gap-3 pt-2">
+                <button type="button" onclick="closeResetConfirmModal()" class="flex-1 py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-heading font-bold text-sm">
+                    ยกเลิก
+                </button>
+                <button type="button" onclick="confirmResetToDefaultData()" class="flex-1 py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-heading font-bold text-sm shadow">
+                    ยืนยันคืนค่าเริ่มต้น
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= PERSISTENT HIDDEN AUDIO ELEMENT FOR CLOUD THAI TTS ================= -->
+    <audio id="globalThaiTtsAudio" preload="auto" referrerpolicy="no-referrer" class="hidden"></audio>
+
+    <!-- ================= TOAST NOTIFICATION ================= -->
+    <div id="toastNotification" class="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-50 hidden transform transition-all duration-300">
+        <div class="bg-gov-navy text-white px-5 py-3.5 rounded-2xl shadow-2xl border-2 border-amber-400 flex items-center gap-3">
+            <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-xl"></i>
+            <span id="toastMessage" class="font-heading font-semibold text-sm sm:text-base">บันทึกข้อมูลเรียบร้อยแล้ว</span>
+        </div>
+    </div>
+
+
+    <!-- =================================================================== -->
+    <!-- MAIN APPLICATION JAVASCRIPT LOGIC                                   -->
     <!-- =================================================================== -->
     <script>
         // --- 0. GOOGLE DRIVE LINK CONVERTER & OFFICIAL LOGO FALLBACK ---
@@ -1308,6 +1463,8 @@
         /*__BAKED_DEFAULT_CONFIG_START__*/
         function getDefaultAppConfig() {
             return {
+                updatedAt: 1730000000000,
+                externalSyncUrl: '',
                 appTitle: 'ระบบผู้ช่วยนำทางอัจฉริยะ : Mae Tha Land Smart Guide',
                 agencyName: 'สำนักงานที่ดินจังหวัดลำปาง สาขาแม่ทะ (บริการประชาชนและผู้สูงอายุ)',
                 logoRawUrl: DEFAULT_DRIVE_LOGO_LINK,
@@ -1517,9 +1674,10 @@
         /*__BAKED_DEFAULT_CONFIG_END__*/
 
         // --- 4. APPLICATION STATE VARIABLES ---
-        const STORAGE_KEY = 'mae_tha_land_smart_guide_v6';
         const ADMIN_PASSWORD_REQUIRED = 'Dol1234';
 
+        let configUpdatedAt = 1730000000000;
+        let externalSyncUrl = '';
         let appTitle = 'ระบบผู้ช่วยนำทางอัจฉริยะ : Mae Tha Land Smart Guide';
         let agencyName = 'สำนักงานที่ดินจังหวัดลำปาง สาขาแม่ทะ (บริการประชาชนและผู้สูงอายุ)';
         let logoRawUrl = DEFAULT_DRIVE_LOGO_LINK;
@@ -1535,19 +1693,19 @@
         let isAdminAuthenticated = false;
         let hasPlayedInitialWelcome = false;
 
-        // Hybrid Sweet Melodious Voice Engine Settings
+        // Sweet Melodious Dual-Engine Voice Settings
         let autoPlayVoice = true;
+        let voiceEngineMode = 'auto'; // 'auto' | 'cloud' | 'native'
         let currentVoicePreset = 'sweet'; // 'sweet' | 'elderly' | 'bright'
         let speechRate = 0.92;
-        let speechPitch = 1.08;
-        let phrasePauseMs = 160;
+        let speechPitch = 1.10; // Sweet, gentle female pitch
+        let cloudPlaybackRate = 0.96;
+        let phrasePauseMs = 140;
         let currentSpeechSessionId = 0;
-        let sharedAudioCtx = null;
         window._activeUtteranceList = [];
         let ttsKeepAliveTimer = null;
         let ttsPhraseChainTimer = null;
-        let ttsStartTimer = null;
-        let ttsWatchdogTimer = null;
+        let ttsStartupWatchdogTimer = null;
 
         // Audio Playback & Recording State
         let activeHTMLAudio = null;
@@ -1558,9 +1716,9 @@
         let recordedChunks = [];
         let isRecordingVoice = false;
 
-        // --- 5. INITIALIZATION & SMART HEADER SCROLL LOGIC ---
+        // --- 5. INITIALIZATION & CENTRALIZED MULTI-DEVICE STATE MANAGEMENT ---
         window.addEventListener('DOMContentLoaded', () => {
-            loadStateFromStorage();
+            loadInitialDefaults();
             applyGlobalHeadingsToDOM();
             renderServiceSelectorCards();
             renderAdminCategoriesTable();
@@ -1571,51 +1729,217 @@
             initSmartScrollHeader();
 
             if ('speechSynthesis' in window) {
+                window.speechSynthesis.getVoices();
                 updateDetectedVoiceBadge();
                 window.speechSynthesis.onvoiceschanged = () => {
                     updateDetectedVoiceBadge();
                 };
+            } else {
+                updateDetectedVoiceBadge();
             }
 
-            // Attempt automatic welcome greeting on load
+            // If an external Google Apps Script Web App URL is configured, pull latest config from it
+            if (externalSyncUrl) {
+                pullFromExternalWebhook(false);
+            }
+
+            // Attempt automatic welcome greeting on load; if blocked by browser autoplay policy, unlock on first click
             setTimeout(() => {
-                if (currentMode === 'citizen' && citizenStage === 'home' && autoPlayVoice) {
+                if (currentMode === 'citizen' && citizenStage === 'home' && autoPlayVoice && !hasPlayedInitialWelcome) {
                     playWelcomeGreetingAudio(false);
                 }
             }, 450);
 
-            // Unlock welcome audio on first click anywhere on the page if browser blocked initial autoplay
-            const unlockWelcomeOnFirstGesture = (e) => {
-                if (hasPlayedInitialWelcome) {
-                    document.removeEventListener('click', unlockWelcomeOnFirstGesture);
-                    return;
-                }
-                // Do not interfere if user directly clicked a service card or an audio trigger button
-                if (e && e.target && (e.target.closest('.service-card-item') || e.target.closest('[data-audio-trigger]'))) {
+            const unlockWelcomeOnFirstClick = (e) => {
+                if (hasPlayedInitialWelcome) return;
+                if (e && e.target && (e.target.closest('.service-card-item') || e.target.closest('[data-audio-trigger="true"]'))) {
                     hasPlayedInitialWelcome = true;
-                    document.removeEventListener('click', unlockWelcomeOnFirstGesture);
                     return;
                 }
                 if (currentMode === 'citizen' && citizenStage === 'home' && autoPlayVoice) {
+                    hasPlayedInitialWelcome = true;
                     playWelcomeGreetingAudio(true);
-                    document.removeEventListener('click', unlockWelcomeOnFirstGesture);
                 }
             };
-            document.addEventListener('click', unlockWelcomeOnFirstGesture);
+            document.addEventListener('click', unlockWelcomeOnFirstClick, { once: true });
         });
 
-        function updateDetectedVoiceBadge() {
-            const voice = getBestSweetThaiVoice();
-            const badgeText = document.getElementById('detectedVoiceNameText');
-            if (!badgeText) return;
-            if (voice) {
-                const cleanName = voice.name.replace(/Microsoft |Online \(Natural\) - |Google /g, '').trim();
-                badgeText.textContent = `เสียงหวาน: ${cleanName}`;
+        function loadInitialDefaults() {
+            const defaults = getDefaultAppConfig();
+            applyConfigPayloadToState(defaults, false);
+        }
+
+        function buildCurrentConfigPayload() {
+            return {
+                updatedAt: configUpdatedAt,
+                externalSyncUrl: externalSyncUrl || '',
+                appTitle,
+                agencyName,
+                logoRawUrl,
+                selectorHeading,
+                welcomeGreetingText,
+                welcomeAudioDataUrl,
+                services: servicesData
+            };
+        }
+
+        function applyConfigPayloadToState(payload, showNotification = false) {
+            if (!payload || !Array.isArray(payload.services) || payload.services.length === 0) return false;
+
+            const previousServiceId = currentServiceId;
+            configUpdatedAt = payload.updatedAt || Date.now();
+            externalSyncUrl = payload.externalSyncUrl !== undefined ? payload.externalSyncUrl : externalSyncUrl;
+            appTitle = payload.appTitle || 'ระบบผู้ช่วยนำทางอัจฉริยะ : Mae Tha Land Smart Guide';
+            agencyName = payload.agencyName || 'สำนักงานที่ดินจังหวัดลำปาง สาขาแม่ทะ (บริการประชาชนและผู้สูงอายุ)';
+            logoRawUrl = payload.logoRawUrl || DEFAULT_DRIVE_LOGO_LINK;
+            selectorHeading = payload.selectorHeading || 'เลือกงานบริการที่ท่านต้องการติดต่อ:';
+            welcomeGreetingText = payload.welcomeGreetingText || DEFAULT_WELCOME_GREETING;
+            welcomeAudioDataUrl = payload.welcomeAudioDataUrl || null;
+            servicesData = payload.services;
+
+            if (previousServiceId && servicesData.some(s => s.id === previousServiceId)) {
+                currentServiceId = previousServiceId;
             } else {
-                badgeText.textContent = 'ระบบเสียงภาษาไทยอัจฉริยะพร้อมใช้งาน';
+                currentServiceId = servicesData[0].id;
+            }
+
+            applyGlobalHeadingsToDOM();
+            renderServiceSelectorCards();
+            renderAdminCategoriesTable();
+            renderAdminServiceSelect();
+            renderCitizenStepView(false);
+            renderAdminTable();
+            updateSyncTimestampUI();
+
+            if (showNotification) {
+                showToast('อัปเดตข้อมูลล่าสุดจากฐานข้อมูลกลางออนไลน์เรียบร้อยแล้วค่ะ', 'info');
+            }
+            return true;
+        }
+
+        function updateSyncTimestampUI(statusLabel) {
+            const lastSyncEl = document.getElementById('adminLastSyncTimeText');
+            const headerText = document.getElementById('cloudSyncHeaderText');
+            const adminText = document.getElementById('adminCloudStatusText');
+            const timeStr = new Date(configUpdatedAt || Date.now()).toLocaleTimeString('th-TH', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
+            if (statusLabel) {
+                if (headerText) headerText.textContent = statusLabel;
+                if (adminText) adminText.textContent = statusLabel;
+            }
+            if (lastSyncEl) {
+                lastSyncEl.textContent = `ซิงค์ข้อมูลกลางล่าสุดเมื่อเวลา ${timeStr} น. (ข้อมูลตรงกันทุกเครื่อง)`;
             }
         }
 
+        // Save state and immediately broadcast to Cloud Firestore + Optional External Webhook
+        async function saveStateToStorage() {
+            configUpdatedAt = Date.now();
+            updateSyncTimestampUI('กำลังซิงค์ข้อมูลขึ้น Cloud...');
+            await pushStateToCloud(false);
+        }
+
+        async function pushStateToCloud(showManualToast = false) {
+            const payload = buildCurrentConfigPayload();
+
+            // 1. Push to Firebase Firestore Central Cloud Database (if connected)
+            if (typeof window.pushConfigToFirestoreCloud === 'function') {
+                const ok = await window.pushConfigToFirestoreCloud(payload);
+                if (ok) {
+                    updateSyncTimestampUI('ซิงค์ข้อมูลออนไลน์ตรงกันทุกเครื่อง');
+                    if (showManualToast) {
+                        showToast('ซิงค์ข้อมูลขึ้นฐานข้อมูลกลางออนไลน์ครบทุกเครื่องแล้วค่ะ', 'success');
+                    }
+                }
+            }
+
+            // 2. Push to External Google Apps Script Webhook (if configured)
+            if (externalSyncUrl && externalSyncUrl.trim().startsWith('http')) {
+                try {
+                    await fetch(externalSyncUrl.trim(), {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (showManualToast) {
+                        showToast('ส่งข้อมูลไปยัง Google Apps Script Cloud เรียบร้อยแล้วค่ะ', 'success');
+                    }
+                } catch (err) {
+                    console.warn('External webhook sync warning:', err);
+                }
+            }
+        }
+
+        async function forcePullFromCloud(showManualToast = true) {
+            updateSyncTimestampUI('กำลังดึงข้อมูลล่าสุด...');
+            let pulled = false;
+
+            if (typeof window.pullConfigFromFirestoreCloud === 'function') {
+                pulled = await window.pullConfigFromFirestoreCloud(showManualToast);
+            }
+            if (externalSyncUrl && externalSyncUrl.trim().startsWith('http')) {
+                const extPulled = await pullFromExternalWebhook(showManualToast);
+                pulled = pulled || extPulled;
+            }
+            if (!pulled && showManualToast) {
+                updateSyncTimestampUI('ข้อมูลเป็นชุดล่าสุดแล้ว');
+                showToast('ข้อมูลในเครื่องเป็นชุดล่าสุดตรงกับฐานข้อมูลกลางแล้วค่ะ', 'info');
+            }
+        }
+
+        async function pullFromExternalWebhook(showManualToast = false) {
+            if (!externalSyncUrl || !externalSyncUrl.trim().startsWith('http')) return false;
+            try {
+                const res = await fetch(externalSyncUrl.trim() + '?t=' + Date.now());
+                if (!res.ok) return false;
+                const data = await res.json();
+                if (data && Array.isArray(data.services) && data.services.length > 0) {
+                    applyConfigPayloadToState(data, showManualToast);
+                    updateSyncTimestampUI('ซิงค์จาก Google Script สำเร็จ');
+                    return true;
+                }
+            } catch (e) {
+                console.warn('External webhook pull error:', e);
+            }
+            return false;
+        }
+
+        function saveExternalSyncUrl() {
+            const input = document.getElementById('adminExternalSyncUrlInput');
+            externalSyncUrl = input ? input.value.trim() : '';
+            saveStateToStorage();
+            if (externalSyncUrl) {
+                pullFromExternalWebhook(true);
+            } else {
+                showToast('บันทึกการตั้งค่าฐานข้อมูลออนไลน์เรียบร้อยแล้วค่ะ', 'success');
+            }
+        }
+
+        function openAppsScriptGuideModal() {
+            document.getElementById('appsScriptGuideModal').classList.remove('hidden');
+        }
+
+        function closeAppsScriptGuideModal() {
+            document.getElementById('appsScriptGuideModal').classList.add('hidden');
+        }
+
+        function copyAppsScriptCode() {
+            const codeText = document.getElementById('appsScriptCodeBlock').innerText;
+            const tempArea = document.createElement('textarea');
+            tempArea.value = codeText;
+            document.body.appendChild(tempArea);
+            tempArea.select();
+            document.execCommand('copy');
+            tempArea.remove();
+            showToast('คัดลอกโค้ด Google Apps Script เรียบร้อยแล้วค่ะ', 'success');
+        }
+
+        // Sync fixed header spacer height so document scrollHeight never shifts during scroll
         function syncHeaderSpacerHeight() {
             const headerWrapper = document.getElementById('smartHeaderWrapper');
             const spacer = document.getElementById('headerSpacer');
@@ -1668,6 +1992,9 @@
                         if (currentScrollY > 75 && delta > 6 && !isHeaderHidden) {
                             headerWrapper.classList.add('header-hidden');
                             isHeaderHidden = true;
+                        } else if (delta < -6 && isHeaderHidden) {
+                            headerWrapper.classList.remove('header-hidden');
+                            isHeaderHidden = false;
                         }
 
                         lastScrollY = currentScrollY;
@@ -1676,55 +2003,6 @@
                     ticking = true;
                 }
             }, { passive: true });
-        }
-
-        function loadStateFromStorage() {
-            try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                if (raw) {
-                    const parsed = JSON.parse(raw);
-                    if (parsed && Array.isArray(parsed.services) && parsed.services.length > 0) {
-                        appTitle = parsed.appTitle || 'ระบบผู้ช่วยนำทางอัจฉริยะ : Mae Tha Land Smart Guide';
-                        agencyName = parsed.agencyName || 'สำนักงานที่ดินจังหวัดลำปาง สาขาแม่ทะ (บริการประชาชนและผู้สูงอายุ)';
-                        logoRawUrl = parsed.logoRawUrl || DEFAULT_DRIVE_LOGO_LINK;
-                        selectorHeading = parsed.selectorHeading || 'เลือกงานบริการที่ท่านต้องการติดต่อ:';
-                        welcomeGreetingText = parsed.welcomeGreetingText || DEFAULT_WELCOME_GREETING;
-                        welcomeAudioDataUrl = parsed.welcomeAudioDataUrl || null;
-                        servicesData = parsed.services;
-                        currentServiceId = servicesData[0].id;
-                        return;
-                    }
-                }
-            } catch (err) {
-                console.warn('Fallback to default config:', err);
-            }
-            const defaults = getDefaultAppConfig();
-            appTitle = defaults.appTitle;
-            agencyName = defaults.agencyName;
-            logoRawUrl = defaults.logoRawUrl;
-            selectorHeading = defaults.selectorHeading;
-            welcomeGreetingText = defaults.welcomeGreetingText || DEFAULT_WELCOME_GREETING;
-            welcomeAudioDataUrl = defaults.welcomeAudioDataUrl || null;
-            servicesData = defaults.services;
-            currentServiceId = servicesData[0].id;
-            saveStateToStorage();
-        }
-
-        function saveStateToStorage() {
-            try {
-                const payload = {
-                    appTitle,
-                    agencyName,
-                    logoRawUrl,
-                    selectorHeading,
-                    welcomeGreetingText,
-                    welcomeAudioDataUrl,
-                    services: servicesData
-                };
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-            } catch (err) {
-                showToast('พื้นที่จัดเก็บเต็ม กรุณาใช้ไฟล์ขนาดเล็กลงค่ะ', 'warning');
-            }
         }
 
         function applyGlobalHeadingsToDOM() {
@@ -1756,6 +2034,7 @@
             const logoInput = document.getElementById('adminLogoUrlInput');
             const headingInput = document.getElementById('adminSelectorHeadingInput');
             const welcomeInput = document.getElementById('adminWelcomeGreetingInput');
+            const extUrlInput = document.getElementById('adminExternalSyncUrlInput');
             const clearWelcomeBtn = document.getElementById('clearWelcomeAudioBtn');
 
             if (titleInput) titleInput.value = appTitle;
@@ -1763,6 +2042,7 @@
             if (logoInput) logoInput.value = logoRawUrl;
             if (headingInput) headingInput.value = selectorHeading;
             if (welcomeInput) welcomeInput.value = welcomeGreetingText;
+            if (extUrlInput) extUrlInput.value = externalSyncUrl || '';
             if (clearWelcomeBtn) {
                 if (welcomeAudioDataUrl) clearWelcomeBtn.classList.remove('hidden');
                 else clearWelcomeBtn.classList.add('hidden');
@@ -1782,9 +2062,9 @@
             if (newHeading) selectorHeading = newHeading;
             if (newWelcome) welcomeGreetingText = newWelcome;
 
-            saveStateToStorage();
             applyGlobalHeadingsToDOM();
-            showToast('บันทึกโลโก้ ชื่อระบบ และข้อความเสียงต้อนรับเรียบร้อยแล้วค่ะ', 'success');
+            saveStateToStorage();
+            showToast('บันทึกการตั้งค่าและซิงค์ขึ้น Cloud ทุกเครื่องเรียบร้อยแล้วค่ะ', 'success');
         }
 
         function handleWelcomeAudioUpload(event) {
@@ -1793,18 +2073,18 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 welcomeAudioDataUrl = e.target.result;
-                saveStateToStorage();
                 applyGlobalHeadingsToDOM();
-                showToast(`อัปโหลดไฟล์เสียงต้อนรับ "${file.name}" เรียบร้อยแล้วค่ะ`, 'success');
+                saveStateToStorage();
+                showToast(`อัปโหลดเสียงต้อนรับ "${file.name}" และซิงค์ขึ้น Cloud แล้วค่ะ`, 'success');
             };
             reader.readAsDataURL(file);
         }
 
         function clearWelcomeCustomAudio() {
             welcomeAudioDataUrl = null;
-            saveStateToStorage();
             applyGlobalHeadingsToDOM();
-            showToast('เปลี่ยนกลับไปใช้เสียงต้อนรับภาษาไทยอ่อนหวานอัตโนมัติเรียบร้อยแล้วค่ะ', 'info');
+            saveStateToStorage();
+            showToast('เปลี่ยนกลับไปใช้เสียงต้อนรับภาษาไทยอัตโนมัติเรียบร้อยแล้วค่ะ', 'info');
         }
 
         function getCurrentService() {
@@ -1819,20 +2099,17 @@
             }
             if (isAdminAuthenticated) {
                 switchMode('admin');
-            } else {
-                openPasswordModal();
+                return;
             }
-        }
-
-        function openPasswordModal() {
-            stopAllAudio();
             const modal = document.getElementById('adminPasswordModal');
             const input = document.getElementById('adminPasswordInput');
             const err = document.getElementById('passwordErrorText');
-            input.value = '';
-            err.classList.add('hidden');
+            if (input) input.value = '';
+            if (err) err.classList.add('hidden');
             modal.classList.remove('hidden');
-            setTimeout(() => input.focus(), 100);
+            setTimeout(() => {
+                if (input) input.focus();
+            }, 80);
         }
 
         function closePasswordModal() {
@@ -1842,12 +2119,13 @@
         function togglePasswordVisibility() {
             const input = document.getElementById('adminPasswordInput');
             const icon = document.getElementById('passwordEyeIcon');
+            if (!input) return;
             if (input.type === 'password') {
                 input.type = 'text';
-                icon.className = 'fa-solid fa-eye-slash';
+                if (icon) icon.className = 'fa-solid fa-eye-slash';
             } else {
                 input.type = 'password';
-                icon.className = 'fa-solid fa-eye';
+                if (icon) icon.className = 'fa-solid fa-eye';
             }
         }
 
@@ -1855,22 +2133,23 @@
             event.preventDefault();
             const input = document.getElementById('adminPasswordInput');
             const err = document.getElementById('passwordErrorText');
+            const val = input ? input.value.trim() : '';
 
-            if (input.value.trim() === ADMIN_PASSWORD_REQUIRED) {
+            if (val === ADMIN_PASSWORD_REQUIRED) {
                 isAdminAuthenticated = true;
                 closePasswordModal();
                 switchMode('admin');
-                showToast('เข้าสู่ระบบจัดการข้อมูลสำหรับเจ้าหน้าที่เรียบร้อยแล้วค่ะ', 'success');
+                showToast('เข้าสู่ระบบจัดการข้อมูลกลางสำหรับเจ้าหน้าที่เรียบร้อยแล้วค่ะ', 'success');
             } else {
-                err.classList.remove('hidden');
-                input.select();
+                if (err) err.classList.remove('hidden');
+                if (input) input.select();
             }
         }
 
         function lockAdminAndExit() {
             isAdminAuthenticated = false;
             switchMode('citizen');
-            showToast('ล็อกโหมดเจ้าหน้าที่ และกลับสู่หน้าประชาชนแล้วค่ะ', 'info');
+            showToast('ล็อกโหมดเจ้าหน้าที่และกลับสู่หน้าประชาชนแล้วค่ะ', 'info');
         }
 
         // --- 7. FONT SCALING, HIGH CONTRAST, SWEET VOICE PRESETS & MODE SWITCHING ---
@@ -1916,6 +2195,46 @@
             }
         }
 
+        function updateDetectedVoiceBadge() {
+            const voice = getBestSweetThaiVoice();
+            const badgeText = document.getElementById('detectedVoiceNameText');
+            if (!badgeText) return;
+
+            if (voiceEngineMode === 'cloud') {
+                badgeText.textContent = 'เสียงหวานออนไลน์ (ดังทุกเครื่อง)';
+                return;
+            }
+            if (voice) {
+                const cleanName = voice.name.replace(/Microsoft |Online \(Natural\) - |Google /g, '').trim();
+                badgeText.textContent = `เสียงหวาน: ${cleanName}`;
+            } else {
+                badgeText.textContent = 'ชุดเสียงหวานไพเราะพร้อมใช้งาน (Cloud Thai TTS)';
+            }
+        }
+
+        function setVoiceEngineMode(mode) {
+            voiceEngineMode = mode;
+            const autoBtn = document.getElementById('engineModeAutoBtn');
+            const cloudBtn = document.getElementById('engineModeCloudBtn');
+            const nativeBtn = document.getElementById('engineModeNativeBtn');
+
+            const activeCls = 'px-2.5 py-1 rounded-lg font-bold bg-gov-navy text-amber-300 shadow-sm transition';
+            const inactiveCls = 'px-2.5 py-1 rounded-lg font-bold text-slate-600 hover:bg-white transition';
+
+            if (autoBtn) autoBtn.className = mode === 'auto' ? activeCls : inactiveCls;
+            if (cloudBtn) cloudBtn.className = mode === 'cloud' ? activeCls : inactiveCls;
+            if (nativeBtn) nativeBtn.className = mode === 'native' ? activeCls : inactiveCls;
+
+            updateDetectedVoiceBadge();
+
+            if (citizenStage === 'home') {
+                playWelcomeGreetingAudio(true);
+            } else {
+                playCurrentStepAudio(false);
+            }
+        }
+
+        // Sweet Melodious Voice Preset Switcher (ปรับชุดเสียงในการอ่านให้ไพเราะทั้งหมด)
         function setVoicePreset(preset) {
             currentVoicePreset = preset;
             const sweetBtn = document.getElementById('voicePresetSweetBtn');
@@ -1927,35 +2246,40 @@
 
             if (preset === 'sweet') {
                 speechRate = 0.92;
-                speechPitch = 1.08;
-                phrasePauseMs = 150;
-                sweetBtn.className = activeClass;
-                elderlyBtn.className = inactiveClass;
-                brightBtn.className = inactiveClass;
+                speechPitch = 1.10; // เสียงหวานนุ่มนวล ไพเราะอ่อนโยน
+                cloudPlaybackRate = 0.95;
+                phrasePauseMs = 140;
+                if (sweetBtn) sweetBtn.className = activeClass;
+                if (elderlyBtn) elderlyBtn.className = inactiveClass;
+                if (brightBtn) brightBtn.className = inactiveClass;
             } else if (preset === 'elderly') {
                 speechRate = 0.82;
-                speechPitch = 1.05;
-                phrasePauseMs = 210;
-                sweetBtn.className = inactiveClass;
-                elderlyBtn.className = activeClass;
-                brightBtn.className = inactiveClass;
+                speechPitch = 1.06; // เสียงหวานช้าชัด สำหรับผู้สูงอายุฟังสบาย
+                cloudPlaybackRate = 0.85;
+                phrasePauseMs = 180;
+                if (sweetBtn) sweetBtn.className = inactiveClass;
+                if (elderlyBtn) elderlyBtn.className = activeClass;
+                if (brightBtn) brightBtn.className = inactiveClass;
             } else {
                 speechRate = 0.98;
-                speechPitch = 1.12;
+                speechPitch = 1.12; // เสียงสดใสไพเราะ ('bright' หรือ 'normal')
+                cloudPlaybackRate = 1.02;
                 phrasePauseMs = 130;
-                sweetBtn.className = inactiveClass;
-                elderlyBtn.className = inactiveClass;
-                brightBtn.className = activeClass;
+                if (sweetBtn) sweetBtn.className = inactiveClass;
+                if (elderlyBtn) elderlyBtn.className = inactiveClass;
+                if (brightBtn) brightBtn.className = activeClass;
             }
 
-            // Immediately preview the selected voice style so user hears the change
-            if (citizenStage === 'home') {
-                playWelcomeGreetingAudio(true);
-            } else {
-                playCurrentStepAudio(false);
+            if (isSpeakingTTS) {
+                if (citizenStage === 'home') {
+                    playWelcomeGreetingAudio(true);
+                } else {
+                    playCurrentStepAudio(false);
+                }
             }
         }
 
+        // Update visibility between Stage 1 (Home Service Selector) and Stage 2 (Selected Service Steps)
         function updateCitizenStageUI() {
             const selectionView = document.getElementById('serviceSelectionView');
             const stepDetailView = document.getElementById('stepDetailView');
@@ -1967,10 +2291,12 @@
             }
 
             if (citizenStage === 'home') {
+                // แสดงเฉพาะหน้าเลือกงานบริการ และซ่อนหน้าขั้นตอนทั้งหมดเพื่อป้องกันความสับสน
                 selectionView.classList.remove('hidden');
                 stepDetailView.classList.add('hidden');
                 if (stickyBar) stickyBar.classList.add('hidden');
             } else {
+                // เมื่อเลือกงานบริการแล้ว ซ่อนส่วนเลือกงานบริการทั้งหมด แสดงเฉพาะขั้นตอนของงานที่เลือก
                 selectionView.classList.add('hidden');
                 stepDetailView.classList.remove('hidden');
                 if (stickyBar) {
@@ -2090,7 +2416,7 @@
                 speakSweetPhraseSequence(
                     ['กลับมาที่หน้าแรกแล้วค่ะ', 'กรุณาเลือกงานบริการ ที่ท่านต้องการทราบขั้นตอน ได้เลยนะคะ'],
                     {
-                        onStart: () => setWelcomeUIRunning(true, 'กำลังแนะนำการเลือกงานบริการหน้าแรก...'),
+                        onStart: () => setWelcomeUIRunning(true),
                         onEnd: () => setWelcomeUIRunning(false)
                     }
                 );
@@ -2229,30 +2555,32 @@
             imgElement.src = generateStepSVGDataURI('queue', currentStepIndex + 1, step ? step.title : 'จุดบริการประชาชน', 'ภาพประกอบขั้นตอน');
         }
 
-        // --- 9. HYBRID SWEET & MELODIOUS THAI VOICE ENGINE (แก้ไขระบบอ่านเสียงให้ทำงาน 100% ทุกเบราว์เซอร์) ---
+        // --- 9. SWEET & MELODIOUS THAI VOICE ENGINE (ปรับชุดเสียงในการอ่านให้มีความไพเราะอ่อนหวานทั้งหมด) ---
         function playGentleChime() {
             try {
                 const AudioCtx = window.AudioContext || window.webkitAudioContext;
                 if (!AudioCtx) return;
-                if (!sharedAudioCtx) {
-                    sharedAudioCtx = new AudioCtx();
+                if (!window._sharedChimeAudioCtx) {
+                    window._sharedChimeAudioCtx = new AudioCtx();
                 }
-                if (sharedAudioCtx.state === 'suspended') {
-                    sharedAudioCtx.resume().catch(() => {});
+                const ctx = window._sharedChimeAudioCtx;
+                if (ctx.state === 'suspended') {
+                    ctx.resume().catch(() => {});
                 }
-                const now = sharedAudioCtx.currentTime;
+                const now = ctx.currentTime;
+
                 const notes = [523.25, 659.25, 783.99];
                 notes.forEach((freq, i) => {
-                    const osc = sharedAudioCtx.createOscillator();
-                    const gain = sharedAudioCtx.createGain();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(freq, now + i * 0.08);
-                    gain.gain.setValueAtTime(0.045, now + i * 0.08);
-                    gain.gain.exponentialRampToValueAtTime(0.0008, now + i * 0.08 + 0.38);
+                    osc.frequency.setValueAtTime(freq, now + i * 0.085);
+                    gain.gain.setValueAtTime(0.045, now + i * 0.085);
+                    gain.gain.exponentialRampToValueAtTime(0.0008, now + i * 0.085 + 0.38);
                     osc.connect(gain);
-                    gain.connect(sharedAudioCtx.destination);
-                    osc.start(now + i * 0.08);
-                    osc.stop(now + i * 0.08 + 0.4);
+                    gain.connect(ctx.destination);
+                    osc.start(now + i * 0.085);
+                    osc.stop(now + i * 0.085 + 0.4);
                 });
             } catch (e) {}
         }
@@ -2260,7 +2588,7 @@
         function getBestSweetThaiVoice() {
             if (!('speechSynthesis' in window)) return null;
             const voices = window.speechSynthesis.getVoices() || [];
-            const thaiVoices = voices.filter(v => v.lang && (v.lang.toLowerCase().includes('th') || v.name.toLowerCase().includes('thai') || v.name.includes('ไทย')));
+            const thaiVoices = voices.filter(v => v.lang && (v.lang.toLowerCase().includes('th') || v.name.toLowerCase().includes('thai')));
             if (thaiVoices.length === 0) return null;
 
             const premwadee = thaiVoices.find(v => v.name.includes('Premwadee') || v.name.includes('เปรมวดี'));
@@ -2272,7 +2600,7 @@
             const googleThai = thaiVoices.find(v => v.name.includes('Google'));
             if (googleThai) return googleThai;
 
-            const nonMaleThai = thaiVoices.find(v => !v.name.includes('Niwat') && !v.name.includes('นิวัฒน์') && !v.name.includes('Pattara'));
+            const nonMaleThai = thaiVoices.find(v => !v.name.includes('Niwat') && !v.name.includes('นิวัฒน์'));
             return nonMaleThai || thaiVoices[0];
         }
 
@@ -2288,22 +2616,41 @@
                 cleaned += ' นะคะ';
             }
 
-            return cleaned
+            const rawSegments = cleaned
                 .split('|')
-                .map(s => s.trim())
+                .map(s => s.replace(/\.\.\./g, ' ').replace(/\s+/g, ' ').trim())
                 .filter(Boolean);
+
+            const finalPhrases = [];
+            rawSegments.forEach(seg => {
+                if (seg.length <= 135) {
+                    finalPhrases.push(seg);
+                } else {
+                    const words = seg.split(' ');
+                    let currentChunk = '';
+                    words.forEach(w => {
+                        if ((currentChunk + ' ' + w).trim().length <= 135) {
+                            currentChunk = (currentChunk + ' ' + w).trim();
+                        } else {
+                            if (currentChunk) finalPhrases.push(currentChunk);
+                            currentChunk = w;
+                        }
+                    });
+                    if (currentChunk) finalPhrases.push(currentChunk);
+                }
+            });
+
+            return finalPhrases;
         }
 
-        function setWelcomeUIRunning(isRunning, customStatus) {
+        function setWelcomeUIRunning(isRunning) {
             const bar = document.getElementById('welcomeSpeakingBar');
-            const statusText = document.getElementById('welcomeSpeakingStatusText');
             const btnIcon = document.getElementById('welcomePlayBtnIcon');
             const btnText = document.getElementById('welcomePlayBtnText');
             if (!bar || !btnIcon || !btnText) return;
 
             if (isRunning) {
                 bar.classList.remove('hidden');
-                if (statusText && customStatus) statusText.textContent = customStatus;
                 btnIcon.className = 'fa-solid fa-volume-high fa-beat text-lg';
                 btnText.textContent = 'กำลังพูดต้อนรับ... (กดเพื่อฟังซ้ำ)';
             } else {
@@ -2328,7 +2675,7 @@
                 statusText.textContent = statusMessage;
             } else {
                 indicator.classList.add('hidden');
-                stopBtn.classList.add('hidden');
+                stopBtn.classList.remove('hidden');
                 playText.textContent = 'กดฟังเสียงอธิบายขั้นตอนนี้ค่ะ';
                 playIcon.className = 'fa-solid fa-volume-high text-xl sm:text-2xl';
             }
@@ -2344,26 +2691,34 @@
                 clearTimeout(ttsPhraseChainTimer);
                 ttsPhraseChainTimer = null;
             }
-            if (ttsStartTimer) {
-                clearTimeout(ttsStartTimer);
-                ttsStartTimer = null;
-            }
-            if (ttsWatchdogTimer) {
-                clearTimeout(ttsWatchdogTimer);
-                ttsWatchdogTimer = null;
+            if (ttsStartupWatchdogTimer) {
+                clearTimeout(ttsStartupWatchdogTimer);
+                ttsStartupWatchdogTimer = null;
             }
             if (activeHTMLAudio) {
                 try {
                     activeHTMLAudio.onended = null;
                     activeHTMLAudio.onerror = null;
+                    activeHTMLAudio.onplaying = null;
                     activeHTMLAudio.pause();
                     activeHTMLAudio.currentTime = 0;
                 } catch (e) {}
                 activeHTMLAudio = null;
             }
+            const globalAudio = document.getElementById('globalThaiTtsAudio');
+            if (globalAudio) {
+                try {
+                    globalAudio.onended = null;
+                    globalAudio.onerror = null;
+                    globalAudio.onplaying = null;
+                    globalAudio.pause();
+                } catch (e) {}
+            }
             if ('speechSynthesis' in window) {
                 try {
-                    window.speechSynthesis.cancel();
+                    if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+                        window.speechSynthesis.cancel();
+                    }
                 } catch (e) {}
             }
             window._activeUtteranceList = [];
@@ -2372,250 +2727,23 @@
             setWelcomeUIRunning(false);
         }
 
-        // Fallback Online Thai Female Voice Stream (สำหรับเครื่องที่ไม่มีชุดเสียงภาษาไทยติดตั้งในระบบปฏิบัติการ)
-        function playOnlineThaiTTSFallback(phrases, sessionId, callbacks = {}) {
-            if (sessionId !== currentSpeechSessionId || !phrases || phrases.length === 0) {
-                if (callbacks.onEnd) callbacks.onEnd();
-                return;
-            }
-
-            let idx = 0;
-            isSpeakingTTS = true;
-
-            function playNextOnlineChunk() {
-                if (sessionId !== currentSpeechSessionId || !isSpeakingTTS || idx >= phrases.length) {
-                    isSpeakingTTS = false;
-                    if (callbacks.onEnd) callbacks.onEnd();
-                    return;
-                }
-
-                const cleanText = phrases[idx].replace(/\.\.\./g, ' ').replace(/\s+/g, ' ').trim().substring(0, 180);
-                if (!cleanText) {
-                    idx++;
-                    playNextOnlineChunk();
-                    return;
-                }
-
-                const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=th&client=tw-ob&q=${encodeURIComponent(cleanText)}`;
-                const audio = new Audio();
-                audio.referrerPolicy = 'no-referrer';
-                audio.src = ttsUrl;
-                audio.playbackRate = Math.max(0.8, Math.min(1.15, speechRate * 1.04));
-                activeHTMLAudio = audio;
-
-                audio.onplay = () => {
-                    if (sessionId !== currentSpeechSessionId) return;
-                    if (idx === 0 && callbacks.onStart) callbacks.onStart();
-                };
-
-                audio.onended = () => {
-                    if (sessionId !== currentSpeechSessionId) return;
-                    idx++;
-                    if (idx < phrases.length && isSpeakingTTS) {
-                        ttsPhraseChainTimer = setTimeout(playNextOnlineChunk, phrasePauseMs);
-                    } else {
-                        isSpeakingTTS = false;
-                        activeHTMLAudio = null;
-                        if (callbacks.onEnd) callbacks.onEnd();
-                    }
-                };
-
-                audio.onerror = () => {
-                    if (sessionId !== currentSpeechSessionId) return;
-                    isSpeakingTTS = false;
-                    activeHTMLAudio = null;
-                    if (callbacks.onEnd) callbacks.onEnd();
-                };
-
-                audio.play().catch(() => {
-                    if (sessionId !== currentSpeechSessionId) return;
-                    isSpeakingTTS = false;
-                    activeHTMLAudio = null;
-                    if (callbacks.onEnd) callbacks.onEnd();
-                });
-            }
-
-            playNextOnlineChunk();
-        }
-
-        // Core Hybrid Sweet Melodious Phrase Sequencer (ป้องกันปัญหา Chrome cancel() race condition 100%)
-        function speakSweetPhraseSequence(phrases, callbacks = {}) {
-            stopAllAudio();
-            const sessionId = currentSpeechSessionId;
-
-            if (!phrases || phrases.length === 0) {
-                if (callbacks.onEnd) callbacks.onEnd();
-                return;
-            }
-
-            if (!('speechSynthesis' in window)) {
-                playOnlineThaiTTSFallback(phrases, sessionId, callbacks);
-                return;
-            }
-
-            isSpeakingTTS = true;
-
-            // Delay 65ms after stopAllAudio()'s cancel() so Chrome/Edge/Android never drops the new utterance
-            ttsStartTimer = setTimeout(() => {
-                if (sessionId !== currentSpeechSessionId || !isSpeakingTTS) return;
-
-                try {
-                    window.speechSynthesis.resume();
-                } catch (e) {}
-
-                const sweetVoice = getBestSweetThaiVoice();
-                updateDetectedVoiceBadge();
-
-                let currentIdx = 0;
-                let hasFiredStart = false;
-
-                function speakNextPhrase() {
-                    if (sessionId !== currentSpeechSessionId || !isSpeakingTTS || currentIdx >= phrases.length) {
-                        if (ttsKeepAliveTimer) clearInterval(ttsKeepAliveTimer);
-                        isSpeakingTTS = false;
-                        if (callbacks.onEnd) callbacks.onEnd();
-                        return;
-                    }
-
-                    const textChunk = phrases[currentIdx].replace(/\.\.\./g, ' ').replace(/\s+/g, ' ').trim();
-                    if (!textChunk) {
-                        currentIdx++;
-                        speakNextPhrase();
-                        return;
-                    }
-
-                    const utterance = new SpeechSynthesisUtterance(textChunk);
-                    utterance.lang = sweetVoice ? (sweetVoice.lang || 'th-TH') : 'th-TH';
-                    utterance.rate = speechRate;
-                    utterance.pitch = speechPitch;
-                    utterance.volume = 1.0;
-                    if (sweetVoice) {
-                        utterance.voice = sweetVoice;
-                    }
-
-                    let chunkStarted = false;
-
-                    // Watchdog: If browser has no working local Thai voice and doesn't start within 1300ms, switch to Online Thai TTS
-                    if (currentIdx === 0) {
-                        if (ttsWatchdogTimer) clearTimeout(ttsWatchdogTimer);
-                        ttsWatchdogTimer = setTimeout(() => {
-                            if (sessionId === currentSpeechSessionId && !chunkStarted && isSpeakingTTS) {
-                                try { window.speechSynthesis.cancel(); } catch (e) {}
-                                playOnlineThaiTTSFallback(phrases.slice(currentIdx), sessionId, {
-                                    onStart: () => {
-                                        if (!hasFiredStart) {
-                                            hasFiredStart = true;
-                                            if (callbacks.onStart) callbacks.onStart();
-                                        }
-                                    },
-                                    onEnd: callbacks.onEnd
-                                });
-                            }
-                        }, 1300);
-                    }
-
-                    utterance.onstart = () => {
-                        if (sessionId !== currentSpeechSessionId) return;
-                        chunkStarted = true;
-                        if (ttsWatchdogTimer) {
-                            clearTimeout(ttsWatchdogTimer);
-                            ttsWatchdogTimer = null;
-                        }
-                        if (!hasFiredStart) {
-                            hasFiredStart = true;
-                            if (callbacks.onStart) callbacks.onStart();
-                        }
-                    };
-
-                    utterance.onend = () => {
-                        if (sessionId !== currentSpeechSessionId) return;
-                        if (ttsWatchdogTimer) {
-                            clearTimeout(ttsWatchdogTimer);
-                            ttsWatchdogTimer = null;
-                        }
-                        currentIdx++;
-                        if (currentIdx < phrases.length && isSpeakingTTS) {
-                            ttsPhraseChainTimer = setTimeout(speakNextPhrase, phrasePauseMs);
-                        } else {
-                            if (ttsKeepAliveTimer) clearInterval(ttsKeepAliveTimer);
-                            isSpeakingTTS = false;
-                            if (callbacks.onEnd) callbacks.onEnd();
-                        }
-                    };
-
-                    utterance.onerror = (errEvt) => {
-                        if (sessionId !== currentSpeechSessionId) return;
-                        if (ttsWatchdogTimer) {
-                            clearTimeout(ttsWatchdogTimer);
-                            ttsWatchdogTimer = null;
-                        }
-                        const errType = errEvt && errEvt.error ? String(errEvt.error) : '';
-                        if (errType === 'canceled' || errType === 'interrupted') {
-                            return;
-                        }
-                        // Ifautoplay was blocked on initial page load, reset UI and wait for user's first tap
-                        if (errType === 'not-allowed') {
-                            isSpeakingTTS = false;
-                            if (callbacks.onEnd) callbacks.onEnd();
-                            return;
-                        }
-                        // Fallback to online Thai stream if local speech synthesis fails
-                        playOnlineThaiTTSFallback(phrases.slice(currentIdx), sessionId, {
-                            onStart: () => {
-                                if (!hasFiredStart) {
-                                    hasFiredStart = true;
-                                    if (callbacks.onStart) callbacks.onStart();
-                                }
-                            },
-                            onEnd: callbacks.onEnd
-                        });
-                    };
-
-                    window._activeUtteranceList.push(utterance);
-                    window.speechSynthesis.speak(utterance);
-                }
-
-                speakNextPhrase();
-
-                ttsKeepAliveTimer = setInterval(() => {
-                    if (sessionId !== currentSpeechSessionId || !isSpeakingTTS) {
-                        clearInterval(ttsKeepAliveTimer);
-                        ttsKeepAliveTimer = null;
-                    } else if (window.speechSynthesis.paused) {
-                        window.speechSynthesis.resume();
-                    }
-                }, 2500);
-            }, 65);
-        }
-
-        // Play the Sweet Welcome Voice Greeting on the Home Screen
         function playWelcomeGreetingAudio(isManualClick = false) {
             stopAllAudio();
-            const sessionId = currentSpeechSessionId;
-
             if (isManualClick) {
                 playGentleChime();
             }
 
-            // 1. Check if Admin uploaded a custom welcome audio file
             if (welcomeAudioDataUrl) {
                 try {
-                    const audio = new Audio(welcomeAudioDataUrl);
-                    activeHTMLAudio = audio;
-                    audio.onplay = () => {
-                        if (sessionId !== currentSpeechSessionId) return;
-                        hasPlayedInitialWelcome = true;
-                        setWelcomeUIRunning(true, 'กำลังเล่นเสียงต้อนรับที่บันทึกไว้ค่ะ...');
-                    };
-                    audio.onended = () => {
-                        if (sessionId !== currentSpeechSessionId) return;
+                    activeHTMLAudio = new Audio(welcomeAudioDataUrl);
+                    setWelcomeUIRunning(true);
+                    hasPlayedInitialWelcome = true;
+                    activeHTMLAudio.onended = () => {
                         setWelcomeUIRunning(false);
                         activeHTMLAudio = null;
                     };
-                    audio.onerror = () => speakSweetWelcomeTTS();
-                    audio.play().catch(() => {
-                        if (isManualClick) speakSweetWelcomeTTS();
-                    });
+                    activeHTMLAudio.onerror = () => speakSweetWelcomeTTS();
+                    activeHTMLAudio.play().catch(() => speakSweetWelcomeTTS());
                     return;
                 } catch (e) {
                     speakSweetWelcomeTTS();
@@ -2623,7 +2751,6 @@
                 }
             }
 
-            // 2. Speak using Sweet Melodious Female Thai TTS
             speakSweetWelcomeTTS();
         }
 
@@ -2644,7 +2771,7 @@
             speakSweetPhraseSequence(phrases, {
                 onStart: () => {
                     hasPlayedInitialWelcome = true;
-                    setWelcomeUIRunning(true, 'กำลังส่งเสียงต้อนรับด้วยน้ำเสียงอ่อนหวาน ไพเราะ...');
+                    setWelcomeUIRunning(true);
                 },
                 onEnd: () => {
                     setWelcomeUIRunning(false);
@@ -2661,24 +2788,18 @@
 
         function playStepAudioObject(step, stepNo = 1, serviceIntroName = '') {
             stopAllAudio();
-            const sessionId = currentSpeechSessionId;
             playGentleChime();
 
             if (step.audioDataUrl) {
                 try {
-                    const audio = new Audio(step.audioDataUrl);
-                    activeHTMLAudio = audio;
-                    audio.onplay = () => {
-                        if (sessionId !== currentSpeechSessionId) return;
-                        setAudioUIRunning(true, 'กำลังเล่นเสียงอธิบายที่เจ้าหน้าที่บันทึกไว้ค่ะ...');
-                    };
-                    audio.onended = () => {
-                        if (sessionId !== currentSpeechSessionId) return;
+                    activeHTMLAudio = new Audio(step.audioDataUrl);
+                    setAudioUIRunning(true, 'กำลังเล่นเสียงอธิบายที่เจ้าหน้าที่บันทึกไว้ค่ะ...');
+                    activeHTMLAudio.onended = () => {
                         setAudioUIRunning(false);
                         activeHTMLAudio = null;
                     };
-                    audio.onerror = () => speakSweetStepTTS(step, stepNo, serviceIntroName);
-                    audio.play().catch(() => speakSweetStepTTS(step, stepNo, serviceIntroName));
+                    activeHTMLAudio.onerror = () => speakSweetStepTTS(step, stepNo, serviceIntroName);
+                    activeHTMLAudio.play().catch(() => speakSweetStepTTS(step, stepNo, serviceIntroName));
                     return;
                 } catch (err) {
                     speakSweetStepTTS(step, stepNo, serviceIntroName);
@@ -2686,6 +2807,231 @@
                 }
             }
             speakSweetStepTTS(step, stepNo, serviceIntroName);
+        }
+
+        function speakSweetPhraseSequence(rawPhrases, callbacks = {}) {
+            const phrases = [];
+            (rawPhrases || []).forEach(p => {
+                const sub = splitIntoSweetMelodiousPhrases(p);
+                if (sub.length > 0) phrases.push(...sub);
+            });
+
+            if (phrases.length === 0) {
+                if (callbacks.onEnd) callbacks.onEnd();
+                return;
+            }
+
+            const sessionId = ++currentSpeechSessionId;
+            isSpeakingTTS = true;
+            let hasStartedCallbackFired = false;
+
+            function notifyStartOnce() {
+                if (!hasStartedCallbackFired && sessionId === currentSpeechSessionId) {
+                    hasStartedCallbackFired = true;
+                    if (callbacks.onStart) callbacks.onStart();
+                }
+            }
+
+            function finishSequence() {
+                if (sessionId !== currentSpeechSessionId) return;
+                if (ttsKeepAliveTimer) {
+                    clearInterval(ttsKeepAliveTimer);
+                    ttsKeepAliveTimer = null;
+                }
+                if (ttsStartupWatchdogTimer) {
+                    clearTimeout(ttsStartupWatchdogTimer);
+                    ttsStartupWatchdogTimer = null;
+                }
+                isSpeakingTTS = false;
+                if (callbacks.onEnd) callbacks.onEnd();
+            }
+
+            // Native Web Speech API Engine
+            function speakViaNativeWebSpeech(startIndex) {
+                if (sessionId !== currentSpeechSessionId) return;
+                const remainingPhrases = phrases.slice(startIndex);
+                if (remainingPhrases.length === 0 || !('speechSynthesis' in window)) {
+                    finishSequence();
+                    return;
+                }
+
+                try {
+                    if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+                        window.speechSynthesis.cancel();
+                    }
+                } catch (e) {}
+
+                const combinedText = remainingPhrases.join(' ... ');
+                const utterance = new SpeechSynthesisUtterance(combinedText);
+                utterance.lang = 'th-TH';
+                utterance.rate = speechRate;
+                utterance.pitch = speechPitch;
+                utterance.volume = 1.0;
+
+                const sweetVoice = getBestSweetThaiVoice();
+                if (sweetVoice) {
+                    utterance.voice = sweetVoice;
+                }
+
+                const startTimestamp = Date.now();
+                window._activeUtteranceList = [utterance];
+
+                utterance.onstart = () => {
+                    if (sessionId !== currentSpeechSessionId) return;
+                    notifyStartOnce();
+                };
+
+                utterance.onend = () => {
+                    if (sessionId !== currentSpeechSessionId) return;
+                    const elapsed = Date.now() - startTimestamp;
+                    if (elapsed < 350 && combinedText.length > 10 && voiceEngineMode !== 'native') {
+                        playPhraseViaCloudAudio(startIndex, 0);
+                        return;
+                    }
+                    finishSequence();
+                };
+
+                utterance.onerror = () => {
+                    if (sessionId !== currentSpeechSessionId) return;
+                    if (voiceEngineMode !== 'native') {
+                        playPhraseViaCloudAudio(startIndex, 0);
+                        return;
+                    }
+                    finishSequence();
+                };
+
+                setTimeout(() => {
+                    if (sessionId !== currentSpeechSessionId) return;
+                    try {
+                        window.speechSynthesis.resume();
+                        notifyStartOnce();
+                        window.speechSynthesis.speak(utterance);
+                    } catch (e) {
+                        finishSequence();
+                    }
+                }, 65);
+
+                if (ttsKeepAliveTimer) clearInterval(ttsKeepAliveTimer);
+                ttsKeepAliveTimer = setInterval(() => {
+                    if (sessionId !== currentSpeechSessionId || !isSpeakingTTS) {
+                        clearInterval(ttsKeepAliveTimer);
+                        ttsKeepAliveTimer = null;
+                    } else if (window.speechSynthesis.paused) {
+                        window.speechSynthesis.resume();
+                    }
+                }, 2500);
+            }
+
+            // Cloud Thai Female Voice via #globalThaiTtsAudio
+            const audioEl = document.getElementById('globalThaiTtsAudio') || new Audio();
+            activeHTMLAudio = audioEl;
+            let phraseIndex = 0;
+
+            function playPhraseViaCloudAudio(idx, endpointIdx = 0) {
+                if (sessionId !== currentSpeechSessionId || !isSpeakingTTS) return;
+                if (idx >= phrases.length) {
+                    finishSequence();
+                    return;
+                }
+
+                const phrase = phrases[idx];
+                const encoded = encodeURIComponent(phrase);
+                const endpoints = [
+                    `https://translate.googleapis.com/translate_tts?ie=UTF-8&tl=th&client=gtx&q=${encoded}`,
+                    `https://translate.googleapis.com/translate_tts?ie=UTF-8&tl=th&client=tw-ob&q=${encoded}`,
+                    `https://dict.youdao.com/dictvoice?le=th&audio=${encoded}`
+                ];
+
+                if (endpointIdx >= endpoints.length) {
+                    speakViaNativeWebSpeech(idx);
+                    return;
+                }
+
+                if (ttsStartupWatchdogTimer) {
+                    clearTimeout(ttsStartupWatchdogTimer);
+                    ttsStartupWatchdogTimer = null;
+                }
+
+                let hasStartedPlayingThisPhrase = false;
+
+                const tryNextEndpoint = () => {
+                    if (sessionId !== currentSpeechSessionId) return;
+                    if (ttsStartupWatchdogTimer) {
+                        clearTimeout(ttsStartupWatchdogTimer);
+                        ttsStartupWatchdogTimer = null;
+                    }
+                    audioEl.onplaying = null;
+                    audioEl.onended = null;
+                    audioEl.onerror = null;
+                    playPhraseViaCloudAudio(idx, endpointIdx + 1);
+                };
+
+                ttsStartupWatchdogTimer = setTimeout(() => {
+                    if (!hasStartedPlayingThisPhrase && sessionId === currentSpeechSessionId) {
+                        tryNextEndpoint();
+                    }
+                }, 1400);
+
+                audioEl.onplaying = () => {
+                    if (sessionId !== currentSpeechSessionId) return;
+                    hasStartedPlayingThisPhrase = true;
+                    if (ttsStartupWatchdogTimer) {
+                        clearTimeout(ttsStartupWatchdogTimer);
+                        ttsStartupWatchdogTimer = null;
+                    }
+                    try {
+                        audioEl.playbackRate = cloudPlaybackRate;
+                    } catch (e) {}
+                    notifyStartOnce();
+                };
+
+                audioEl.onended = () => {
+                    if (sessionId !== currentSpeechSessionId) return;
+                    if (ttsStartupWatchdogTimer) {
+                        clearTimeout(ttsStartupWatchdogTimer);
+                        ttsStartupWatchdogTimer = null;
+                    }
+                    phraseIndex = idx + 1;
+                    if (phraseIndex < phrases.length && isSpeakingTTS) {
+                        ttsPhraseChainTimer = setTimeout(() => {
+                            playPhraseViaCloudAudio(phraseIndex, 0);
+                        }, phrasePauseMs);
+                    } else {
+                        finishSequence();
+                    }
+                };
+
+                audioEl.onerror = () => {
+                    tryNextEndpoint();
+                };
+
+                try {
+                    audioEl.pause();
+                    audioEl.src = endpoints[endpointIdx];
+                    audioEl.playbackRate = cloudPlaybackRate;
+                    const playPromise = audioEl.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch((err) => {
+                            if (err && err.name === 'NotAllowedError' && !hasPlayedInitialWelcome) {
+                                if (ttsStartupWatchdogTimer) clearTimeout(ttsStartupWatchdogTimer);
+                                isSpeakingTTS = false;
+                                setWelcomeUIRunning(false);
+                                setAudioUIRunning(false);
+                                return;
+                            }
+                            tryNextEndpoint();
+                        });
+                    }
+                } catch (e) {
+                    tryNextEndpoint();
+                }
+            }
+
+            if (voiceEngineMode === 'native') {
+                speakViaNativeWebSpeech(0);
+            } else {
+                playPhraseViaCloudAudio(0, 0);
+            }
         }
 
         function speakSweetStepTTS(step, stepNo = 1, serviceIntroName = '') {
@@ -2707,12 +3053,8 @@
                 phrases.push(`สิ่งที่จะได้รับในขั้นตอนนี้คือ ${step.resultDoc} ค่ะ`);
             }
 
-            // Show immediate visual feedback while voice initializes
-            setAudioUIRunning(true, `กำลังบรรยายด้วยเสียงหวานไพเราะ: ขั้นตอนที่ ${stepNo} "${step.title}"`);
-
             speakSweetPhraseSequence(phrases, {
                 onStart: () => {
-                    hasPlayedInitialWelcome = true;
                     setAudioUIRunning(true, `กำลังบรรยายด้วยเสียงหวานไพเราะ: ขั้นตอนที่ ${stepNo} "${step.title}"`);
                 },
                 onEnd: () => {
@@ -2825,7 +3167,7 @@
                 servicesData[idx].icon = icon;
                 servicesData[idx].theme = theme;
                 servicesData[idx].customIconUrl = customIconUrl;
-                showToast(`อัปเดตหัวข้องานบริการ "${name}" เรียบร้อยแล้วค่ะ`, 'success');
+                showToast(`อัปเดตหัวข้อ "${name}" และซิงค์ขึ้น Cloud แล้วค่ะ`, 'success');
             } else {
                 const newId = 'service-' + Date.now();
                 servicesData.push({
@@ -2852,16 +3194,16 @@
                 });
                 currentServiceId = newId;
                 currentStepIndex = 0;
-                showToast(`เพิ่มหัวข้องานบริการ "${name}" สำเร็จแล้วค่ะ`, 'success');
+                showToast(`เพิ่มหัวข้องานบริการ "${name}" และซิงค์ขึ้น Cloud แล้วค่ะ`, 'success');
             }
 
-            saveStateToStorage();
             closeServiceCategoryModal();
             renderAdminCategoriesTable();
             renderAdminServiceSelect();
             renderAdminTable();
             renderServiceSelectorCards();
             renderCitizenStepView(false);
+            saveStateToStorage();
         }
 
         function moveCategoryOrder(index, direction) {
@@ -2870,10 +3212,10 @@
             const temp = servicesData[index];
             servicesData[index] = servicesData[target];
             servicesData[target] = temp;
-            saveStateToStorage();
             renderAdminCategoriesTable();
             renderAdminServiceSelect();
             renderServiceSelectorCards();
+            saveStateToStorage();
         }
 
         function deleteServiceCategory(index) {
@@ -2886,13 +3228,13 @@
                 currentServiceId = servicesData[0].id;
                 currentStepIndex = 0;
             }
-            saveStateToStorage();
             renderAdminCategoriesTable();
             renderAdminServiceSelect();
             renderAdminTable();
             renderServiceSelectorCards();
             renderCitizenStepView(false);
-            showToast(`ลบหัวข้อ "${removed.name}" เรียบร้อยแล้วค่ะ`, 'info');
+            saveStateToStorage();
+            showToast(`ลบหัวข้อ "${removed.name}" และซิงค์ขึ้น Cloud แล้วค่ะ`, 'info');
         }
 
         // --- 11. ADMIN PART 2: STEPS DATA TABLE MANAGEMENT ---
@@ -3021,10 +3363,10 @@
                 const service = getCurrentService();
                 service.steps[stepIndex].audioDataUrl = e.target.result;
                 service.steps[stepIndex].audioType = 'uploaded';
-                saveStateToStorage();
                 renderAdminTable();
                 renderCitizenStepView(false);
-                showToast(`อัปโหลดไฟล์เสียง "${file.name}" เรียบร้อยแล้วค่ะ`, 'success');
+                saveStateToStorage();
+                showToast(`อัปโหลดไฟล์เสียง "${file.name}" และซิงค์ขึ้น Cloud แล้วค่ะ`, 'success');
             };
             reader.readAsDataURL(file);
         }
@@ -3036,9 +3378,9 @@
             const temp = service.steps[index];
             service.steps[index] = service.steps[targetIndex];
             service.steps[targetIndex] = temp;
-            saveStateToStorage();
             renderAdminTable();
             renderCitizenStepView(false);
+            saveStateToStorage();
         }
 
         function deleteStepFromTable(index) {
@@ -3049,11 +3391,11 @@
             }
             service.steps.splice(index, 1);
             if (currentStepIndex >= service.steps.length) currentStepIndex = service.steps.length - 1;
-            saveStateToStorage();
             renderAdminCategoriesTable();
             renderAdminTable();
             renderCitizenStepView(false);
-            showToast('ลบขั้นตอนเรียบร้อยแล้วค่ะ', 'info');
+            saveStateToStorage();
+            showToast('ลบขั้นตอนและซิงค์ขึ้น Cloud เรียบร้อยแล้วค่ะ', 'info');
         }
 
         // --- 12. STEP EDITOR MODAL ---
@@ -3298,20 +3640,20 @@
 
             if (stepIndex >= 0 && stepIndex < service.steps.length) {
                 service.steps[stepIndex] = stepData;
-                showToast(`บันทึกการแก้ไขขั้นตอนที่ ${stepIndex + 1} เรียบร้อยแล้วค่ะ`, 'success');
+                showToast(`บันทึกขั้นตอนที่ ${stepIndex + 1} และซิงค์ขึ้น Cloud แล้วค่ะ`, 'success');
             } else {
                 service.steps.push(stepData);
                 currentStepIndex = service.steps.length - 1;
-                showToast(`เพิ่มขั้นตอนที่ ${service.steps.length} เรียบร้อยแล้วค่ะ`, 'success');
+                showToast(`เพิ่มขั้นตอนที่ ${service.steps.length} และซิงค์ขึ้น Cloud แล้วค่ะ`, 'success');
             }
 
-            saveStateToStorage();
             closeStepEditorModal();
             renderAdminCategoriesTable();
             renderAdminServiceSelect();
             renderAdminTable();
             renderServiceSelectorCards();
             renderCitizenStepView(false);
+            saveStateToStorage();
         }
 
         // --- 13. MODALS & UTILITIES ---
@@ -3357,15 +3699,7 @@
         }
 
         function exportDataJSON() {
-            const payload = {
-                appTitle,
-                agencyName,
-                logoRawUrl,
-                selectorHeading,
-                welcomeGreetingText,
-                welcomeAudioDataUrl,
-                services: servicesData
-            };
+            const payload = buildCurrentConfigPayload();
             const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(payload, null, 2));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute('href', dataStr);
@@ -3384,23 +3718,10 @@
                 try {
                     const parsed = JSON.parse(e.target.result);
                     if (parsed && Array.isArray(parsed.services) && parsed.services.length > 0) {
-                        appTitle = parsed.appTitle || appTitle;
-                        agencyName = parsed.agencyName || agencyName;
-                        logoRawUrl = parsed.logoRawUrl || logoRawUrl;
-                        selectorHeading = parsed.selectorHeading || selectorHeading;
-                        welcomeGreetingText = parsed.welcomeGreetingText || welcomeGreetingText;
-                        welcomeAudioDataUrl = parsed.welcomeAudioDataUrl || null;
-                        servicesData = parsed.services;
-                        currentServiceId = servicesData[0].id;
-                        currentStepIndex = 0;
+                        parsed.updatedAt = Date.now();
+                        applyConfigPayloadToState(parsed, false);
                         saveStateToStorage();
-                        applyGlobalHeadingsToDOM();
-                        renderServiceSelectorCards();
-                        renderAdminCategoriesTable();
-                        renderAdminServiceSelect();
-                        renderCitizenStepView(false);
-                        renderAdminTable();
-                        showToast('นำเข้าข้อมูล JSON สำเร็จเรียบร้อยแล้วค่ะ', 'success');
+                        showToast('นำเข้าข้อมูล JSON และซิงค์ไปยังทุกเครื่องเรียบร้อยแล้วค่ะ', 'success');
                     } else {
                         showToast('รูปแบบไฟล์ JSON ไม่ถูกต้องค่ะ', 'warning');
                     }
@@ -3414,15 +3735,8 @@
 
         function exportReadyToDeployHTML() {
             try {
-                const currentPayload = {
-                    appTitle,
-                    agencyName,
-                    logoRawUrl,
-                    selectorHeading,
-                    welcomeGreetingText,
-                    welcomeAudioDataUrl,
-                    services: servicesData
-                };
+                configUpdatedAt = Date.now();
+                const currentPayload = buildCurrentConfigPayload();
                 const newDefaultFuncCode = `/*__BAKED_DEFAULT_CONFIG_START__*/\n        function getDefaultAppConfig() {\n            return ${JSON.stringify(currentPayload, null, 12)};\n        }\n        /*__BAKED_DEFAULT_CONFIG_END__*/`;
 
                 let fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
@@ -3440,34 +3754,30 @@
                 a.click();
                 a.remove();
                 setTimeout(() => URL.revokeObjectURL(url), 2000);
-                showToast('ดาวน์โหลดไฟล์ index.html พร้อมอัปโหลดขึ้นเว็บออนไลน์เรียบร้อยแล้วค่ะ', 'success');
+                showToast('ดาวน์โหลดไฟล์ index.html ที่ฝังข้อมูลชุดล่าสุดเรียบร้อยแล้วค่ะ', 'success');
             } catch (err) {
                 showToast('เกิดข้อผิดพลาดในการสร้างไฟล์ HTML ค่ะ', 'warning');
             }
         }
 
-        function resetToDefaultData() {
+        function openResetConfirmModal() {
+            document.getElementById('resetConfirmModal').classList.remove('hidden');
+        }
+
+        function closeResetConfirmModal() {
+            document.getElementById('resetConfirmModal').classList.add('hidden');
+        }
+
+        function confirmResetToDefaultData() {
+            closeResetConfirmModal();
             stopAllAudio();
             const defaults = getDefaultAppConfig();
-            appTitle = defaults.appTitle;
-            agencyName = defaults.agencyName;
-            logoRawUrl = defaults.logoRawUrl;
-            selectorHeading = defaults.selectorHeading;
-            welcomeGreetingText = defaults.welcomeGreetingText || DEFAULT_WELCOME_GREETING;
-            welcomeAudioDataUrl = defaults.welcomeAudioDataUrl || null;
-            servicesData = defaults.services;
-            currentServiceId = servicesData[0].id;
-            currentStepIndex = 0;
+            defaults.updatedAt = Date.now();
             citizenStage = 'home';
-            saveStateToStorage();
-            applyGlobalHeadingsToDOM();
-            renderServiceSelectorCards();
-            renderAdminCategoriesTable();
-            renderAdminServiceSelect();
-            renderCitizenStepView(false);
-            renderAdminTable();
+            applyConfigPayloadToState(defaults, false);
             updateCitizenStageUI();
-            showToast('คืนค่าเริ่มต้นของระบบเรียบร้อยแล้วค่ะ', 'success');
+            saveStateToStorage();
+            showToast('คืนค่าเริ่มต้นและซิงค์ไปยังทุกเครื่องเรียบร้อยแล้วค่ะ', 'success');
         }
 
         let toastTimeout = null;
@@ -3489,8 +3799,131 @@
             if (toastTimeout) clearTimeout(toastTimeout);
             toastTimeout = setTimeout(() => {
                 toast.classList.add('hidden');
-            }, 3000);
+            }, 3200);
         }
+    </script>
+
+    <!-- =================================================================== -->
+    <!-- FIREBASE FIRESTORE REAL-TIME MULTI-DEVICE CLOUD SYNCHRONIZATION     -->
+    <!-- =================================================================== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+        let isApplyingRemoteSnapshot = false;
+
+        const appId = typeof __app_id !== 'undefined' && __app_id ? __app_id : 'mae-tha-land-smart-guide';
+
+        async function initCentralCloudSync() {
+            if (typeof __firebase_config === 'undefined' || !__firebase_config) {
+                updateSyncTimestampUI('โหมดข้อมูลฝังในไฟล์ (พร้อมใช้งานทุกเครื่อง)');
+                return;
+            }
+
+            try {
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // RULE 3: Auth Before Queries
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    currentUser = user;
+                });
+                currentUser = auth.currentUser;
+
+                if (!currentUser) return;
+
+                // RULE 1: Strict Public Path `/artifacts/{appId}/public/data/app_settings/main_config`
+                const configDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'app_settings', 'main_config');
+
+                // Expose Cloud Push & Pull functions to global scope for Admin actions
+                window.pushConfigToFirestoreCloud = async function(payload) {
+                    if (!currentUser || !db || isApplyingRemoteSnapshot) return false;
+                    try {
+                        await setDoc(configDocRef, {
+                            configJson: JSON.stringify(payload),
+                            updatedAt: payload.updatedAt || Date.now(),
+                            updatedBy: currentUser.uid || 'admin',
+                            appTitle: payload.appTitle || ''
+                        });
+                        return true;
+                    } catch (err) {
+                        console.error('Firestore Cloud Push Error:', err);
+                        return false;
+                    }
+                };
+
+                window.pullConfigFromFirestoreCloud = async function(showToastNotify = false) {
+                    if (!currentUser || !db) return false;
+                    try {
+                        const snap = await getDoc(configDocRef);
+                        if (snap.exists()) {
+                            const data = snap.data();
+                            if (data && data.configJson) {
+                                const parsed = JSON.parse(data.configJson);
+                                isApplyingRemoteSnapshot = true;
+                                applyConfigPayloadToState(parsed, showToastNotify);
+                                isApplyingRemoteSnapshot = false;
+                                return true;
+                            }
+                        }
+                    } catch (err) {
+                        console.error('Firestore Cloud Pull Error:', err);
+                    }
+                    return false;
+                };
+
+                // Listen for Real-Time updates across all connected devices
+                onSnapshot(
+                    configDocRef,
+                    (snapshot) => {
+                        if (!currentUser) return;
+                        if (snapshot.exists()) {
+                            const data = snapshot.data();
+                            if (data && data.configJson) {
+                                try {
+                                    const remotePayload = JSON.parse(data.configJson);
+                                    const remoteTime = remotePayload.updatedAt || data.updatedAt || 0;
+                                    // Apply immediately if remote config is newer or on initial sync
+                                    if (remoteTime >= configUpdatedAt || remoteTime > 0) {
+                                        isApplyingRemoteSnapshot = true;
+                                        applyConfigPayloadToState(remotePayload, false);
+                                        updateSyncTimestampUI('ซิงค์ข้อมูลออนไลน์ตรงกันทุกเครื่อง');
+                                        isApplyingRemoteSnapshot = false;
+                                    }
+                                } catch (parseErr) {
+                                    console.error('Error parsing remote config JSON:', parseErr);
+                                }
+                            }
+                        } else {
+                            // Initialize central cloud document with default config if not created yet
+                            const initialPayload = buildCurrentConfigPayload();
+                            window.pushConfigToFirestoreCloud(initialPayload);
+                        }
+                    },
+                    (error) => {
+                        console.warn('Firestore real-time listener warning:', error);
+                        updateSyncTimestampUI('ซิงค์ข้อมูลพร้อมใช้งาน');
+                    }
+                );
+
+            } catch (err) {
+                console.warn('Cloud initialization fallback:', err);
+            }
+        }
+
+        initCentralCloudSync();
     </script>
 </body>
 </html>
